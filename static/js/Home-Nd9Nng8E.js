@@ -1,4 +1,4 @@
-import{d as v,c as d,h,m as x,r as w,o as z,a as u,b as r,F as D,e as R,u as $,f as B,g as l,i as m,w as p,j as S,k as V,l as I,n as N,t as f}from"./index-Ca0ramgO.js";import{d as j,c as F,a as g,b as _,u as y,e as P,f as L,g as O,w as T}from"./light-BuYEgb9o.js";function Z(t){const{textColorBase:n,opacity1:s,opacity2:i,opacity3:a,opacity4:e,opacity5:o}=t;return{color:n,opacity1Depth:s,opacity2Depth:i,opacity3Depth:a,opacity4Depth:e,opacity5Depth:o}}const M={name:"Icon",common:j,self:Z},A=F("icon",`
+import{d as v,c as d,h,m as x,r as w,o as z,a as u,b as r,F as D,e as R,u as $,f as B,g as l,i as m,w as p,j as S,k as V,l as I,n as N,t as f}from"./index-DW1MvbYF.js";import{d as j,c as F,a as g,b as _,u as y,e as P,f as L,g as O,w as T}from"./light-UFaRv0Rr.js";function Z(t){const{textColorBase:n,opacity1:s,opacity2:i,opacity3:a,opacity4:e,opacity5:o}=t;return{color:n,opacity1Depth:s,opacity2Depth:i,opacity3Depth:a,opacity4Depth:e,opacity5Depth:o}}const M={name:"Icon",common:j,self:Z},A=F("icon",`
  height: 1em;
  width: 1em;
  line-height: 1em;
