@@ -1,7 +1,10 @@
 <template>
     <div class="vue3-tiptap-editor major-editor">
         <Toolkit v-if="isShowToolbar" :characterCount="characterCount" @onUploadImageCallBack="onUploadImageCallBack"></Toolkit>
-        <EditorContent class="vue3-tiptap-editor__content" :editor="editor" @contextmenu="onContextmenu"></EditorContent>
+        <div class="tiptap-editor__body">
+            <EditorContent class="tiptap-editor__content" :editor="editor" @contextmenu="onContextmenu"></EditorContent>
+            <ContentsNav class="tiptap-editor__navigation"></ContentsNav>
+        </div>
         <BubbleMenu></BubbleMenu>
         <ContextMenus ref="contextMenuRef"></ContextMenus>
     </div>
@@ -20,6 +23,7 @@ import BubbleMenu from "@/components/bubble-menu/index.vue";
 import { useEventListener } from "@/hooks/useEventListener";
 import { useContextMenu } from "@/hooks/useContextMenu";
 import ContextMenus from "./components/table/ContextMenu.vue";
+import ContentsNav from "./components/layout/Contents.vue"
 
 // 自定义扩展
 import TiptapExtensions from './extensions';

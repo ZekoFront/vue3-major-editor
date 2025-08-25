@@ -15,17 +15,27 @@
         :key="index"
         @onUploadImageCallBack="onUploadImageCallBack">
     </component>
+    <button class="toolbar-icon--btn" data-editor-toolbar-btn="true"  @click="closeContents">
+        <NIcon size="21">
+            <ContentView32Regular></ContentView32Regular>
+        </NIcon>
+        <span >目录</span>
+    </button>
     <button class="toolbar-icon--btn" data-editor-toolbar-btn="true">
         <span style="color: var(--theme-color);font-weight: bold;">{{ editor.storage.characterCount.characters()}}</span>
         <span>&nbsp;/&nbsp;{{ characterCount }}</span>
     </button>
+    
     <!-- 自定义行高会段落冲突，暂时注释 -->
     <!-- <ParagraphUI></ParagraphUI> -->
 </div>
 </template>
 
 <script lang="ts" setup name="Toolkit">
+import { NIcon } from 'naive-ui'
+import { ContentView32Regular } from '@vicons/fluent'
 import { Editor } from '@tiptap/vue-3'
+import { useToolsStore } from '@/store/tools'
 // 段落
 import ParagraphUI from './paragraph/index.vue';
 import ErrorImage from "../icons/error-image.svg"; 
@@ -38,6 +48,8 @@ const props = defineProps({
         default: 10000
     }
 })
+
+const toolsStore = useToolsStore()
 
 interface CusIconType {
     componentProps: Object,
@@ -59,6 +71,10 @@ const cusComponentIcon = computed(() => {
 
 const onUploadImageCallBack = (file: FileList) => {
     emits('onUploadImageCallBack', file)
+}
+
+const closeContents = () => {
+   toolsStore.updateIsShowContents()   
 }
 
 </script>

@@ -99,7 +99,7 @@
 
     const onUpdate = (val:Editor) => {
         // console.log("update:",val.getHTML())
-        console.log("update")
+        // console.log("update")
     }
 
     onBeforeUnmount(() => {

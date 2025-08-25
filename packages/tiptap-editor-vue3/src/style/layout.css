@@ -1,6 +1,7 @@
 /* 此处样式，打包后和组件内部样式会重合，解决：要么引入打包的样式，要么引入组件样式，不能都引入 */
 .vue3-tiptap-editor {
-    box-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.1);
+    border: 1px solid #f2f2f2;
+    /* box-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.1); */
     font-size: 1rem;
     color: #333;
 }
@@ -47,8 +48,15 @@ svg:active {
     flex: 0 0 1.3em;
     height: 1.2em;
 }
-.vue3-tiptap-editor > .vue3-tiptap-editor__content {
-    border: 2px solid rgba(24, 160, 88, 0.1);
+
+.vue3-tiptap-editor >.tiptap-editor__body {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.vue3-tiptap-editor >.tiptap-editor__body > .tiptap-editor__content {
+    /* border: 1px solid rgba(24, 160, 88, 0.1); */
+    flex: 1;
     min-height: 30rem;
     height: 100%;
     overflow-y: auto;
@@ -64,6 +72,9 @@ svg:active {
         border-radius: 0.2em;
         cursor: pointer;
         height: 3em;
+    }
+    button[data-editor-toolbar-btn="true"]:hover {
+        background-color: #dddcdc;
     }
 }
 /* @layer svg {
