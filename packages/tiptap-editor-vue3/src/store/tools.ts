@@ -12,12 +12,20 @@ export const useToolsStore = defineStore('tools', {
             userList: [] as UserInfo[],
             // 用于尚未加载的数据
             user: null as UserInfo | null,
-            isShowContents: false
+            isShowContents: false,
+            headingLevel: 7,
+            headingContent: ''
         }
     },
     actions: {
         updateIsShowContents() {
             this.isShowContents = !this.isShowContents
+        },
+        updateHeadingLevel(level:number = 7) {
+            this.headingLevel = level
+        },
+        updateHeadingContent(content:string = '') {
+            this.headingContent = content
         }
     }
 })

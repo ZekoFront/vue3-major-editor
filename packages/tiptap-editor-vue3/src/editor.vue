@@ -30,6 +30,7 @@ import TiptapExtensions from './extensions';
 
 // 过滤编辑器类容，防止xss攻击, 生产环境
 import DOMPurify from 'dompurify';
+import { useToolsStore } from "./store/tools";
 
 const contents = defineModel<string>("content", {
     default: "",
@@ -109,8 +110,41 @@ const editor:Editor = new Editor({
         emits('onUpdate', editor)
         const cleanHtml = DOMPurify.sanitize(editor.getHTML());
         emits('update:content', cleanHtml);
+    },
+    onFocus ({ editor }) {
+        // console.log(editor, 999)
+    },
+    onSelectionUpdate ({ editor, transaction }) {
+        detectHeadingType(editor as Editor)
     }
 });
+
+const toolsStore = useToolsStore()
+
+// 获取标题类型
+function detectHeadingType (editor:Editor) {
+    const { state } = editor;
+    const { selection } = state;
+    const { $from } = selection;
+    let node = $from.node();
+    // console.log(node.type.name, editor)
+    // 检查当前节点是否为标题
+    if (node &&['extensionHeading','heading'].includes(node.type.name)) {
+        toolsStore.updateHeadingLevel(node.attrs.level)
+        toolsStore.updateHeadingContent(node.textContent)
+    } else {
+        let depth = $from.depth;
+        while (depth > 0) {
+            const parentNode = $from.node(depth);
+            if (parentNode &&['extensionHeading','heading'].includes(parentNode.type.name)) {
+                toolsStore.updateHeadingLevel(parentNode.attrs.level)
+                toolsStore.updateHeadingContent(parentNode.textContent)
+                break;
+            }
+            depth--;
+        }
+    }
+}
 
 useEventListener(editor)
 const {contextMenuRef, onContextmenu} = useContextMenu(editor)

@@ -9,7 +9,10 @@
     <NTooltip placement="top" trigger="hover">
         <template #trigger>
             <button  class="toolbar-icon--btn" data-editor-toolbar-btn="true">
-                <span v-if="selectedData.label" style="font-size: medium;">标题 {{ selectedData.value }}</span>
+                <aside v-if="selectedData.label" style="font-size: medium;">
+                    <span v-if="Number(selectedData.value)<7">标题 {{ selectedData.value }}</span>
+                    <span v-else>{{ selectedData.label }}</span>
+                </aside>
                 <svg v-else viewBox="0 0 1024 1024" width="200" height="200">
                     <path
                         d="M768 512v384c0 35.4 28.6 64 64 64s64-28.6 64-64V128c0-35.4-28.6-64-64-64s-64 28.6-64 64v256H256V128c0-35.4-28.6-64-64-64S128 92.6 128 128v768c0 35.4 28.6 64 64 64s64-28.6 64-64V512h512z">
@@ -32,6 +35,9 @@ import { NPopselect, NTooltip, SelectOption } from "naive-ui";
 import type { Level } from '@tiptap/extension-heading';
 import { VNodeChild } from "vue";
 import { DEFAULT_TITLE, FONT_SIZE_TITLE } from '@/utils'
+import { useToolsStore } from "@/store/tools";
+
+const toolsStore = useToolsStore()
 
 const props = defineProps({
     editor: {
@@ -62,6 +68,16 @@ const props = defineProps({
 
 const selectHvalue = ref(DEFAULT_TITLE);
 const selectedData = ref<SelectOption>({})
+
+const headingLevel = computed(() => toolsStore.headingLevel);
+watch(headingLevel, (newValue, oldValue) => {
+    if (newValue <= 6) {
+        selectedData.value.label = '标题'
+        selectedData.value.value = String(newValue)
+    } 
+    selectHvalue.value = newValue+''
+});
+
 const handleHeading = (level: Level) => {
     selectHvalue.value = level+''
     selectedData.value = props.levels.find((el:SelectOption) => el.value === level) as SelectOption
@@ -71,8 +87,6 @@ const handleHeading = (level: Level) => {
         props.editor.commands.toggleHeading({ level: +level as Level })
     }
 }
-
-
 
 const renderLabel = (option: SelectOption, selected: boolean):VNodeChild => {
     return[
