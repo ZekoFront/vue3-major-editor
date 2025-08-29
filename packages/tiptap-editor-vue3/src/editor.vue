@@ -5,21 +5,23 @@
             <EditorContent class="tiptap-editor__content" :editor="editor" @contextmenu="onContextmenu"></EditorContent>
             <ContentsNav class="tiptap-editor__navigation"></ContentsNav>
         </div>
-        <BubbleMenu></BubbleMenu>
+        <ParagraphMenu></ParagraphMenu>
+        <ImageMenu></ImageMenu>
         <ContextMenus ref="contextMenuRef"></ContextMenus>
     </div>
 </template>
 
 <script setup lang="ts" name="EditorTiptapVue3">
 import { provide, watch } from "vue";
-import CharacterCount from '@tiptap/extension-character-count'
+import { CharacterCount, Placeholder, Focus } from '@tiptap/extensions'
 import StarterKit from "@tiptap/starter-kit";
 import { Editor, EditorContent, AnyExtension } from "@tiptap/vue-3";
-import Placeholder from '@tiptap/extension-placeholder';
 // 顶部工具
 import Toolkit from "./components/Toolkit.vue";
 // 菜单
-import BubbleMenu from "@/components/bubble-menu/index.vue";
+import ParagraphMenu from "@/components/bubble-menu/ParagraphMenu.vue";
+// 图片菜单
+import ImageMenu from "@/components/bubble-menu/ImageMenu.vue";
 import { useEventListener } from "@/hooks/useEventListener";
 import { useContextMenu } from "@/hooks/useContextMenu";
 import ContextMenus from "./components/table/ContextMenu.vue";
@@ -76,7 +78,9 @@ const emits = defineEmits([
     "onUploadImage",
     "update:content"
 ]);
+
 const extensionSet = props.extensions.length?props.extensions:TiptapExtensions
+
 const editor:Editor = new Editor({
     content: DOMPurify.sanitize(contents.value),
     editable: props.isEnable,
@@ -88,12 +92,15 @@ const editor:Editor = new Editor({
             strike: false,
             code: false,
             codeBlock: false,
-            history: false,
             orderedList: false,
             bulletList: false,
             horizontalRule: false,
             blockquote: false,
+            underline: false,
+            undoRedo: false,
+            link: false
         }),
+        Focus,
         CharacterCount.configure({
           limit: props.characterCount,
         }),
@@ -104,7 +111,9 @@ const editor:Editor = new Editor({
     onCreate({editor}) {
         const currentContent = editor.getHTML();
         const newContent = currentContent + '<p><br></p>';
-        editor.commands.setContent(newContent, false);
+        editor.commands.setContent(newContent, {
+            emitUpdate: true
+        });
     },
     onUpdate ({editor}) {
         emits('onUpdate', editor)
@@ -146,21 +155,25 @@ function detectHeadingType (editor:Editor) {
     }
 }
 
+//@ts-ignore
 useEventListener(editor)
+//@ts-ignore
 const {contextMenuRef, onContextmenu} = useContextMenu(editor)
 
 // 实时更新内容
 watch(contents,(n,o) => {
     const isSame = editor.getHTML() === contents.value
     if (isSame) return
-    editor.commands.setContent(n, false)
+    editor.commands.setContent(n, {
+            emitUpdate: true
+        });
 }, { deep: true })
 
 const onUploadImageCallBack = (file: FileList) => {
     emits('onUploadImage', { file, editor })
 }
 
-
+console.log('editor:',editor)
 provide("editor", editor)
 provide('props', props)
 

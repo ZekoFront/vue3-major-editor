@@ -6,7 +6,7 @@ const ExtensionSubscript = TiptapSubscript.extend({
     name: 'Subscript',
     addOptions() {
         return {
-            ...this.parent?.(),
+            // ...this.parent?.(),
             onClick: ({ editor }:{editor:Editor}) => {
                 return {
                     component: ButtonIcon,

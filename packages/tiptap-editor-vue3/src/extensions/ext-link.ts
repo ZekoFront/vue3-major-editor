@@ -10,6 +10,7 @@ const ExtensionLink = TiptapLink.extend({
     priority: 100,
     addOptions() {
         return {
+            //@ts-ignore
             ...this.parent?.(),
             onClick: ({ editor }: { editor: Editor }) => {
                 return {

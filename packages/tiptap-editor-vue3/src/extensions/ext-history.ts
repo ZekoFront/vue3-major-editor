@@ -1,8 +1,8 @@
 import type { Editor } from '@tiptap/vue-3'
-import TiptapHistory from '@tiptap/extension-history'
+import { UndoRedo } from '@tiptap/extensions'
 import ButtonIcon from '../components/ButtonIcon.vue'
 
-const ExtensionHistory = TiptapHistory.extend({
+const ExtensionHistory = UndoRedo.extend({
     addOptions() {
         return {
             ...this.parent?.(),

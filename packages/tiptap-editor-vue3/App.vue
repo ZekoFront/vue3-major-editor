@@ -113,6 +113,9 @@
 }
 .app_wrapper {
     padding:15px;
+    margin: 0;
+    height: 100vh;
+    box-sizing: border-box;
     .h2 {
         margin: 5px 0;
         color: #646cff;
@@ -121,5 +124,8 @@
         display: flex;
         align-items: center;
     }
+}
+.vue3-tiptap-editor {
+    height: calc(100vh - 99px) !important;
 }
 </style>

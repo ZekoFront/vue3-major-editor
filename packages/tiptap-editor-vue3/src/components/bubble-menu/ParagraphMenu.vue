@@ -1,7 +1,7 @@
 <template>
+<div v-if="editor">
 <bubble-menu
     :editor="editor"
-    :tippy-options="{ duration: 100 }"
     :should-show="shouldShowBubbleMenu">
     <div class="editor-inner-bubble--menu">
         <button @click="editor.chain().focus().toggleBold().run()" :class="{ 'is-active': editor.isActive('bold') }">
@@ -32,9 +32,11 @@
         </NTooltip>
     </div>
 </bubble-menu>
+</div>
 </template>
-<script setup lang="ts" name="BubbleMenu">
-import { BubbleMenu, Editor } from "@tiptap/vue-3";
+<script setup lang="ts" name="ParagraphMenu">
+import { Editor } from "@tiptap/vue-3";
+import { BubbleMenu } from "@tiptap/vue-3/menus";
 import { NTooltip } from "naive-ui";
 import { inject } from "vue";
 
@@ -59,6 +61,6 @@ const shouldShowBubbleMenu = (val:any) => {
         return (from !== to) && val.editor.isActive('paragraph')
     }
     return false
-};
+}
 
 </script>

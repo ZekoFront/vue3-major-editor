@@ -2,7 +2,7 @@
 <node-view-wrapper class="customize-image">
     <div ref="dragModifiedImageRef" :class="[
         'image-single__body drag-modified-image-size',
-        { 'image-single__body--actived': isActiveImage }
+        { 'image-single__body--actived': isSelected }
     ]">
         <img 
             :src="src" 
@@ -15,9 +15,7 @@
             @click="selectedImage"
         />
         <div v-if="isUploading" class="upload-status">upload...</div>
-        <!-- <div class="resize-handle" @mousedown="startResize"></div> -->
-
-        <template v-if="isActiveImage">
+        <template v-if="isSelected">
             <div :class="['resize-handle-btn', item]" @mousedown="onHandleBtnDrag" v-for="(item, index) in directionList" :key="index"></div> 
         </template>
     </div>
@@ -48,11 +46,16 @@ const imageHeight = ref(props.node.attrs.height);
 const src = ref(props.node.attrs.src || "");
 const alt = ref(props.node.attrs.alt || "");
 const title = ref(props.node.attrs.title || "");
-
-const isActiveImage = computed(() => props.selected)
+// tiptap3.0选中状态自定义
+const isSelected = ref(false)
+// tiptap2.0选中状态不会因为拖拽而取消
+// const isActiveImage = computed(() => {
+//     return props.selected
+// })
 
 const selectedImage = () => {
-    props.editor.commands.setNodeSelection(props.getPos());
+    props.editor.commands.setNodeSelection(Number(props.getPos()));
+    isSelected.value = !isSelected.value
 }
 
 // 八个点位拖拽修改图片尺寸
@@ -132,7 +135,7 @@ const handleUpload = async (file: File) => {
         formData.append("file", file);
         const response = await fetch("/upload", { method: "POST", body: formData });
         const { url } = await response.json();
-
+        //@ts-ignore
         props.editor.commands.updateImageAttributes({
             src: url,
             width: imageWidth.value,

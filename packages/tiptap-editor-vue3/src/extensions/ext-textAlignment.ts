@@ -25,6 +25,7 @@ const ExtensionTextAlign = TiptapTextAlign.extend({
     name: 'extensionTextAlign',
     addOptions() {
         return {
+            //@ts-ignore
             ...this.parent?.(),
             onClick: ({ editor }:{editor:Editor}) => {
                 return {

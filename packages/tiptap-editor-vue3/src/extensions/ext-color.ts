@@ -2,7 +2,7 @@ import { Editor, getMarkRange } from '@tiptap/core';
 import TiptapColor from '@tiptap/extension-color';
 import { COLOR_DEFAULT } from '@/utils';
 import ColorPopover from '@/components/color/ColorPopover.vue';
-import TextStyle from '@tiptap/extension-text-style';
+import { TextStyleKit, TextStyle } from '@tiptap/extension-text-style';
 import { Plugin, TextSelection, PluginKey } from '@tiptap/pm/state'
 import { EditorView } from '@tiptap/pm/view'
 

@@ -1,8 +1,8 @@
 import type { Editor } from '@tiptap/vue-3'
-import TiptapOrderedList from '@tiptap/extension-ordered-list'
+import { OrderedList } from '@tiptap/extension-list'
 import ButtonIcon from '../components/ButtonIcon.vue'
 
-const ExtensionOrderedList = TiptapOrderedList.extend({
+const ExtensionOrderedList = OrderedList.extend({
     addOptions() {
         return {
             ...this.parent?.(),

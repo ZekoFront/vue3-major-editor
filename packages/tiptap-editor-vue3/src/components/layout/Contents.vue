@@ -34,6 +34,7 @@ const closeContents = () => {
    transition: all 0.3s ease-out;
    overflow: hidden;
    white-space: nowrap;
+   /* height: 100%; */
  }
 .tiptap-editor__navigation > .navigation-header {
    display: flex;

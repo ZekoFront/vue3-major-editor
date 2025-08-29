@@ -1,7 +1,7 @@
 import '@tiptap/extension-text-style'
 // import ButtonIcon from '../components/ButtonIcon.vue'
 import BackgroundColorPopover from '@/components/color/BackgroundColorPopover.vue'
-import { Extension } from '@tiptap/core'
+import { Extension, ChainedCommands } from '@tiptap/core'
 import { Editor } from '@tiptap/vue-3'
 import { COLOR_DEFAULT } from '@/utils';
 
@@ -83,17 +83,17 @@ export const ExtensionBackgroundColor = Extension.create<ColorOptions>({
 
   addCommands() {
     return {
-        setBackgroundColor: color => ({ chain }) => {
-            return chain()
-            .setMark('textStyle', { backgroundColor:color })
-            .run()
-        },
-        unsetBackgroundColor: () => ({ chain }) => {
-            return chain()
-            .setMark('textStyle', { backgroundColor: null })
-            .removeEmptyTextStyle()
-            .run()
-        },
+        // setBackgroundColor: color => ({ chain }: { chain: ChainedCommands }) => {
+        //     return chain()
+        //     .setMark('textStyle', { backgroundColor:color })
+        //     .run()
+        // },
+        // unsetBackgroundColor: () => ({ chain }: { chain: ChainedCommands }) => {
+        //     return chain()
+        //     .setMark('textStyle', { backgroundColor: null })
+        //     .removeEmptyTextStyle()
+        //     .run()
+        // },
     }
   },
 })

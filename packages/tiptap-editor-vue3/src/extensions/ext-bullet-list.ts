@@ -1,8 +1,8 @@
 import type { Editor } from '@tiptap/vue-3'
-import TiptapBulletList from '@tiptap/extension-bullet-list'
+import { BulletList } from '@tiptap/extension-list'
 import ButtonIcon from '../components/ButtonIcon.vue'
 
-const ExtensionBulletList = TiptapBulletList.extend({
+const ExtensionBulletList = BulletList.extend({
     addOptions() {
         return {
             ...this.parent?.(),

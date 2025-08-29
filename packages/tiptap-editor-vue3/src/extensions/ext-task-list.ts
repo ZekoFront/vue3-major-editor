@@ -1,14 +1,13 @@
 import TaskIcon from '@/components/task/TaskIcon.vue';
 import { Editor } from "@tiptap/vue-3";
-import TaskList from '@tiptap/extension-task-list';
-import TiptapTaskItem from '@tiptap/extension-task-item';
+import { TaskList, TaskItem} from '@tiptap/extension-list';
 
-const ExtensionTaskItem = TiptapTaskItem.extend({
+const ExtensionTaskItem = TaskItem.extend({
     content: 'inline*',
     
     addOptions() {
         return {
-            ...this.parent?.(),
+            // ...this.parent?.(),
             onClick: ({ editor }:{editor:Editor}) => {
                 return {
                     component: TaskIcon,

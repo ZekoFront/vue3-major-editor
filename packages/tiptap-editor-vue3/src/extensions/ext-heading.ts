@@ -21,6 +21,7 @@ export const ExtensionHeading = TiptapHeading.extend({
     name: 'extensionHeading',
     addOptions() {
         return {
+            //@ts-ignore
             ...this.parent?.(),
             levels: [1, 2, 3, 4, 5, 6] as Level[],
             onClick: ({ editor }:{editor:Editor}) => {

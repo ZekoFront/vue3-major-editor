@@ -1,16 +1,13 @@
 import {  h  } from "vue";
 import { Editor } from "@tiptap/core";
-import TiptapTable from "@tiptap/extension-table";
-import Table from "@/components/table/Table.vue";
-import TableCell from "@tiptap/extension-table-cell";
-import TableHeader from "@tiptap/extension-table-header";
-import TableRow from "@tiptap/extension-table-row";
+import { Table,TableCell,TableHeader, TableRow } from "@tiptap/extension-table";
+import TableUI from "@/components/table/Table.vue";
 import { ITableContextMenuItem } from '@/typings/index'
 
 function renderCustomHeader() {
     return h('div',{ style: { fontWeight: 'bold', textAlign: 'center'}}, '操作表格')
 }
-const ExtensionTable = TiptapTable.extend({
+const ExtensionTable = Table.extend({
     addOptions() {
         return {
             ...this.parent?.(),
@@ -129,7 +126,7 @@ const ExtensionTable = TiptapTable.extend({
                     }
                 ]
                 return {
-                    component: Table,
+                    component: TableUI,
                     componentProps: {
                         options: menuOptions,
                         editor,

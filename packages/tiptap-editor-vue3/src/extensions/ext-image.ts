@@ -44,16 +44,16 @@ export const ExtensionImage = TiptapImage.extend({
             // 这样配置后，更新属性，才会触发编辑器update事件
             width: { 
                 default: null,
-                parseHTML: element => element.getAttribute('width'),
-                renderHTML: attributes => {
+                parseHTML: (element: any) => element.getAttribute('width'),
+                renderHTML: (attributes: any) => {
                     if (!attributes.width) return {}
                     return { width: attributes.width }
                 },
             },
             height: { 
                 default: null,
-                parseHTML: element => element.getAttribute('height'),
-                renderHTML: attributes => {
+                parseHTML: (element: any) => element.getAttribute('height'),
+                renderHTML: (attributes: any) => {
                     if (!attributes.height) return {}
                     return { height: attributes.height }
                 },
@@ -62,7 +62,7 @@ export const ExtensionImage = TiptapImage.extend({
     },
     addOptions () {
         return {
-            ...this.parent?.(),
+            // ...this.parent?.(),
             onClick: ({ editor }:{editor:Editor}) => {
                 return {
                     component: ImageIcon,
@@ -79,7 +79,7 @@ export const ExtensionImage = TiptapImage.extend({
     parseHTML() {
         return [{ tag: 'img[data-type="customize-image"]' }]
     },
-    renderHTML({ HTMLAttributes }) {
+    renderHTML({ HTMLAttributes }: { HTMLAttributes:any }) {
         // 构建 style 属性字符串
         const style = [
             HTMLAttributes.width ? `width: ${HTMLAttributes.width}px;` : '',
@@ -97,7 +97,7 @@ export const ExtensionImage = TiptapImage.extend({
     },
     
     addNodeView() {
-        return VueNodeViewRenderer(ExtensionImageUI)
+        return VueNodeViewRenderer(ExtensionImageUI as any)
     },
 
     // 使用更精确的类型定义

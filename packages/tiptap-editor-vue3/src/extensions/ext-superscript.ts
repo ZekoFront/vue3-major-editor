@@ -6,7 +6,7 @@ const ExtensionSuperscript = TiptapSuperscript.extend({
     name: 'Superscript',
     addOptions() {
         return {
-            ...this.parent?.(),
+            // ...this.parent?.(),
             onClick: ({ editor }:{editor:Editor}) => {
                 return {
                     component: ButtonIcon,
