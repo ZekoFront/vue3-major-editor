@@ -4,7 +4,8 @@
     :editor="editor"
     :options="{
         flip:true,
-        arrow: true
+        arrow: true,
+        placement: 'top'
     }"
     :should-show="shouldShowBubbleMenuImage">
     <div class="editor-inner-bubble--menu">
