@@ -3,7 +3,7 @@
     v-if="editor"
     :editor="editor"
     :should-show="shouldShowBubbleMenu">
-    <div class="editor-inner-bubble--menu">
+    <div class="editor-inner-bubble--menu" v-if="isText">
         <button @click="editor.chain().focus().toggleBold().run()" :class="{ 'is-active': editor.isActive('bold') }">
             <component is="bold-icon" class="menu-icon"></component>
         </button>
@@ -34,15 +34,22 @@
 </bubble-menu>
 </template>
 <script setup lang="ts" name="ParagraphMenu">
-import { Editor } from "@tiptap/vue-3";
+import { Editor } from "@tiptap/core";
 import { BubbleMenu } from "@tiptap/vue-3/menus";
 import { NTooltip } from "naive-ui";
+import { useSelectionStore } from '@/store/selection'
 
 const { editor } = defineProps({
     editor: {
         type: Editor,
         required: true,
     }
+})
+
+const selectionStore = useSelectionStore()
+
+const isText = computed(() => {
+    return selectionStore.selection?.typeName==="text"
 })
 
 // 打开链接
@@ -55,6 +62,7 @@ const openLinkUrl = () => {
 const cancelLinkUrl = () => {
     editor.commands.unsetLink()
 }
+
 // 隐藏菜单
 const shouldShowBubbleMenu = (val:any) => {
     if (val.state) {
@@ -63,7 +71,7 @@ const shouldShowBubbleMenu = (val:any) => {
         // return from !== to && !editor.isActive("customize-image")||false
         return (from !== to) && val.editor.isActive('paragraph')
     }
-    return false
+    return true
 }
 
 </script>

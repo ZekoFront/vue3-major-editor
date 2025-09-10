@@ -27,6 +27,7 @@ const ExtensionTextAlign = TiptapTextAlign.extend({
         return {
             //@ts-ignore
             ...this.parent?.(),
+            bubble: true,
             onClick: ({ editor }:{editor:Editor}) => {
                 return {
                     component: TextAlignPopselect,

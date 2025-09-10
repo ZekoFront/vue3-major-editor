@@ -1,32 +1,31 @@
 <template>
+    <!-- <button @click="selectText">选择文本</button> -->
     <div class="vue3-tiptap-editor major-editor">
-        <Toolkit v-if="isShowToolbar" :characterCount="characterCount" @onUploadImageCallBack="onUploadImageCallBack"></Toolkit>
+        <Toolkit :editor="editor" v-if="isShowToolbar" :characterCount="characterCount" @onUploadImageCallBack="onUploadImageCallBack"></Toolkit>
         <div class="tiptap-editor__body">
             <EditorContent class="tiptap-editor__content" :editor="editor" @contextmenu="onContextmenu"></EditorContent>
             <ContentsNav class="tiptap-editor__navigation"></ContentsNav>
         </div>
-        <ParagraphMenu></ParagraphMenu>
-        <ImageMenu></ImageMenu>
+        <BubbleMenus :editor="editor"></BubbleMenus>
         <ContextMenus ref="contextMenuRef"></ContextMenus>
     </div>
 </template>
 
 <script setup lang="ts" name="EditorTiptapVue3">
 import { provide, watch } from "vue";
-import { CharacterCount, Placeholder, Focus } from '@tiptap/extensions'
+import { CharacterCount, Placeholder } from '@tiptap/extensions'
 import StarterKit from "@tiptap/starter-kit";
 import { Editor, EditorContent, AnyExtension } from "@tiptap/vue-3";
 // 顶部工具
 import Toolkit from "./components/Toolkit.vue";
 // 菜单
-import ParagraphMenu from "@/components/bubble-menu/ParagraphMenu.vue";
-// 图片菜单
-import ImageMenu from "@/components/bubble-menu/ImageMenu.vue";
+import BubbleMenus from "@/components/bubble-menu/index.vue";
 import { useEventListener } from "@/hooks/useEventListener";
 import { useContextMenu } from "@/hooks/useContextMenu";
 import ContextMenus from "./components/table/ContextMenu.vue";
 import ContentsNav from "./components/layout/Contents.vue"
 
+import { useSelectionStore } from '@/store/selection'
 // 自定义扩展
 import TiptapExtensions from './extensions';
 
@@ -100,7 +99,6 @@ const editor:Editor = new Editor({
             undoRedo: false,
             link: false
         }),
-        Focus,
         CharacterCount.configure({
           limit: props.characterCount,
         }),
@@ -128,15 +126,29 @@ const editor:Editor = new Editor({
     }
 });
 
+const selectionStore = useSelectionStore()
 const toolsStore = useToolsStore()
+
+// const selectText = () => {
+//  const is = editor.commands.setTextSelection({ from: 2, to: 13 })
+//  editor.commands.focus();
+//  console.log(is, 6666)
+// }
 
 // 获取标题类型
 function detectHeadingType (editor:Editor) {
     const { state } = editor;
     const { selection } = state;
     const { $from } = selection;
+    const nodeData = editor.state.doc.nodeAt(selection.from);
     let node = $from.node();
-    // console.log(node.type.name, editor)
+
+    selectionStore.updateSelectTion({
+        from: selection.from,
+        to: selection.to,
+        typeName:nodeData?.type.name||""
+    })
+   
     // 检查当前节点是否为标题
     if (node &&['extensionHeading','heading'].includes(node.type.name)) {
         toolsStore.updateHeadingLevel(node.attrs.level)
@@ -182,7 +194,8 @@ defineExpose({
     getHTML: () => DOMPurify.sanitize(editor.getHTML()),
     getJSON:() => editor.getJSON(),
     getTEXT: () => editor.getText(),
-    destroy: () => editor && editor.destroy()
+    destroy: () => editor && editor.destroy(),
+    editor: editor
 })
 
 </script>

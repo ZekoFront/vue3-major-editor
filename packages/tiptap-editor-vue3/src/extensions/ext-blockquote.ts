@@ -6,6 +6,7 @@ const ExtensionBlockquote = TiptapBlockquote.extend({
     addOptions() {
         return {
             ...this.parent?.(),
+            bubble: true,
             onClick: ({ editor }:{editor:Editor}) => {
                 return {
                     component: ButtonIcon,

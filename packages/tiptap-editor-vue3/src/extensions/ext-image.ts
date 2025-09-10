@@ -1,136 +1,102 @@
 // 自定义图片插件
 // 创建一个新节点image
-import { mergeAttributes, Node, VueNodeViewRenderer, Command, RawCommands, Editor } from '@tiptap/vue-3'
-import ExtensionImageUI from '@/components/image/ImageNodeViewWrapper.vue'
+import { Editor, mergeAttributes } from '@tiptap/core';
+import { VueNodeViewRenderer } from '@tiptap/vue-3'
+import ImageNodeViewWrapper from '@/components/image/ImageNodeViewWrapper.vue'
 import { Image as TiptapImage } from '@tiptap/extension-image'
 import ImageIcon from '@/components/image/ImageIcon.vue'
-
-declare module '@tiptap/core' {
-    interface Commands<ReturnType> {
-        customizeImage: {
-            insertCustomImage: (attrs: {
-                src: string
-                file?: File
-                width?: number
-                height?: number
-                alt?: string
-                title?: string
-            }) => ReturnType
-            updateImageAttributes: (attrs: Record<string, any>) => ReturnType
-        }
-    }
-  }
-
-export type CustomImageAttrs = {
-    src: string
-    file?: File
-    width?: number
-    height?: number
-    alt?: string,
-    title?: string
-}
+import { DEFAULT_IMAGE_DISPLAY, DEFAULT_IMAGE_HEIGHT, DEFAULT_IMAGE_URL_REGEX, DEFAULT_IMAGE_WIDTH, ImageDisplay } from '@/utils'
 
 export const ExtensionImage = TiptapImage.extend({
-    name: 'customizeImage',
-    group: 'block',
-    atom:true,
+    inline () {
+        return true
+    },
+    group() {
+        return 'inline';
+    },
     addAttributes() {
         return {
-            src: { default: null },
-            alt: { default: '' },
-            title: { default: ''},
-            file: { default: null }, // 用于临时存储文件对象
-            isUploading: { default: false },
+            ...this.parent?.(),
             // 这样配置后，更新属性，才会触发编辑器update事件
             width: { 
-                default: null,
-                parseHTML: (element: any) => element.getAttribute('width'),
-                renderHTML: (attributes: any) => {
-                    if (!attributes.width) return {}
+                default: DEFAULT_IMAGE_WIDTH,
+                parseHTML: (element) =>  {
+                    const width = element.style.width||element.getAttribute('width')||null
+                    return width===null?null:parseInt(width, 10)
+                },
+                renderHTML: (attributes) => {
                     return { width: attributes.width }
                 },
             },
             height: { 
-                default: null,
-                parseHTML: (element: any) => element.getAttribute('height'),
-                renderHTML: (attributes: any) => {
-                    if (!attributes.height) return {}
-                    return { height: attributes.height }
+                default: DEFAULT_IMAGE_HEIGHT,
+                parseHTML: (element) => {
+                    const height = element.style.height || element.getAttribute('height') || null;
+                    return height == null ? null : parseInt(height, 10);
+                },
+                renderHTML: (attributes) => {
+                    return {
+                        height: attributes.height
+                    };
+                },
+            },
+            display: {
+                default: DEFAULT_IMAGE_DISPLAY,
+                parseHTML: (element) => {
+                const { cssFloat, display } = element.style;
+                let dp =
+                    element.getAttribute('data-display') ||
+                    element.getAttribute('display');
+                if (dp) {
+                    dp = /(inline|block|left|right)/.test(dp)
+                    ? dp
+                    : ImageDisplay.INLINE;
+                } else if (cssFloat === 'left' && !display) {
+                    dp = ImageDisplay.FLOAT_LEFT;
+                } else if (cssFloat === 'right' && !display) {
+                    dp = ImageDisplay.FLOAT_RIGHT;
+                } else if (!cssFloat && display === 'block') {
+                    dp = ImageDisplay.BREAK_TEXT;
+                } else {
+                    dp = ImageDisplay.INLINE;
+                }
+
+                return dp;
+                },
+                renderHTML: (attributes) => {
+                return {
+                    ['data-display']: attributes.display,
+                };
                 },
             },
         }
     },
     addOptions () {
         return {
-            // ...this.parent?.(),
-            onClick: ({ editor }:{editor:Editor}) => {
+            ...this.parent?.(),
+            inline: true,
+            onClick: ({ editor }:{ editor: Editor }) => {
                 return {
                     component: ImageIcon,
                     componentProps: {
-                        isActive: editor.isActive('customizeImage'),
+                        isActive: editor.isActive('image'),
                         isReadonly: !editor.isEditable,
                         icons: 'image-icon',
                         tipText: '添加图片',
+                        editor: editor,
+                        urlPattern: DEFAULT_IMAGE_URL_REGEX,
                     }
                 }
             }
         }
     },
     parseHTML() {
-        return [{ tag: 'img[data-type="customize-image"]' }]
+        return [{ tag: 'img' }]
     },
-    renderHTML({ HTMLAttributes }: { HTMLAttributes:any }) {
-        // 构建 style 属性字符串
-        const style = [
-            HTMLAttributes.width ? `width: ${HTMLAttributes.width}px;` : '',
-            HTMLAttributes.height ? `height: ${HTMLAttributes.height}px;` : ''
-        ].filter(Boolean).join(' ');
-        
-        return ['img', mergeAttributes(HTMLAttributes, { 
-            'data-type': 'customize-image',
-            width: HTMLAttributes.width,
-            height: HTMLAttributes.height,
-            alt: HTMLAttributes.alt,
-            title: HTMLAttributes.title,
-            style: style || undefined // 仅当有样式时才添加 style 属性
-        })]
+    renderHTML({ HTMLAttributes }) {
+        return ['img', HTMLAttributes]
     },
-    
     addNodeView() {
-        return VueNodeViewRenderer(ExtensionImageUI as any)
-    },
-
-    // 使用更精确的类型定义
-    addCommands<CustomImageAttrs>() {
-        return {
-            insertCustomImage: (options: { 
-                src: string
-                file?: File
-                width?: number
-                height?: number
-                alt?: string
-                title?: string 
-            }) => ({ chain }: { chain: any }) => {
-                return chain()
-                .insertContent({
-                    type: this.name,
-                    attrs: {
-                        src: options.src,
-                        width: options.width,
-                        height: options.height,
-                        file: options.file || null,
-                        isUploading: !!options.file,
-                        alt: options.alt,
-                        title: options.title
-                    }
-                })
-                .run()
-            },
-            updateImageAttributes: (attrs: Record<string, any>) => ({ chain }: { chain: any }) => {
-                return chain()
-                .updateAttributes(this.name, attrs)
-                .run()
-            }
-        }
+        return VueNodeViewRenderer(ImageNodeViewWrapper)
     }
 })

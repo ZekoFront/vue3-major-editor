@@ -78,6 +78,7 @@ export const ExtensionLineHeight = Extension.create<LineHeightOptions>({
     addOptions() {
         return {
             ...this.parent?.(),
+            bubble: true,
             types: ["paragraph", "heading"],
             parameter: ['1', '1.5', '1.6', '1.75', '2', '3', '4', '5'], 
             defaultValue: '1.5',

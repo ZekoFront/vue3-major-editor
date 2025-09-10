@@ -17,7 +17,7 @@
             ref="vue3TiptapEditorRef" 
             v-model:content="htmlContent" 
             :isEnable="true"
-            customFileUpload
+            :customFileUpload="false"
             :extensions="[]"
             @onUpdate="onUpdate"
             @onUploadImage="onUploadImage">
@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-    import { onBeforeUnmount, ref } from "vue";
+    import { nextTick, onBeforeUnmount, ref } from "vue";
     import { Editor, HTMLVue3TiptapEditorElement, AnyExtension, ExtensionBold, ExtensionImage, ExtensionHistory } from "./src";
     import { NDrawerContent, NDrawer } from "naive-ui";
 
@@ -39,7 +39,11 @@
     const isVisible = ref(false)
     const previewContent = ref('')
     const vue3TiptapEditorRef = ref<HTMLVue3TiptapEditorElement | null>(null)
-    const htmlContent = ref("<p>欢迎使用vue3-tiptap-editor编辑器 🎉</p>欢迎订阅交流,<img src='https://placehold.co/800x400'/>")
+    nextTick(() => {
+        console.log('vue3TiptapEditorRef:',vue3TiptapEditorRef.value)
+    })
+    // <img src='https://placehold.co/800x400'/>
+    const htmlContent = ref("<p>欢迎使用vue3-tiptap-editor编辑器 🎉</p>欢迎订阅交流")
     // const htmlContent = ref(`<img src=x onerror=alert(1)//>`)
 
     // 仅支持base64和URL两种模式
@@ -56,13 +60,13 @@
                     image.src = base64
                     image.onload = () => {
                         // 图片加载完成后再插入，记得传入图片宽高
-                        editor.commands.insertCustomImage({ 
-                            src: base64, 
-                            alt: '占位图片', 
-                            width: image.width, 
-                            height: image.height,
-                            title: file[i].name 
-                        });
+                        // editor.commands.insertCustomImage({ 
+                        //     src: base64, 
+                        //     alt: '占位图片', 
+                        //     width: image.width, 
+                        //     height: image.height,
+                        //     title: file[i].name 
+                        // });
                     }
                     
                     // 监听错误事件

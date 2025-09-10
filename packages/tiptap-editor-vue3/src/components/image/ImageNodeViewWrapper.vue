@@ -1,15 +1,14 @@
 <template>
-<node-view-wrapper class="customize-image">
+<node-view-wrapper as="span" class="image">
     <div ref="dragModifiedImageRef" :class="[
         'image-single__body drag-modified-image-size',
         { 'image-single__body--actived': isSelected }
     ]">
         <img 
-            :src="src" 
-            :alt="alt" 
+            :src="imageURL" 
+            :alt="node.attrs.alt" 
             :width="imageWidth" 
             :height="imageHeight" 
-            :style="{ width: imageWidth+'px', height: imageHeight+'px' }" 
             ref="imageElement" 
             :title="title"
             @click="selectedImage"
@@ -18,6 +17,8 @@
         <template v-if="isSelected">
             <div :class="['resize-handle-btn', item]" @mousedown="onHandleBtnDrag" v-for="(item, index) in directionList" :key="index"></div> 
         </template>
+
+        <ImageBubbleMenu :editor="editor" :node="node" :is-show="isSelected"></ImageBubbleMenu>
     </div>
 </node-view-wrapper>
 </template>
@@ -25,14 +26,15 @@
 <script setup lang="ts" name="ImageNodeViewWrapper">
 import { nodeViewProps, NodeViewWrapper } from "@tiptap/vue-3";
 import { NodeViewProps } from "@tiptap/core";
+// 图片菜单
+import ImageBubbleMenu from "@/components/bubble-menu/ImageBubbleMenu.vue";
+import { DEFAULT_IMAGE_HEIGHT, DEFAULT_IMAGE_WIDTH, resolveImg } from "@/utils";
 
-const props = defineProps({
-    ...nodeViewProps,
-    node: {
-        type: Object as PropType<NodeViewProps["node"]>,
-        required: true,
-    },
-});
+defineOptions({
+    name: 'ImageNodeViewWrapper'
+})
+
+const props = defineProps({ ...nodeViewProps });
 
 const emits = defineEmits(["updateAttributes"]);
 
@@ -41,17 +43,18 @@ const directionList = ref(['top-left','top','top-right','right','bottom-right','
 const imageElement = ref<HTMLImageElement>();
 const dragModifiedImageRef = ref<HTMLDivElement>()
 const isUploading = ref(false);
-const imageWidth = ref(props.node.attrs.width);
-const imageHeight = ref(props.node.attrs.height);
-const src = ref(props.node.attrs.src || "");
-const alt = ref(props.node.attrs.alt || "");
+const originalWidth = ref(0);
+const originalHeight = ref(0);
 const title = ref(props.node.attrs.title || "");
 // tiptap3.0选中状态自定义
 const isSelected = ref(false)
-// tiptap2.0选中状态不会因为拖拽而取消
+// tiptap2.0选中状态selected不会因为拖拽而取消, 3.0selected会取消选中
 // const isActiveImage = computed(() => {
 //     return props.selected
 // })
+const imageURL = computed(() => props.node.attrs.src)
+const imageWidth = computed(() => props.node.attrs.width)
+const imageHeight = computed(() => props.node.attrs.height)
 
 const selectedImage = () => {
     props.editor.commands.setNodeSelection(Number(props.getPos()));
@@ -108,15 +111,15 @@ const onHandleBtnDrag = (event:MouseEvent) => {
         if (width <= 0 || height <= 0) return;
 
         if (dragModifiedImageRef.value) {
-            imageWidth.value = Math.max(100, width);
-            imageHeight.value = Math.max(100, height);
-            dragModifiedImageRef.value.style.width = imageWidth.value+'px';
-            dragModifiedImageRef.value.style.height = imageHeight.value+'px';
+            const iw = Math.max(100, width);
+            const ih = Math.max(100, height)
+            dragModifiedImageRef.value.style.width = iw+'px';
+            dragModifiedImageRef.value.style.height = ih+'px';
 
             // 调用当前节点updateAttributes
             props.updateAttributes({
-                width: imageWidth.value,
-                height: imageHeight.value,
+                width: iw,
+                height: ih,
             });
         }
     }
@@ -135,12 +138,10 @@ const handleUpload = async (file: File) => {
         formData.append("file", file);
         const response = await fetch("/upload", { method: "POST", body: formData });
         const { url } = await response.json();
-        //@ts-ignore
-        props.editor.commands.updateImageAttributes({
+        props.editor.commands.setImage({
             src: url,
             width: imageWidth.value,
             height: imageHeight.value,
-            isUploading: false,
         });
     } catch (error) {
         console.error("Upload failed:", error);
@@ -148,49 +149,26 @@ const handleUpload = async (file: File) => {
         isUploading.value = false;
     }
 };
+const MIN_SIZE = 20;
+const init = async () => {
+    // const result = await resolveImg(imageURL.value);
 
-// 调整大小逻辑
-let startX = 0;
-let startY = 0;
-let startWidth = 0;
-let startHeight = 0;
+    // if (!result.complete) {
+    //   result.width = MIN_SIZE;
+    //   result.height = MIN_SIZE;
+    // }
+    // originalWidth.value = result.width
+    // originalHeight.value = result.height
 
-const startResize = (e: MouseEvent) => {
-    e.preventDefault();
-    startX = e.clientX;
-    startY = e.clientY;
-    startWidth = imageWidth.value;
-    startHeight = imageHeight.value;
+    nextTick(() => {
+        if (dragModifiedImageRef.value) {
+            dragModifiedImageRef.value.style.width = DEFAULT_IMAGE_WIDTH+'px';
+            dragModifiedImageRef.value.style.height = DEFAULT_IMAGE_HEIGHT+'px';
+        }
+    })
+}
 
-    const onMouseMove = (e: MouseEvent) => {
-        const deltaX = e.clientX - startX;
-        const deltaY = e.clientY - startY;
-        const newWidth = startWidth + deltaX;
-        const newHeight = startHeight + deltaY;
-
-        imageWidth.value = Math.max(100, newWidth);
-        imageHeight.value = Math.max(100, newHeight);
-        // 参数要和自定义image插件属性类型一致才会更新属性值，建议使用style，而不是图片属性宽高
-        // 自定义更新方法，本质上是调用当前节点updateAttributes
-        // props.editor.commands.updateImageAttributes({
-        //   width: width.value,
-        //   height: height.value
-        // })
-        // 调用当前节点updateAttributes
-        props.updateAttributes({
-            width: imageWidth.value,
-            height: imageHeight.value,
-        });
-    };
-
-    const onMouseUp = () => {
-        document.removeEventListener("mousemove", onMouseMove);
-        document.removeEventListener("mouseup", onMouseUp);
-    };
-
-    document.addEventListener("mousemove", onMouseMove);
-    document.addEventListener("mouseup", onMouseUp);
-};
+init()
 
 // 初始化时处理图片属性
 onMounted(() => {
@@ -200,21 +178,13 @@ onMounted(() => {
 });
 </script>
 <style lang="scss">
-.customize-image {
-    position: relative;
-    display: inline-block;
+.image {
     margin: 1rem 0;
 }
 
 .image-single__body {
     position: relative;
     display: inline-block;
-}
-
-img {
-    max-width: 100%;
-    height: auto;
-    transition: opacity 0.3s;
 }
 
 .resize-handle {

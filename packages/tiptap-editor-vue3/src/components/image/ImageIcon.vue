@@ -15,16 +15,15 @@
 <span>添加图片</span>
 </NTooltip>
 
-<UploadImageModal ref="UploadImageRef" @onUploadImageCallBack="onUploadImageCallBack"></UploadImageModal>
+<UploadImageModal :editor="editor" :urlPattern="urlPattern" ref="UploadImageRef" @onUploadImageCallBack="onUploadImageCallBack"></UploadImageModal>
 </div>
 </template>
 
 <script setup lang="ts" name="ImageIcon">
-import { Editor } from "@tiptap/vue-3";
+import { Editor } from '@tiptap/core';
 import { NTooltip } from "naive-ui";
 import UploadImageModal from './UploadImageModal.vue';
 
-const editor = inject('editor') as Editor
 const emits = defineEmits(['onUploadImageCallBack'])
 const props = defineProps({
     isActive: {
@@ -42,6 +41,14 @@ const props = defineProps({
     tipText: {
         type: String,
         default: '暂无提示'
+    },
+    editor: {
+      type: Editor,
+      required: true,
+    },
+    urlPattern: {
+        type: RegExp,
+        required: true,
     }
 })
 
@@ -51,7 +58,7 @@ interface UploadImageType {
 }
 const UploadImageRef = ref<UploadImageType | null>(null)
 const handleUploadImg = () => {
-    if (!editor.isEditable) return
+    if (!props.editor.isEditable) return
     UploadImageRef.value && UploadImageRef.value.initialize()
 }
 

@@ -34,19 +34,22 @@
 <script lang="ts" setup name="Toolkit">
 import { NIcon } from 'naive-ui'
 import { ContentView32Regular } from '@vicons/fluent'
-import { Editor } from '@tiptap/vue-3'
+import { Editor } from '@tiptap/core';
 import { useToolsStore } from '@/store/tools'
 // 段落
 import ParagraphUI from './paragraph/index.vue';
 import ErrorImage from "../icons/error-image.svg"; 
 
-const editor = inject('editor') as Editor
 const emits = defineEmits(['onUploadImageCallBack'])
 const props = defineProps({
     characterCount: {
         type:Number,
         default: 10000
-    }
+    },
+    editor: {
+      type: Editor,
+      required: true,
+    },
 })
 
 const toolsStore = useToolsStore()
@@ -57,11 +60,11 @@ interface CusIconType {
 }
 
 const cusComponentIcon = computed(() => {
-    const extensions = editor.extensionManager.extensions
+    const extensions = props.editor.extensionManager.extensions
     const tiptapExtensions = extensions.reduce<CusIconType[]>((pre, cur) => {
         const { onClick } = cur.options;
         if (typeof onClick !== 'function') return pre;
-        const extensionData = onClick({ editor: editor });
+        const extensionData = onClick({ editor: props.editor, extension: cur });
         return Array.isArray(extensionData)
         ? [...pre, ...extensionData]
         : [...pre, extensionData];
