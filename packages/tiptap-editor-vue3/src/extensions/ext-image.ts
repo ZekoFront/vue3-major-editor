@@ -43,30 +43,30 @@ export const ExtensionImage = TiptapImage.extend({
             display: {
                 default: DEFAULT_IMAGE_DISPLAY,
                 parseHTML: (element) => {
-                const { cssFloat, display } = element.style;
-                let dp =
-                    element.getAttribute('data-display') ||
-                    element.getAttribute('display');
-                if (dp) {
-                    dp = /(inline|block|left|right)/.test(dp)
-                    ? dp
-                    : ImageDisplay.INLINE;
-                } else if (cssFloat === 'left' && !display) {
-                    dp = ImageDisplay.FLOAT_LEFT;
-                } else if (cssFloat === 'right' && !display) {
-                    dp = ImageDisplay.FLOAT_RIGHT;
-                } else if (!cssFloat && display === 'block') {
-                    dp = ImageDisplay.BREAK_TEXT;
-                } else {
-                    dp = ImageDisplay.INLINE;
-                }
+                    const { cssFloat, display } = element.style;
+                    let dp =
+                        element.getAttribute('data-display') ||
+                        element.getAttribute('display');
+                    if (dp) {
+                        dp = /(inline|block|left|right)/.test(dp)
+                        ? dp
+                        : ImageDisplay.INLINE;
+                    } else if (cssFloat === 'left' && !display) {
+                        dp = ImageDisplay.FLOAT_LEFT;
+                    } else if (cssFloat === 'right' && !display) {
+                        dp = ImageDisplay.FLOAT_RIGHT;
+                    } else if (!cssFloat && display === 'block') {
+                        dp = ImageDisplay.BREAK_TEXT;
+                    } else {
+                        dp = ImageDisplay.INLINE;
+                    }
 
-                return dp;
+                    return dp;
                 },
                 renderHTML: (attributes) => {
-                return {
-                    ['data-display']: attributes.display,
-                };
+                    return {
+                        ['data-display']: attributes.display,
+                    };
                 },
             },
         }
@@ -91,7 +91,7 @@ export const ExtensionImage = TiptapImage.extend({
         }
     },
     parseHTML() {
-        return [{ tag: 'img' }]
+        return [{ tag: 'img[src]' }]
     },
     renderHTML({ HTMLAttributes }) {
         return ['img', HTMLAttributes]

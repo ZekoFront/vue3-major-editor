@@ -1,15 +1,16 @@
 <template>
-<node-view-wrapper as="span" class="image">
+<node-view-wrapper as="span" :class="imageViewClass">
     <div ref="dragModifiedImageRef" :class="[
-        'image-single__body drag-modified-image-size',
-        { 'image-single__body--actived': isSelected }
+        'tiptap-image-view__body drag-modified-image-size',
+        { 'tiptap-image-view__body--actived': isSelected }
     ]">
         <img 
             :src="imageURL" 
             :alt="node.attrs.alt" 
             :width="imageWidth" 
             :height="imageHeight" 
-            ref="imageElement" 
+            ref="imageElement"
+            class="tiptap-image-element" 
             :title="title"
             @click="selectedImage"
         />
@@ -18,7 +19,7 @@
             <div :class="['resize-handle-btn', item]" @mousedown="onHandleBtnDrag" v-for="(item, index) in directionList" :key="index"></div> 
         </template>
 
-        <ImageBubbleMenu :editor="editor" :node="node" :is-show="isSelected"></ImageBubbleMenu>
+        <ImageBubbleMenu :updateAttrs="updateAttributes" :editor="editor" :node="node" :is-show="isSelected"></ImageBubbleMenu>
     </div>
 </node-view-wrapper>
 </template>
@@ -36,7 +37,7 @@ defineOptions({
 
 const props = defineProps({ ...nodeViewProps });
 
-const emits = defineEmits(["updateAttributes"]);
+// const emits = defineEmits(["updateAttributes"]);
 
 const directionList = ref(['top-left','top','top-right','right','bottom-right','bottom','bottom-left','left'])
 
@@ -55,6 +56,10 @@ const isSelected = ref(false)
 const imageURL = computed(() => props.node.attrs.src)
 const imageWidth = computed(() => props.node.attrs.width)
 const imageHeight = computed(() => props.node.attrs.height)
+const display = computed(() => props.node.attrs.display)
+const imageViewClass = computed(() => {
+    return ['tiptap-image-view', `tiptap-image-view--${display.value}`]
+})
 
 const selectedImage = () => {
     props.editor.commands.setNodeSelection(Number(props.getPos()));
@@ -124,6 +129,7 @@ const onHandleBtnDrag = (event:MouseEvent) => {
         }
     }
     function stopResize() {
+        selectedImage();
         document.removeEventListener("mousemove", resize);
         document.removeEventListener("mouseup", stopResize);
     }
@@ -178,11 +184,32 @@ onMounted(() => {
 });
 </script>
 <style lang="scss">
-.image {
+.tiptap-image-view {
     margin: 1rem 0;
+    display: inline-block;
+    float: none;
+    user-select: none;
+    vertical-align: baseline;
+    &--inline {
+        margin-left: 12px;
+        margin-right: 12px;
+    }
+    &--block {
+        display: block;
+    }
+    &--left {
+        float: left;
+        margin-left: 0;
+        margin-right: 12px;
+    }
+    &--right {
+        float: right;
+        margin-left: 12px;
+        margin-right: 0;
+    }
 }
 
-.image-single__body {
+.tiptap-image-view__body {
     position: relative;
     display: inline-block;
 }
@@ -217,7 +244,7 @@ onMounted(() => {
 
 .drag-modified-image-size {
     border: 2px solid transparent;
-    &.image-single__body--actived {
+    &.tiptap-image-view__body--actived {
         border: 2px solid var(--theme-color);
     }
 }

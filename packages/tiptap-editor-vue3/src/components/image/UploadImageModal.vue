@@ -25,7 +25,7 @@
                     </NIcon>
                 </div>
             </div>
-            <div style="padding: 20px;">
+            <div style="padding: 20px 0px;">
                 <input type="file" accept="image/*" @change="onChangeFile" multiple/>
             </div>
         </n-tab-pane>

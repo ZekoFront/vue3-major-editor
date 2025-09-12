@@ -347,8 +347,12 @@
     visibility: hidden;
     z-index: 50;
 }
-
 .editor-image-bubble--menu.active {
     opacity: 1;
     visibility: visible;
+}
+
+.editor-image-bubble--menu > .bubble-icon-item {
+    cursor: pointer;
+    padding: 6px 10px;
 }
