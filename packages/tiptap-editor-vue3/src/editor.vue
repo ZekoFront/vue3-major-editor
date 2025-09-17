@@ -23,9 +23,9 @@ import BubbleMenus from "@/components/bubble-menu/index.vue";
 import { useEventListener } from "@/hooks/useEventListener";
 import { useContextMenu } from "@/hooks/useContextMenu";
 import ContextMenus from "./components/table/ContextMenu.vue";
-import ContentsNav from "./components/layout/Contents.vue"
+import ContentsNav from "./components/layout/Contents.vue";
 
-import { useSelectionStore } from '@/store/selection'
+import { useSelectionStore } from '@/store/selection';
 // 自定义扩展
 import { extensionsArray } from './extensions';
 
