@@ -15,7 +15,13 @@
 <span>添加图片</span>
 </NTooltip>
 
-<UploadImageModal :editor="editor" :urlPattern="urlPattern" ref="UploadImageRef" @onUploadImageCallBack="onUploadImageCallBack"></UploadImageModal>
+<UploadImageModal 
+    ref="UploadImageRef"
+    :editor="editor" 
+    :customFileUpload="customFileUpload" 
+    :urlPattern="urlPattern"
+    @onUploadImageCallBack="onUploadImageCallBack">
+</UploadImageModal>
 </div>
 </template>
 
@@ -49,7 +55,11 @@ const props = defineProps({
     urlPattern: {
         type: RegExp,
         required: true,
-    }
+    },
+    customFileUpload: {
+        type: Boolean,
+        default: false
+    },
 })
 
 // 上传图片
@@ -62,7 +72,7 @@ const handleUploadImg = () => {
     UploadImageRef.value && UploadImageRef.value.initialize()
 }
 
-const onUploadImageCallBack = (file: FileList) => {
+const onUploadImageCallBack = (file: FileList|string) => {
     emits('onUploadImageCallBack', file)
 }
 </script>

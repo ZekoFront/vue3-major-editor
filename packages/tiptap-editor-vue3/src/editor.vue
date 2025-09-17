@@ -1,7 +1,7 @@
 <template>
     <!-- <button @click="selectText">选择文本</button> -->
     <div class="vue3-tiptap-editor major-editor">
-        <Toolkit :editor="editor" v-if="isShowToolbar" :characterCount="characterCount" @onUploadImageCallBack="onUploadImageCallBack"></Toolkit>
+        <Toolkit :editor="editor" v-if="isShowToolbar" :customFileUpload="customFileUpload" :characterCount="characterCount" @onUploadImageCallBack="onUploadImageCallBack"></Toolkit>
         <div class="tiptap-editor__body">
             <EditorContent class="tiptap-editor__content" :editor="editor" @contextmenu="onContextmenu"></EditorContent>
             <ContentsNav class="tiptap-editor__navigation"></ContentsNav>
@@ -181,11 +181,10 @@ watch(contents,(n,o) => {
         });
 }, { deep: true })
 
-const onUploadImageCallBack = (file: FileList) => {
+const onUploadImageCallBack = (file: FileList|string) => {
     emits('onUploadImage', { file, editor })
 }
 
-console.log('editor:',editor)
 provide("editor", editor)
 provide('props', props)
 

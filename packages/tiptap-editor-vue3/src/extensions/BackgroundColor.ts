@@ -83,17 +83,17 @@ export const BackgroundColor = Extension.create<ColorOptions>({
 
   addCommands() {
     return {
-        // setBackgroundColor: color => ({ chain }: { chain: ChainedCommands }) => {
-        //     return chain()
-        //     .setMark('textStyle', { backgroundColor:color })
-        //     .run()
-        // },
-        // unsetBackgroundColor: () => ({ chain }: { chain: ChainedCommands }) => {
-        //     return chain()
-        //     .setMark('textStyle', { backgroundColor: null })
-        //     .removeEmptyTextStyle()
-        //     .run()
-        // },
+        setBackgroundColor: color => ({ chain }: any) => {
+            return chain()
+            .setMark('textStyle', { backgroundColor:color })
+            .run()
+        },
+        unsetBackgroundColor: () => ({ chain }:any) => {
+            return chain()
+            .setMark('textStyle', { backgroundColor: null })
+            .removeEmptyTextStyle()
+            .run()
+        },
     }
   },
 })

@@ -1,5 +1,5 @@
 <template>
-<NPopover content-class="toolbar-color-picker__popover" ref="npopoverCLRef" style=" max-height: 270px;max-width: 300px;" :on-update:show="onUpdatePopoverShow" trigger="click" placement="bottom" scrollable>
+<NPopover content-class="toolbar-color-picker__popover" ref="npopoverCLRef" style=" max-height: 270px;max-width: 300px;" trigger="click" placement="bottom" scrollable>
 <template #trigger>
     <NTooltip placement="top" trigger="hover">
         <template #trigger>
@@ -32,7 +32,7 @@
             @mousedown.prevent
             @click.stop="handleColorPicker(item)">
         </span>
-        <span class="color-list-item disabled-icon" @mousedown.prevent @click.stop="handleColorPicker('')">
+        <span class="color-list-item disabled-icon" @mousedown.prevent @click.stop="handleColorPicker('#ffffff')">
             <component is="disabled-icon"></component>
         </span>
     </div>
@@ -77,9 +77,7 @@ const selectColor = ref('#94ddde')
 const colorPickerUpdate = (value: string):void => {
     editor.commands.setColor(value)
 }
-const onUpdatePopoverShow = (value: boolean):void => {
-    // console.log('value:', value)
-}
+
 const handleColorPicker = (color: string) => {
     if (color) editor.commands.setColor(color)
     else {

@@ -13,14 +13,20 @@
         v-bind="item.componentProps" 
         :is="item.component" 
         :key="index"
+        :customFileUpload="customFileUpload"
         @onUploadImageCallBack="onUploadImageCallBack">
     </component>
-    <button class="toolbar-icon--btn" data-editor-toolbar-btn="true"  @click="closeContents">
-        <NIcon size="21">
-            <ContentView32Regular></ContentView32Regular>
-        </NIcon>
+    <NTooltip placement="bottom" trigger="hover">
+        <template #trigger>
+           <button class="toolbar-icon--btn" data-editor-toolbar-btn="true"  @click="closeContents">
+                <NIcon size="21">
+                    <ContentView32Regular></ContentView32Regular>
+                </NIcon>
+            </button>
+        </template>
         <span >目录</span>
-    </button>
+    </NTooltip>
+    
     <button class="toolbar-icon--btn" data-editor-toolbar-btn="true">
         <span style="color: var(--theme-color);font-weight: bold;">{{ editor.storage.characterCount.characters()}}</span>
         <span>&nbsp;/&nbsp;{{ characterCount }}</span>
@@ -32,7 +38,7 @@
 </template>
 
 <script lang="ts" setup name="Toolkit">
-import { NIcon } from 'naive-ui'
+import { NIcon,NTooltip } from 'naive-ui'
 import { ContentView32Regular } from '@vicons/fluent'
 import { Editor } from '@tiptap/core';
 import { useToolsStore } from '@/store/tools'
@@ -49,6 +55,10 @@ const props = defineProps({
     editor: {
       type: Editor,
       required: true,
+    },
+    customFileUpload: {
+        type: Boolean,
+        default: false
     },
 })
 
@@ -72,7 +82,7 @@ const cusComponentIcon = computed(() => {
     return tiptapExtensions
 })
 
-const onUploadImageCallBack = (file: FileList) => {
+const onUploadImageCallBack = (file: FileList|string) => {
     emits('onUploadImageCallBack', file)
 }
 

@@ -9,10 +9,15 @@
     @positive-click="onPositiveClick"
     @negative-click="onNegativeClick"
 >
+
+<template #header>
+<div>上传图片</div>
+</template>
+<div>
     <n-tabs type="line" animated :default-value="tabPane" :on-update:value="onUpdatedTab">
         <n-tab-pane name="link" tab="图片连接">
             <div style="padding: 12px 0px;">
-                <n-input v-model:value="imageLink" placeholder="请输入图片连接" :on-update:value="onInputChange"/>
+                <n-input v-model:value="imageLink" placeholder="请输入图片连接"/>
             </div>
             <p v-if="!isErrorTip" style="color: var(--red);">{{ tipText }}</p>
         </n-tab-pane>
@@ -30,10 +35,17 @@
             </div>
         </n-tab-pane>
     </n-tabs>
+</div>
+<template #action>
+<div>
+<n-button style="margin-right: 10px;" @click="onNegativeClick">取消</n-button>
+<n-button type="primary" @click="onPositiveClick">立即上传图片</n-button>   
+</div>
+</template>
 </n-modal>
 </template>
 <script setup lang="ts" name="UploadImageModal">
-import { NTabs, NTabPane, NModal, NInput, NIcon } from "naive-ui";
+import { NTabs, NTabPane, NModal, NInput, NIcon,NButton } from "naive-ui";
 import { useNaiveDiscrete } from "@/hooks/navie-ui";
 import { Delete20Regular } from "@vicons/fluent"
 import { DEFAULT_IMAGE_HEIGHT, DEFAULT_IMAGE_WIDTH, readFileDataUrl } from "@/utils";
@@ -52,7 +64,12 @@ const props = defineProps({
     urlPattern: {
         type:RegExp,
         required: true,
-    }
+    },
+    // true：自定义上传图片，false默认上传图片
+    customFileUpload: {
+        type: Boolean,
+        default: false
+    },
 })
 const { message, dialog, modal } = useNaiveDiscrete();
 
@@ -70,10 +87,6 @@ const imagesTemp:Ref<TranserType> = ref({
 
 const emits = defineEmits(['onUploadImageCallBack'])
 
-const onInputChange = () => {
-    isErrorTip.value = props.urlPattern.test(imageLink.value)
-}
-
 const onUpdatedTab = (val: string) => {
     tabPane.value = val
     if (val === 'link') {
@@ -87,30 +100,42 @@ const onNegativeClick = () => {
 }
 
 const onPositiveClick = () => {
-    isVisible.value = false;
-
     if (tabPane.value === 'link') {
         // 校验图片链接是否有效
-        const reg = props.urlPattern?.test(imageLink.value)
+        const reg = isErrorTip.value = props.urlPattern?.test(imageLink.value)
         if (!reg) {
             message.error(tipText.value);
             return
         }
-        props.editor.commands.setImage({
+
+        if (props.customFileUpload) {
+            emits('onUploadImageCallBack', imageLink.value)
+        } else {
+            props.editor.commands.setImage({
                 src: imageLink.value,
                 alt: '',
                 title: '',
                 height: DEFAULT_IMAGE_HEIGHT,
                 width: DEFAULT_IMAGE_WIDTH
             })
+        }
     } else {
         const formData = new FormData()
         if (!fileList.value) return
+
         for (let i = 0; i < fileList.value.length; i++) {
             formData.append('file', fileList.value[i])
-            innerUploadImage(fileList.value[i])
+            if (!props.customFileUpload) {
+                innerUploadImage(fileList.value[i])
+            }
+        }
+        
+        if (props.customFileUpload) {
+            emits('onUploadImageCallBack', fileList.value)
         }
     }
+
+    isVisible.value = false;
 }
 
 const onChangeFile = (evt: Event) => {

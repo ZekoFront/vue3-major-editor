@@ -12,7 +12,6 @@
             <button style="margin-right:10px;" @click="getText">获取 Text</button>
             <button style="margin-right:10px;" @click="previews">预览</button>
         </section>
-        <!-- <EmojiPicker :native="true" @select="onSelectEmoji" /> -->
         <TiptapEditorVue3
             ref="vue3TiptapEditorRef" 
             v-model:content="htmlContent" 
@@ -34,8 +33,6 @@
     import { nextTick, onBeforeUnmount, ref } from "vue";
     import { Editor, HTMLVue3TiptapEditorElement, AnyExtension, Bold } from "./src";
     import { NDrawerContent, NDrawer } from "naive-ui";
-    // import EmojiPicker from 'vue3-emoji-picker'
-    // import 'vue3-emoji-picker/css'
 
     const extensions = ref<AnyExtension[]>([Bold])
     const isVisible = ref(false)
@@ -49,7 +46,8 @@
     // const htmlContent = ref(`<img src=x onerror=alert(1)//>`)
 
     // 仅支持base64和URL两种模式
-    const onUploadImage = ({ file, editor }:{ file: FileList, editor: Editor }) => {
+    const onUploadImage = ({ file, editor }:{ file: FileList|string, editor: Editor }) => {
+        console.log(file, 8888)
         const formData = new FormData()
         // 此处可以自定义上传图片逻辑，这里需要调用 editor.commands.insertCustomImage 来插入图片
         for (let i = 0; i < file.length; i++) {
@@ -77,23 +75,9 @@
                     }
                 }
 
-                reader.readAsDataURL(file[i])
+                // reader.readAsDataURL(file[i])
             }
         }
-    }
-
-    function onSelectEmoji(emoji) {
-        console.log(emoji)
-        /*
-            // result
-            { 
-                i: "😚", 
-                n: ["kissing face"], 
-                r: "1f61a", // with skin tone
-                t: "neutral", // skin tone
-                u: "1f61a" // without tone
-            }
-            */
     }
 
     function getHtml() {
