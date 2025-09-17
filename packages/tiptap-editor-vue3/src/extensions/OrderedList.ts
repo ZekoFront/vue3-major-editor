@@ -1,8 +1,8 @@
 import type { Editor } from '@tiptap/vue-3'
-import TiptapCodeBlock from '@tiptap/extension-code-block'
+import { OrderedList as TiptapOrderedList } from '@tiptap/extension-list'
 import ButtonIcon from '../components/ButtonIcon.vue'
 
-const ExtensionCodeBlock = TiptapCodeBlock.extend({
+const OrderedList = TiptapOrderedList.extend({
     addOptions() {
         return {
             ...this.parent?.(),
@@ -10,13 +10,12 @@ const ExtensionCodeBlock = TiptapCodeBlock.extend({
                 return {
                     component: ButtonIcon,
                     componentProps: {
-                        isActive: editor.isActive('codeBlock'),
+                        isActive: editor.isActive('orderedList'),
                         isReadonly: !editor.isEditable,
-                        icons: 'code-block-icon',
-                        tipText: '代码块',
-                        shortcutKeys: 'Ctrl+Alt+C',
+                        icons: 'ordered-list-icon',
+                        tipText: '有序列表',
                         command: () => {
-                            editor.commands.toggleCodeBlock()
+                            editor.commands.toggleOrderedList()
                         }
                     }
                 }
@@ -26,4 +25,4 @@ const ExtensionCodeBlock = TiptapCodeBlock.extend({
 })
 
 
-export { ExtensionCodeBlock }
+export { OrderedList }

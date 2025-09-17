@@ -1,8 +1,8 @@
 import type { Editor } from '@tiptap/vue-3'
-import TiptapCode from '@tiptap/extension-code'
+import { BulletList as TiptapBulletList } from '@tiptap/extension-list'
 import ButtonIcon from '../components/ButtonIcon.vue'
 
-const ExtensionCode = TiptapCode.extend({
+const BulletList = TiptapBulletList.extend({
     addOptions() {
         return {
             ...this.parent?.(),
@@ -10,12 +10,12 @@ const ExtensionCode = TiptapCode.extend({
                 return {
                     component: ButtonIcon,
                     componentProps: {
-                        isActive: editor.isActive('code'),
+                        isActive: editor.isActive('bulletList'),
                         isReadonly: !editor.isEditable,
-                        icons: 'code-bg-icon',
-                        tipText: '文本标签',
+                        icons: 'bullet-list-icon',
+                        tipText: '无序列表',
                         command: () => {
-                            editor.commands.toggleCode()
+                            editor.commands.toggleBulletList()
                         }
                     }
                 }
@@ -25,4 +25,4 @@ const ExtensionCode = TiptapCode.extend({
 })
 
 
-export { ExtensionCode }
+export { BulletList }

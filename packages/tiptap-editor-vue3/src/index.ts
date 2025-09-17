@@ -12,7 +12,7 @@ export default function install(app:App) {
 export * from './extensions'
 
 export { 
-    TiptapEditorVue3,
+    TiptapEditorVue3
 }
 
 export * from '@tiptap/vue-3'

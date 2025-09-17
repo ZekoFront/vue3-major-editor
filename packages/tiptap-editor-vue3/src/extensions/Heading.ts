@@ -17,7 +17,7 @@ function getHeading () {
     return arr
 }
 
-export const ExtensionHeading = TiptapHeading.extend({
+export const Heading = TiptapHeading.extend({
     name: 'extensionHeading',
     addOptions() {
         return {

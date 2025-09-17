@@ -1,23 +1,21 @@
 import type { Editor } from '@tiptap/vue-3'
-import TiptapItalic from '@tiptap/extension-italic'
+import TipTapHorizontalRule from '@tiptap/extension-horizontal-rule'
 import ButtonIcon from '../components/ButtonIcon.vue'
 
-const ExtensionItalic = TiptapItalic.extend({
+const HorizontalRule = TipTapHorizontalRule.extend({
     addOptions() {
         return {
             ...this.parent?.(),
-            bubble: true,
             onClick: ({ editor }:{editor:Editor}) => {
                 return {
                     component: ButtonIcon,
                     componentProps: {
-                        isActive: editor.isActive('italic'),
+                        isActive: editor.isActive('horizontalRule'),
                         isReadonly: !editor.isEditable,
-                        icons: 'italic-icon',
-                        shortcutKeys: 'Ctrl+I',
-                        tipText: '斜体',
+                        icons: 'horizontal-rule-icon',
+                        tipText: '水平分隔符',
                         command: () => {
-                            editor.commands.toggleItalic()
+                            editor.commands.setHorizontalRule()
                         }
                     }
                 }
@@ -27,4 +25,4 @@ const ExtensionItalic = TiptapItalic.extend({
 })
 
 
-export { ExtensionItalic }
+export { HorizontalRule }

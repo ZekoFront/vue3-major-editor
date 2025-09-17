@@ -2,7 +2,7 @@ import type { Editor } from '@tiptap/vue-3'
 import { UndoRedo } from '@tiptap/extensions'
 import ButtonIcon from '../components/ButtonIcon.vue'
 
-const ExtensionHistory = UndoRedo.extend({
+const History = UndoRedo.extend({
     addOptions() {
         return {
             ...this.parent?.(),
@@ -41,4 +41,4 @@ const ExtensionHistory = UndoRedo.extend({
 })
 
 
-export { ExtensionHistory }
+export { History }

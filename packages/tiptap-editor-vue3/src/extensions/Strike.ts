@@ -1,8 +1,8 @@
 import type { Editor } from '@tiptap/vue-3'
-import TiptapBold from '@tiptap/extension-bold'
+import TiptapStrike from '@tiptap/extension-strike'
 import ButtonIcon from '../components/ButtonIcon.vue'
 
-const ExtensionBold = TiptapBold.extend({
+const Strike = TiptapStrike.extend({
     addOptions() {
         return {
             ...this.parent?.(),
@@ -11,13 +11,13 @@ const ExtensionBold = TiptapBold.extend({
                 return {
                     component: ButtonIcon,
                     componentProps: {
-                        isActive: editor.isActive('bold'),
+                        isActive: editor.isActive('strike'),
                         isReadonly: !editor.isEditable,
-                        icons: 'bold-icon',
-                        tipText: '加粗',
-                        shortcutKeys: 'Ctrl+B',
+                        icons: 'strike-icon',
+                        tipText: '删除线',
+                        shortcutKeys: 'Ctrl+Shift+S',
                         command: () => {
-                            editor.commands.toggleBold()
+                            editor.commands.toggleStrike()
                         }
                     }
                 }
@@ -27,4 +27,4 @@ const ExtensionBold = TiptapBold.extend({
 })
 
 
-export { ExtensionBold }
+export { Strike }

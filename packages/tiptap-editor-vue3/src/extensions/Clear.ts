@@ -4,7 +4,7 @@ import { Editor } from "@tiptap/vue-3";
 import { useNaiveDiscrete } from "../hooks/navie-ui"
 
 const { message, dialog } = useNaiveDiscrete()
-const ExtensionClear = Extension.create({
+const Clear = Extension.create({
     name: "extensionClear",
     addOptions() {
         return {
@@ -42,4 +42,4 @@ const ExtensionClear = Extension.create({
     }
 });
 
-export { ExtensionClear }
+export { Clear }

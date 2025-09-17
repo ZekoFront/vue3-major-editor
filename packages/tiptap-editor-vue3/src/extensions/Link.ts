@@ -5,7 +5,7 @@ import { Plugin, TextSelection } from "@tiptap/pm/state";
 import { EditorView } from "@tiptap/pm/view";
 import AddLink from "@/components/link/AddLinkButton.vue";
 
-const ExtensionLink = TiptapLink.extend({
+const Link = TiptapLink.extend({
     // link默认优先级最高，默认1000，这回导致扩展优先加载并显示在最前面
     priority: 100,
     addOptions() {
@@ -55,4 +55,4 @@ const ExtensionLink = TiptapLink.extend({
     validate: (text) => true,
 })
 
-export { ExtensionLink };
+export { Link };

@@ -7,7 +7,7 @@ import { Plugin, TextSelection, PluginKey } from '@tiptap/pm/state'
 import { EditorView } from '@tiptap/pm/view'
 
 // 访问 ProseMirror API 示例
-const ExtensionColor = TiptapColor.extend({
+const Color = TiptapColor.extend({
   addOptions() {
     return {
       ...this.parent?.(),
@@ -69,4 +69,4 @@ const ExtensionColor = TiptapColor.extend({
   },
 });
 
-export { ExtensionColor };
+export { Color };

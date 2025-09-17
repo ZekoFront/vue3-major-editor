@@ -1,21 +1,22 @@
 import type { Editor } from '@tiptap/vue-3'
-import TipTapHorizontalRule from '@tiptap/extension-horizontal-rule'
+import TiptapBlockquote from '@tiptap/extension-blockquote'
 import ButtonIcon from '../components/ButtonIcon.vue'
 
-const ExtensionHorizontalRule = TipTapHorizontalRule.extend({
+const Blockquote = TiptapBlockquote.extend({
     addOptions() {
         return {
             ...this.parent?.(),
+            bubble: true,
             onClick: ({ editor }:{editor:Editor}) => {
                 return {
                     component: ButtonIcon,
                     componentProps: {
-                        isActive: editor.isActive('horizontalRule'),
+                        isActive: editor.isActive('blockquote'),
                         isReadonly: !editor.isEditable,
-                        icons: 'horizontal-rule-icon',
-                        tipText: '水平分隔符',
+                        icons: 'blockquote-icon',
+                        tipText: '引用',
                         command: () => {
-                            editor.commands.setHorizontalRule()
+                            editor.commands.toggleBlockquote()
                         }
                     }
                 }
@@ -25,4 +26,4 @@ const ExtensionHorizontalRule = TipTapHorizontalRule.extend({
 })
 
 
-export { ExtensionHorizontalRule }
+export { Blockquote }

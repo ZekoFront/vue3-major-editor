@@ -12,7 +12,7 @@
             <button style="margin-right:10px;" @click="getText">获取 Text</button>
             <button style="margin-right:10px;" @click="previews">预览</button>
         </section>
-
+        <!-- <EmojiPicker :native="true" @select="onSelectEmoji" /> -->
         <TiptapEditorVue3
             ref="vue3TiptapEditorRef" 
             v-model:content="htmlContent" 
@@ -32,10 +32,12 @@
 
 <script setup lang="ts">
     import { nextTick, onBeforeUnmount, ref } from "vue";
-    import { Editor, HTMLVue3TiptapEditorElement, AnyExtension, ExtensionBold, ExtensionImage, ExtensionHistory } from "./src";
+    import { Editor, HTMLVue3TiptapEditorElement, AnyExtension, Bold } from "./src";
     import { NDrawerContent, NDrawer } from "naive-ui";
+    // import EmojiPicker from 'vue3-emoji-picker'
+    // import 'vue3-emoji-picker/css'
 
-    const extensions = ref<AnyExtension[]>([ExtensionBold, ExtensionImage, ExtensionHistory])
+    const extensions = ref<AnyExtension[]>([Bold])
     const isVisible = ref(false)
     const previewContent = ref('')
     const vue3TiptapEditorRef = ref<HTMLVue3TiptapEditorElement | null>(null)
@@ -78,6 +80,20 @@
                 reader.readAsDataURL(file[i])
             }
         }
+    }
+
+    function onSelectEmoji(emoji) {
+        console.log(emoji)
+        /*
+            // result
+            { 
+                i: "😚", 
+                n: ["kissing face"], 
+                r: "1f61a", // with skin tone
+                t: "neutral", // skin tone
+                u: "1f61a" // without tone
+            }
+            */
     }
 
     function getHtml() {

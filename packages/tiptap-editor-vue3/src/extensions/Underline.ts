@@ -1,8 +1,8 @@
 import type { Editor } from '@tiptap/vue-3'
-import TiptapStrike from '@tiptap/extension-strike'
+import TiptapUnderline from '@tiptap/extension-underline'
 import ButtonIcon from '../components/ButtonIcon.vue'
 
-const ExtensionStrike = TiptapStrike.extend({
+const Underline = TiptapUnderline.extend({
     addOptions() {
         return {
             ...this.parent?.(),
@@ -11,13 +11,13 @@ const ExtensionStrike = TiptapStrike.extend({
                 return {
                     component: ButtonIcon,
                     componentProps: {
-                        isActive: editor.isActive('strike'),
+                        isActive: editor.isActive('underline'),
                         isReadonly: !editor.isEditable,
-                        icons: 'strike-icon',
-                        tipText: '删除线',
-                        shortcutKeys: 'Ctrl+Shift+S',
+                        icons: 'underline-icon',
+                        tipText: '下划线',
+                        shortcutKeys: 'Ctrl+U',
                         command: () => {
-                            editor.commands.toggleStrike()
+                            editor.commands.toggleUnderline()
                         }
                     }
                 }
@@ -27,4 +27,4 @@ const ExtensionStrike = TiptapStrike.extend({
 })
 
 
-export { ExtensionStrike }
+export { Underline }

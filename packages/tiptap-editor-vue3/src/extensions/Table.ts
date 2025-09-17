@@ -1,13 +1,13 @@
 import {  h  } from "vue";
 import { Editor } from "@tiptap/core";
-import { Table,TableCell,TableHeader, TableRow } from "@tiptap/extension-table";
+import { Table as TiptapTable,TableCell,TableHeader, TableRow } from "@tiptap/extension-table";
 import TableUI from "@/components/table/Table.vue";
 import { ITableContextMenuItem } from '@/typings/index'
 
 function renderCustomHeader() {
     return h('div',{ style: { fontWeight: 'bold', textAlign: 'center'}}, '操作表格')
 }
-const ExtensionTable = Table.extend({
+const Table = TiptapTable.extend({
     addOptions() {
         return {
             ...this.parent?.(),
@@ -146,4 +146,4 @@ const ExtensionTable = Table.extend({
     resizable: true,
 });
 
-export { ExtensionTable };
+export { Table };

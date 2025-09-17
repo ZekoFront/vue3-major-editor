@@ -21,7 +21,7 @@ const alignList = [
     },
 ]
 
-const ExtensionTextAlign = TiptapTextAlign.extend({
+const TextAlignment = TiptapTextAlign.extend({
     name: 'extensionTextAlign',
     addOptions() {
         return {
@@ -50,4 +50,4 @@ const ExtensionTextAlign = TiptapTextAlign.extend({
 })
 
 
-export { ExtensionTextAlign }
+export { TextAlignment }

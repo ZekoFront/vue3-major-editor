@@ -27,7 +27,7 @@ import ContentsNav from "./components/layout/Contents.vue"
 
 import { useSelectionStore } from '@/store/selection'
 // 自定义扩展
-import TiptapExtensions from './extensions';
+import { extensionsArray } from './extensions';
 
 // 过滤编辑器类容，防止xss攻击, 生产环境
 import DOMPurify from 'dompurify';
@@ -78,7 +78,7 @@ const emits = defineEmits([
     "update:content"
 ]);
 
-const extensionSet = props.extensions.length?props.extensions:TiptapExtensions
+const extensionSet = props.extensions.length?props.extensions:extensionsArray
 
 const editor:Editor = new Editor({
     content: DOMPurify.sanitize(contents.value),

@@ -7,7 +7,7 @@ import { Image as TiptapImage } from '@tiptap/extension-image'
 import ImageIcon from '@/components/image/ImageIcon.vue'
 import { DEFAULT_IMAGE_DISPLAY, DEFAULT_IMAGE_HEIGHT, DEFAULT_IMAGE_URL_REGEX, DEFAULT_IMAGE_WIDTH, ImageDisplay } from '@/utils'
 
-export const ExtensionImage = TiptapImage.extend({
+export const Image = TiptapImage.extend({
     inline () {
         return true
     },

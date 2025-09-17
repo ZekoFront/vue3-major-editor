@@ -17,7 +17,7 @@ lowlights.register('css', css)
 lowlights.register('js', js)
 lowlights.register('ts', ts)
 
-const ExtensionCodeBlockLowlight = TiptapCodeBlockLowlight.extend({
+const CodeBlockLowlight = TiptapCodeBlockLowlight.extend({
     addOptions() {
         return {
             ...this.parent?.(),
@@ -45,4 +45,4 @@ const ExtensionCodeBlockLowlight = TiptapCodeBlockLowlight.extend({
 }).configure({lowlight:lowlights})
 
 
-export { ExtensionCodeBlockLowlight }
+export { CodeBlockLowlight }

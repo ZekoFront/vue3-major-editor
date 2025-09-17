@@ -1,8 +1,8 @@
 import TaskIcon from '@/components/task/TaskIcon.vue';
 import { Editor } from "@tiptap/vue-3";
-import { TaskList, TaskItem} from '@tiptap/extension-list';
+import { TaskList, TaskItem as TiptapTaskItem } from '@tiptap/extension-list';
 
-const ExtensionTaskItem = TaskItem.extend({
+const TaskItem = TiptapTaskItem.extend({
     content: 'inline*',
     
     addOptions() {
@@ -29,4 +29,4 @@ const ExtensionTaskItem = TaskItem.extend({
     }
 })
 
-export { ExtensionTaskItem }
+export { TaskItem }

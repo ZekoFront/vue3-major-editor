@@ -1,8 +1,8 @@
 import type { Editor } from '@tiptap/vue-3'
-import TiptapUnderline from '@tiptap/extension-underline'
+import TiptapItalic from '@tiptap/extension-italic'
 import ButtonIcon from '../components/ButtonIcon.vue'
 
-const ExtensionUnderline = TiptapUnderline.extend({
+const Italic = TiptapItalic.extend({
     addOptions() {
         return {
             ...this.parent?.(),
@@ -11,13 +11,13 @@ const ExtensionUnderline = TiptapUnderline.extend({
                 return {
                     component: ButtonIcon,
                     componentProps: {
-                        isActive: editor.isActive('underline'),
+                        isActive: editor.isActive('italic'),
                         isReadonly: !editor.isEditable,
-                        icons: 'underline-icon',
-                        tipText: '下划线',
-                        shortcutKeys: 'Ctrl+U',
+                        icons: 'italic-icon',
+                        shortcutKeys: 'Ctrl+I',
+                        tipText: '斜体',
                         command: () => {
-                            editor.commands.toggleUnderline()
+                            editor.commands.toggleItalic()
                         }
                     }
                 }
@@ -27,4 +27,4 @@ const ExtensionUnderline = TiptapUnderline.extend({
 })
 
 
-export { ExtensionUnderline }
+export { Italic }

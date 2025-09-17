@@ -1,8 +1,8 @@
 import type { Editor } from '@tiptap/vue-3'
-import TiptapBlockquote from '@tiptap/extension-blockquote'
+import TiptapBold from '@tiptap/extension-bold'
 import ButtonIcon from '../components/ButtonIcon.vue'
 
-const ExtensionBlockquote = TiptapBlockquote.extend({
+const Bold = TiptapBold.extend({
     addOptions() {
         return {
             ...this.parent?.(),
@@ -11,12 +11,13 @@ const ExtensionBlockquote = TiptapBlockquote.extend({
                 return {
                     component: ButtonIcon,
                     componentProps: {
-                        isActive: editor.isActive('blockquote'),
+                        isActive: editor.isActive('bold'),
                         isReadonly: !editor.isEditable,
-                        icons: 'blockquote-icon',
-                        tipText: '引用',
+                        icons: 'bold-icon',
+                        tipText: '加粗',
+                        shortcutKeys: 'Ctrl+B',
                         command: () => {
-                            editor.commands.toggleBlockquote()
+                            editor.commands.toggleBold()
                         }
                     }
                 }
@@ -26,4 +27,4 @@ const ExtensionBlockquote = TiptapBlockquote.extend({
 })
 
 
-export { ExtensionBlockquote }
+export { Bold }

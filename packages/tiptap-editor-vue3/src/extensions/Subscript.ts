@@ -2,7 +2,7 @@ import type { Editor } from '@tiptap/vue-3'
 import TiptapSubscript from '@tiptap/extension-subscript'
 import ButtonIcon from '../components/ButtonIcon.vue'
 
-const ExtensionSubscript = TiptapSubscript.extend({
+const Subscript = TiptapSubscript.extend({
     name: 'Subscript',
     addOptions() {
         return {
@@ -33,4 +33,4 @@ const ExtensionSubscript = TiptapSubscript.extend({
 })
 
 
-export { ExtensionSubscript }
+export { Subscript }

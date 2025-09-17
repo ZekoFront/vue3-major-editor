@@ -34,6 +34,7 @@
         "@tiptap/extension-code-block": "3.3.0",
         "@tiptap/extension-code-block-lowlight": "3.3.0",
         "@tiptap/extension-color": "3.3.0",
+        "@tiptap/extension-emoji": "^3.3.0",
         "@tiptap/extension-heading": "3.3.0",
         "@tiptap/extension-highlight": "3.3.0",
         "@tiptap/extension-horizontal-rule": "3.3.0",
@@ -68,6 +69,7 @@
         "uuid": "^10.0.0",
         "vue": "3.4.29",
         "vue-i18n": "10",
-        "vue-router": "4"
+        "vue-router": "4",
+        "vue3-emoji-picker": "^1.1.8"
     }
 }

@@ -36,7 +36,7 @@ declare module '@tiptap/core' {
 /**
  * This extension allows you to backgroundColor your text.
  */
-export const ExtensionBackgroundColor = Extension.create<ColorOptions>({
+export const BackgroundColor = Extension.create<ColorOptions>({
   name: 'extensionBackgroundColor',
 
   addOptions() {
