@@ -78,7 +78,7 @@ const emits = defineEmits([
     "update:content"
 ]);
 
-const extensionSet = props.extensions.length?props.extensions:extensionsArray
+const extensionSet = props.extensions.length?props.extensions:extensionsArray;
 
 const editor:Editor = new Editor({
     content: DOMPurify.sanitize(contents.value),
