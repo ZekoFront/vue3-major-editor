@@ -39,7 +39,7 @@
 <template #action>
 <div>
 <n-button style="margin-right: 10px;" @click="onNegativeClick">取消</n-button>
-<n-button type="primary" @click="onPositiveClick">立即上传图片</n-button>   
+<n-button type="primary" @click="onPositiveClick">立即上传图片{{ customImageUpload }}</n-button>   
 </div>
 </template>
 </n-modal>
@@ -66,7 +66,7 @@ const props = defineProps({
         required: true,
     },
     // true：自定义上传图片，false默认上传图片
-    customFileUpload: {
+    customImageUpload: {
         type: Boolean,
         default: false
     },
@@ -108,7 +108,7 @@ const onPositiveClick = () => {
             return
         }
 
-        if (props.customFileUpload) {
+        if (props.customImageUpload) {
             emits('onUploadImageCallBack', imageLink.value)
         } else {
             props.editor.commands.setImage({
@@ -125,12 +125,12 @@ const onPositiveClick = () => {
 
         for (let i = 0; i < fileList.value.length; i++) {
             formData.append('file', fileList.value[i])
-            if (!props.customFileUpload) {
+            if (!props.customImageUpload) {
                 innerUploadImage(fileList.value[i])
             }
         }
         
-        if (props.customFileUpload) {
+        if (props.customImageUpload) {
             emits('onUploadImageCallBack', fileList.value)
         }
     }

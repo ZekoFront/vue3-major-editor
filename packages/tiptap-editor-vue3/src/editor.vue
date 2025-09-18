@@ -1,9 +1,9 @@
 <template>
     <!-- <button @click="selectText">选择文本</button> -->
-    <div class="vue3-tiptap-editor major-editor">
-        <Toolkit :editor="editor" v-if="isShowToolbar" :customFileUpload="customFileUpload" :characterCount="characterCount" @onUploadImageCallBack="onUploadImageCallBack"></Toolkit>
+    <div :class="['vue3-tiptap-editor major-editor', editorWrapperClass]">
+        <Toolkit :class="[editorToolkitClass]" :editor="editor" v-if="isShowToolbar" :customImageUpload="customImageUpload" :characterCount="characterCount" @onUploadImageCallBack="onUploadImageCallBack"></Toolkit>
         <div class="tiptap-editor__body">
-            <EditorContent class="tiptap-editor__content" :editor="editor" @contextmenu="onContextmenu"></EditorContent>
+            <EditorContent :class="['tiptap-editor__content', editorContentClass]" :editor="editor" @contextmenu="onContextmenu"></EditorContent>
             <ContentsNav class="tiptap-editor__navigation"></ContentsNav>
         </div>
         <BubbleMenus :editor="editor"></BubbleMenus>
@@ -44,7 +44,7 @@ const props = defineProps({
         type: Array<AnyExtension>,
         default: []
     },
-    isEnable: {
+    isEditable: {
         type: Boolean,
         default: true
     },
@@ -52,7 +52,7 @@ const props = defineProps({
         type: Boolean,
         default: true
     },
-    customFileUpload: {
+    customImageUpload: {
         type: Boolean,
         default: false
     },
@@ -63,6 +63,18 @@ const props = defineProps({
     placeholder: {
         type: String,
         default: '请输入内容...'
+    },
+    editorWrapperClass: {
+      type: [String, Array, Object],
+      default: undefined,
+    },
+    editorToolkitClass: {
+      type: [String, Array, Object],
+      default: undefined,
+    },
+    editorContentClass: {
+        type: [String, Array, Object],
+        default: undefined,
     }
 })
 
@@ -82,7 +94,7 @@ const extensionSet = props.extensions.length?props.extensions:extensionsArray;
 
 const editor:Editor = new Editor({
     content: DOMPurify.sanitize(contents.value),
-    editable: props.isEnable,
+    editable: props.isEditable,
     extensions: [
         ...extensionSet,
         StarterKit.configure({

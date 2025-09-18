@@ -74,8 +74,8 @@ app.mount("#app")
         <TiptapEditorVue3
             ref="vue3TiptapEditorRef" 
             v-model:content="htmlContent" 
-            :customFileUpload="customFileUpload"
-            :isEnable="true"
+            :customImageUpload="customImageUpload"
+            :isEditable="true"
             :extensions="extensions"
             :isShowToolbar="true"
             @onUploadImage="onUploadImage">
@@ -92,16 +92,16 @@ app.mount("#app")
 <script setup lang="ts">
     import { ref } from "vue";
     import { NDrawerContent, NDrawer } from "naive-ui";
-    import { AnyExtension, Editor, ExtensionBold, ExtensionItalic } from "tiptap-editor-vue3"
+    import { AnyExtension, Editor, Bold, Italic } from "tiptap-editor-vue3"
     import { useRouter } from 'vue-router'
 
     const router = useRouter();
     // true:不自动转化数据，需要外部处理后添加到编辑器, false: 图片内部处理，默认转化为base64
-    const customFileUpload = ref(true)
+    const customImageUpload = ref(false)
     const isVisible = ref(false)
     const previewContent = ref('')
     // 自定义工具栏，不需要可以不用传递参数即可显示全部工具栏
-    const extensions = ref<AnyExtension[]>([ExtensionBold, ExtensionItalic])
+    const extensions = ref<AnyExtension[]>([Bold, Italic])
     // 按需引入Button组件
     // import { Button } from '@majoreditor/ui'
 
@@ -137,7 +137,7 @@ app.mount("#app")
                     image.src = base64
                     image.onload = () => {
                         // 图片加载完成后再插入，记得传入图片宽高
-                        editor.commands.insertCustomImage({ 
+                        editor.commands.setImage({ 
                             src: base64, 
                             alt: '占位图片', 
                             width: image.width, 

@@ -1,5 +1,5 @@
 <template>
-<NPopover ref="tablePopoverRef" content-class="toolbar-table-picker__popover" style="max-height: 340px;max-width: 335px;" trigger="click" placement="bottom" scrollable :on-update:show="doTable">
+<NPopover ref="tablePopoverRef" content-class="toolbar-table-picker__popover" style="max-height: 340px;max-width: 335px;" trigger="click" placement="top" scrollable :on-update:show="doTable">
 <template #trigger>
     <NTooltip placement="top" trigger="hover">
         <template #trigger>

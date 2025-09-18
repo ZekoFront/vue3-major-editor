@@ -17,8 +17,8 @@
         <TiptapEditorVue3
             ref="vue3TiptapEditorRef" 
             v-model:content="htmlContent" 
-            :customFileUpload="customFileUpload"
-            :isEnable="true"
+            :customImageUpload="customFileUpload"
+            :isEditable="true"
             :isShowToolbar="true"
             @onUploadImage="onUploadImage">
         </TiptapEditorVue3>
@@ -34,7 +34,7 @@
 <script setup lang="ts">
     import { ref } from "vue";
     import { NDrawerContent, NDrawer } from "naive-ui";
-    import { AnyExtension, Editor, ExtensionBold, ExtensionItalic } from "tiptap-editor-vue3"
+    import { AnyExtension, Editor, Bold, Italic } from "tiptap-editor-vue3"
     import { useRouter } from 'vue-router'
 
     const router = useRouter();
@@ -42,7 +42,7 @@
     const customFileUpload = ref(true)
     const isVisible = ref(false)
     const previewContent = ref('')
-    const extensions = ref<AnyExtension[]>([ExtensionBold, ExtensionItalic])
+    const extensions = ref<AnyExtension[]>([Bold, Italic])
     // 按需引入Button组件
     // import { Button } from '@majoreditor/ui'
 
@@ -78,7 +78,7 @@
                     image.src = base64
                     image.onload = () => {
                         // 图片加载完成后再插入，记得传入图片宽高
-                        editor.commands.insertCustomImage({ 
+                        editor.commands.setImage({ 
                             src: base64, 
                             alt: '占位图片', 
                             width: image.width, 

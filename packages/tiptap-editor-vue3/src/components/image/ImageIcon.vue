@@ -1,6 +1,6 @@
 <template>
 <div class="toolbar-icon__wrap">
-<NTooltip placement="bottom" trigger="hover">
+<NTooltip placement="top" trigger="hover">
 <template #trigger>
     <button class="toolbar-icon--btn" data-editor-toolbar-btn="true" @click="handleUploadImg()">
         <svg viewBox="0 0 1024 1024" width="200" height="200">
@@ -18,7 +18,7 @@
 <UploadImageModal 
     ref="UploadImageRef"
     :editor="editor" 
-    :customFileUpload="customFileUpload" 
+    :customImageUpload="customImageUpload" 
     :urlPattern="urlPattern"
     @onUploadImageCallBack="onUploadImageCallBack">
 </UploadImageModal>
@@ -56,7 +56,7 @@ const props = defineProps({
         type: RegExp,
         required: true,
     },
-    customFileUpload: {
+    customImageUpload: {
         type: Boolean,
         default: false
     },

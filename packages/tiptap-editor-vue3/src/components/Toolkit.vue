@@ -13,10 +13,10 @@
         v-bind="item.componentProps" 
         :is="item.component" 
         :key="index"
-        :customFileUpload="customFileUpload"
+        :customImageUpload="customImageUpload"
         @onUploadImageCallBack="onUploadImageCallBack">
     </component>
-    <NTooltip placement="bottom" trigger="hover">
+    <NTooltip placement="top" trigger="hover">
         <template #trigger>
            <button class="toolbar-icon--btn" data-editor-toolbar-btn="true"  @click="closeContents">
                 <NIcon size="21">
@@ -56,7 +56,7 @@ const props = defineProps({
       type: Editor,
       required: true,
     },
-    customFileUpload: {
+    customImageUpload: {
         type: Boolean,
         default: false
     },

@@ -1,5 +1,5 @@
 <template>
-<NTooltip placement="bottom" trigger="hover" v-if='icons'>
+<NTooltip placement="top" trigger="hover" v-if='icons'>
     <template #trigger>
         <button :class="iconClass" data-editor-toolbar-btn="true" @click="handle">
             <component :is="icons"></component>

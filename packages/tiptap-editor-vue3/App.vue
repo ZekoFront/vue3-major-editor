@@ -13,10 +13,10 @@
             <button style="margin-right:10px;" @click="previews">预览</button>
         </section>
         <TiptapEditorVue3
-            ref="vue3TiptapEditorRef" 
+            ref="vue3TiptapEditorRef"
             v-model:content="htmlContent" 
-            :isEnable="true"
-            :customFileUpload="false"
+            :isEditable="true"
+            :customImageUpload="false"
             :extensions="[]"
             @onUpdate="onUpdate"
             @onUploadImage="onUploadImage">
@@ -42,7 +42,15 @@
         console.log('vue3TiptapEditorRef:',vue3TiptapEditorRef.value)
     })
     // <img src='https://placehold.co/800x400'/>
-    const htmlContent = ref("<p>欢迎使用vue3-tiptap-editor编辑器 🎉</p>欢迎订阅交流")
+    const htmlContent = ref(`<h2><span data-type="emoji" data-name="3rd">🥉</span>vue3-tiptap-editor</h2><p>vue3-tiptap-editor是基于最新tiptap框架开发的vue3富文本组件，非法内容过滤以及防止XSS攻击、插入图片、插入表格等功能。</p><h2><br><span data-type="emoji" data-name="sports_medal">🏅</span>安装&amp;配置</h2><blockquote><p>pnpm add tiptap-editor-vue3</p><p>-or-</p><p>npm install tiptap-editor-vue3</p></blockquote><pre><code class="language-javascript">import { createApp } from "vue";
+import App from "./App.vue";
+// 引入组件
+import TiptapEditorVue3 from "tiptap-editor-vue3";
+import "tiptap-editor-vue3/dist/css/style.css";
+
+const app = createApp(App)
+app.use(TiptapEditorVue3)
+app.mount("#app")</code></pre><p></p>`)
     // const htmlContent = ref(`<img src=x onerror=alert(1)//>`)
 
     // 仅支持base64和URL两种模式

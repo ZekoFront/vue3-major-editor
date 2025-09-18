@@ -1,5 +1,5 @@
 <template>
-<NTooltip placement="bottom" trigger="hover">
+<NTooltip placement="top" trigger="hover">
     <template #trigger>
         <button class="toolbar-icon--btn" data-editor-toolbar-btn="true" @click="handleTaskList()">
             <svg viewBox="0 0 1024 1024" width="200" height="200">
