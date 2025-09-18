@@ -4,7 +4,7 @@
         <Toolkit :class="[editorToolkitClass]" :editor="editor" v-if="isShowToolbar" :customImageUpload="customImageUpload" :characterCount="characterCount" @onUploadImageCallBack="onUploadImageCallBack"></Toolkit>
         <div class="tiptap-editor__body">
             <EditorContent :class="['tiptap-editor__content', editorContentClass]" :editor="editor" @contextmenu="onContextmenu"></EditorContent>
-            <ContentsNav class="tiptap-editor__navigation"></ContentsNav>
+            <ContentsNav :class="['tiptap-editor__navigation', editorContentsNavClass]"></ContentsNav>
         </div>
         <BubbleMenus :editor="editor"></BubbleMenus>
         <ContextMenus ref="contextMenuRef"></ContextMenus>
@@ -73,6 +73,10 @@ const props = defineProps({
       default: undefined,
     },
     editorContentClass: {
+        type: [String, Array, Object],
+        default: undefined,
+    },
+    editorContentsNavClass: {
         type: [String, Array, Object],
         default: undefined,
     }
