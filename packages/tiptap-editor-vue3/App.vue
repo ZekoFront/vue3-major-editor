@@ -31,10 +31,10 @@
 
 <script setup lang="ts">
     import { nextTick, onBeforeUnmount, ref } from "vue";
-    import { Editor, HTMLVue3TiptapEditorElement, AnyExtension, Bold } from "./src";
+    import { Editor, HTMLVue3TiptapEditorElement, AnyExtension, Bold, Italic } from "./src";
     import { NDrawerContent, NDrawer } from "naive-ui";
 
-    const extensions = ref<AnyExtension[]>([Bold])
+    const extensions = ref<AnyExtension[]>([Bold, Italic])
     const isVisible = ref(false)
     const previewContent = ref('')
     const vue3TiptapEditorRef = ref<HTMLVue3TiptapEditorElement | null>(null)
