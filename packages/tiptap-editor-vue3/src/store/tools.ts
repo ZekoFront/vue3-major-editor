@@ -12,7 +12,7 @@ export const useToolsStore = defineStore('tools', {
             userList: [] as UserInfo[],
             // 用于尚未加载的数据
             user: null as UserInfo | null,
-            isShowContents: false,
+            isShowContents: true,
             headingLevel: 7,
             headingContent: ''
         }

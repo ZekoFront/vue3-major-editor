@@ -2,8 +2,7 @@
 <div 
    :class="[
       'vue3-tiptap-editor__navigation', 
-      // { 'is-active': toolsStore.isShowContents }
-      { 'is-active': true }
+      { 'is-active': toolsStore.isShowContents }
    ]">
    <div class="navigation-header">
       <span>文档目录</span>
@@ -38,7 +37,6 @@ props.editor.on('update', ({ editor }) => {
       const { state } = editor;
       const { selection } = state;
       const { $from } = selection;
-      const nodeData = editor.state.doc.nodeAt(selection.from);
       let node = $from.node();
       if (node.type.name === 'heading') {
          updateDirectory()
@@ -69,7 +67,6 @@ const updateDirectory = () => {
       const id = event.target.id
       // 滚动到标题
       const targetElement = document.querySelector(`#${id}`);
-      console.log(targetElement, 555)
       if (targetElement) {
          targetElement.scrollIntoView({
                behavior: "smooth",

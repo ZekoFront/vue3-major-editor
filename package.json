@@ -35,7 +35,6 @@
         "@tiptap/extension-code-block-lowlight": "3.3.0",
         "@tiptap/extension-color": "3.3.0",
         "@tiptap/extension-emoji": "^3.3.0",
-        "@tiptap/extension-heading": "3.3.0",
         "@tiptap/extension-highlight": "3.3.0",
         "@tiptap/extension-horizontal-rule": "3.3.0",
         "@tiptap/extension-image": "3.3.0",

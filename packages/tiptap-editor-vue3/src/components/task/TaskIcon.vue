@@ -54,13 +54,14 @@ const handleTaskList = () => {
                 .run();
         } else {
             // 如果没有任务列表，插入任务列表和任务项
-            editor
-                .chain()
-                .focus()
-                .insertContent(
-                    '<ul data-type="taskList"><li data-type="taskItem" data-checked="false"><p>New Task</p></li></ul>'
-                )
-                .run();
+            editor.commands.insertContent('<ul data-type="taskList"><li data-type="taskItem" data-checked="false"><p>New Task</p></li></ul>')
+            // editor
+            //     .chain()
+            //     .focus()
+            //     .insertContent(
+            //         '<ul data-type="taskList"><li data-type="taskItem" data-checked="false"><p>New Task</p></li></ul>'
+            //     )
+            //     .run();
         }
     }
 };

@@ -1,5 +1,6 @@
 <template>
   <div v-if="editor" :class="['vue3-tiptap-editor major-editor', editorWrapperClass]">
+    <button @click="selectText">选择文本</button>
     <Toolkit
         v-if="isShowToolbar" 
         :class="[editorToolkitClass]" 
@@ -161,7 +162,11 @@ const editor = new Editor({
 
 console.log('edior:',editor)
 // const { contextMenuRef, onContextmenu } = useContextMenu(editor)
-
+const selectText = () => {
+//  const is = editor.commands.setTextSelection({ from: 2, to: 13 })
+//  editor.commands.focus();
+editor.commands.insertContent('<h1>Example Text</h1>')
+}
 // 获取标题类型
 function detectHeadingType (editor:Editor) {
     const { state } = editor;

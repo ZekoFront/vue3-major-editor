@@ -42,7 +42,7 @@
         // console.log('vue3TiptapEditorRef:', vue3TiptapEditorRef.value)
     })
     // <img src='https://placehold.co/800x400'/>
-    const htmlContent = ref(`<h2><span data-type="emoji" data-name="3rd">🥉</span>vue3-tiptap-editor</h2><p>vue3-tiptap-editor是基于最新tiptap框架开发的vue3富文本组件，非法内容过滤以及防止XSS攻击、插入图片、插入表格等功能。</p><h2><br><span data-type="emoji" data-name="sports_medal">🏅</span>安装&amp;配置</h2><blockquote><p>pnpm add tiptap-editor-vue3</p><p>-or-</p><p>npm install tiptap-editor-vue3</p></blockquote><pre><code class="language-javascript">import { createApp } from "vue";
+    const htmlContent = ref(`<h2 id="H2-5f9571ca-c94a-4c04-ba98-80f41ed698f6"><span data-type="emoji" data-name="3rd">🥉</span>vue3-tiptap-editor</h2><p>vue3-tiptap-editor是基于最新tiptap框架开发的vue3富文本组件，非法内容过滤以及防止XSS攻击、插入图片、插入表格等功能。</p><h2 id="H2-b46bb0d0-ed0f-4e51-b011-0c8f8603ddd6"><br><span data-type="emoji" data-name="sports_medal">🏅</span>安装&amp;配置11</h2><blockquote><p>pnpm add tiptap-editor-vue3</p><p>-or-</p><p>npm install tiptap-editor-vue3</p></blockquote><pre><code class="language-javascript">import { createApp } from "vue";
 import App from "./App.vue";
 // 引入组件
 import TiptapEditorVue3 from "tiptap-editor-vue3";
@@ -50,7 +50,7 @@ import "tiptap-editor-vue3/dist/css/style.css";
 
 const app = createApp(App)
 app.use(TiptapEditorVue3)
-app.mount("#app")</code></pre><p></p>`)
+app.mount("#app")</code></pre><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><h2 id="H2-44c3d9f5-5754-40a2-b2cd-839b47e5c425">防核辐射的反对66</h2><p><br></p>`)
     // const htmlContent = ref(`<img src=x onerror=alert(1)//>`)
 
     // 仅支持base64和URL两种模式

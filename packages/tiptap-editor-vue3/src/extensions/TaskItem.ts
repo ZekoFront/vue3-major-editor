@@ -3,7 +3,7 @@ import { Editor } from "@tiptap/vue-3";
 import { TaskList, TaskItem as TiptapTaskItem } from '@tiptap/extension-list';
 
 const TaskItem = TiptapTaskItem.extend({
-    content: 'inline*',
+    content: 'block',
     
     addOptions() {
         return {

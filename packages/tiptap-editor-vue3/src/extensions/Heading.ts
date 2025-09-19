@@ -16,7 +16,7 @@ export interface HeadingOptions {
      * @example [1, 2, 3]
      */
     levels: Level[]
-
+    id?: string
     /**
      * The HTML attributes for a heading node.
      * @default {}
@@ -33,13 +33,13 @@ declare module '@tiptap/core' {
              * @param attributes The heading attributes
              * @example editor.commands.setHeading({ level: 1 })
              */
-            setHeading: (attributes: { level: Level}) => ReturnType
+            setHeading: (attributes: { level: Level, id?: string }) => ReturnType
             /**
              * Toggle a heading node
              * @param attributes The heading attributes
              * @example editor.commands.toggleHeading({ level: 1 })
              */
-            toggleHeading: (attributes: { level: Level }) => ReturnType
+            toggleHeading: (attributes: { level: Level, id?: string }) => ReturnType
         }
     }
 }
@@ -54,6 +54,7 @@ export const Heading = Node.create<HeadingOptions>({
     addOptions() {
         return {
             levels: [1, 2, 3, 4, 5, 6],
+            id: '',
             HTMLAttributes: {},
             onClick: ({ editor }:{editor:Editor}) => {
                 return {
@@ -83,7 +84,7 @@ export const Heading = Node.create<HeadingOptions>({
                 rendered: false,
             },
             id: {
-                default: `H_${uuidV4()}`,
+                default: '',
                 rendered: false,
             },
         }
@@ -100,7 +101,7 @@ export const Heading = Node.create<HeadingOptions>({
     renderHTML({ node, HTMLAttributes }) {
         const hasLevel = this.options.levels.includes(node.attrs.level)
         const level = hasLevel ? node.attrs.level : this.options.levels[0]
-        this.options.HTMLAttributes.id = `H${level}_${uuidV4()}`
+        this.options.HTMLAttributes.id = node.attrs.id
         return [`h${level}`, mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0]
     },
 
@@ -112,16 +113,16 @@ export const Heading = Node.create<HeadingOptions>({
                         if (!this.options.levels.includes(attributes.level)) {
                             return false
                         }
-
-                        return commands.setNode(this.name, attributes)
+                        const id = `H${attributes.level}-${uuidV4()}`
+                        return commands.setNode(this.name, { ...attributes, id })
                     },
             toggleHeading: (attributes) =>
                 ({ commands }) => {
                     if (!this.options.levels.includes(attributes.level)) {
                         return false
                     }
-
-                    return commands.toggleNode(this.name, 'paragraph', attributes)
+                    const id = `H${attributes.level}-${uuidV4()}`
+                    return commands.toggleNode(this.name, 'paragraph', { ...attributes, id })
                 },
         }
     },
