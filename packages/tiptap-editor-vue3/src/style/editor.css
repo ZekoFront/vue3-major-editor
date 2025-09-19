@@ -176,6 +176,11 @@
         input[type="checkbox"] {
             cursor: pointer;
         }
+        input[type="checkbox"]:checked  {
+            background-color: var(--theme-color); 
+            border-color: var(--theme-color);
+            accent-color: var(--theme-color);
+        }
     }
     /* image style*/
     /* img {

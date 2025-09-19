@@ -1,3 +1,4 @@
+import { TaskList } from '@tiptap/extension-list';
 import {Clear} from './Clear'
 import {History} from './History'
 import {BackgroundColor} from './BackgroundColor'
@@ -39,7 +40,6 @@ export const extensionsArray  = [
     TextAlignment,
     LineHeight,
     Code,
-    // ExtCodeBlock,
     CodeBlockLowlight,
     Subscript,
     Superscript,
@@ -50,6 +50,7 @@ export const extensionsArray  = [
     Table,
     Link,
     Image,
+    // TaskList,
     TaskItem,
     Emojis,
     Clear

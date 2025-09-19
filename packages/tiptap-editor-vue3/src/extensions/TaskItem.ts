@@ -1,10 +1,10 @@
 import TaskIcon from '@/components/task/TaskIcon.vue';
 import { Editor } from "@tiptap/vue-3";
-import { TaskList, TaskItem as TiptapTaskItem } from '@tiptap/extension-list';
+import { TaskItem as TiptapTaskItem } from '@tiptap/extension-list';
 
 const TaskItem = TiptapTaskItem.extend({
     content: 'block',
-    
+    name: 'customTask',
     addOptions() {
         return {
             // ...this.parent?.(),
@@ -25,9 +25,8 @@ const TaskItem = TiptapTaskItem.extend({
             }
         }
     },
-    addExtensions() {
-        return [TaskList]
-    }
+}).configure({
+    nested: true,
 })
 
 export { TaskItem }

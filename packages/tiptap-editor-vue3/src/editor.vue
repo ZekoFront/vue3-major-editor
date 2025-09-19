@@ -22,6 +22,7 @@ import Document from '@tiptap/extension-document'
 import Paragraph from '@tiptap/extension-paragraph'
 import Text from '@tiptap/extension-text'
 import { AnyExtension, Editor, EditorContent } from '@tiptap/vue-3'
+import { TaskItem, TaskList } from '@tiptap/extension-list'
 import { CharacterCount, Placeholder } from '@tiptap/extensions'
 import StarterKit from "@tiptap/starter-kit";
 // 顶部工具
@@ -106,12 +107,14 @@ const selectionStore = useSelectionStore()
 const toolsStore = useToolsStore()
 
 const extensionSet = props.extensions.length?props.extensions:extensionsArray;
-
+// TaskList任务插件需要直接注入，如果扩展后任务插件，新增内容将会报错2025-9-19
 const editor = new Editor({
     extensions: [
         Document, 
         Paragraph, 
         Text,
+        TaskList,
+        TaskItem,
         ...extensionSet,
         StarterKit.configure({
             bold: false,
@@ -165,7 +168,14 @@ console.log('edior:',editor)
 const selectText = () => {
 //  const is = editor.commands.setTextSelection({ from: 2, to: 13 })
 //  editor.commands.focus();
-editor.commands.insertContent('<h1>Example Text</h1>')
+// editor.commands.insertContent('<h1>Example Text</h1>')
+ editor
+.chain()
+.focus()
+.insertContent(
+    '<ul data-type="taskList"><li data-type="taskItem" data-checked="false"><p>New Task</p></li></ul>'
+)
+.run();
 }
 // 获取标题类型
 function detectHeadingType (editor:Editor) {
