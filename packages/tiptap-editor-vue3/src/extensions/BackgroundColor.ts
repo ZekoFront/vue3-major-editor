@@ -47,6 +47,7 @@ export const BackgroundColor = Extension.create<ColorOptions>({
             return {
                 component: BackgroundColorPopover,
                 componentProps: {
+                    editor,
                     isActive: editor.isActive('extensionBackgroundColor'),
                     isReadonly: !editor.isEditable,
                     icons: 'bold-icon',

@@ -12,6 +12,7 @@ const TaskItem = TiptapTaskItem.extend({
                 return {
                     component: TaskIcon,
                     componentProps: {
+                        editor,
                         isActive: editor.isActive('taskItem'),
                         isReadonly: !editor.isEditable,
                         icons: '',

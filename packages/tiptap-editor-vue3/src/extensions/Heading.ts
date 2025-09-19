@@ -1,29 +1,60 @@
-import TiptapHeading, { Level } from '@tiptap/extension-heading'
+import { mergeAttributes, Node, textblockTypeInputRule } from '@tiptap/core'
+import { v4 as uuidV4 } from 'uuid'
 import HeadingPopselect from '@/components/text/HeadingPopselect.vue'
+import { headerData } from '@/utils'
 import { Editor } from '@tiptap/vue-3'
 
-function getHeading () {
-    let arr = [];
-    let i = 0;
-    while (i < 7) {
-        if (i === 6) {
-            arr.push({ label: `正文`, value: `${i + 1}`, disabled: false })
-        } else {
-            const num = i + 1
-            arr.push({ label: `H${num} 标题 ${num}`, value: `${num}`, disabled: false })
-        }
-        i++;
-    }
-    return arr
+/**
+ * The heading level options.
+ */
+export type Level = 1 | 2 | 3 | 4 | 5 | 6
+
+export interface HeadingOptions {
+    /**
+     * The available heading levels.
+     * @default [1, 2, 3, 4, 5, 6]
+     * @example [1, 2, 3]
+     */
+    levels: Level[]
+
+    /**
+     * The HTML attributes for a heading node.
+     * @default {}
+     * @example { class: 'foo' }
+     */
+    HTMLAttributes: Record<string, any>
 }
 
-export const Heading = TiptapHeading.extend({
-    name: 'extensionHeading',
+declare module '@tiptap/core' {
+    interface Commands<ReturnType> {
+        heading: {
+            /**
+             * Set a heading node
+             * @param attributes The heading attributes
+             * @example editor.commands.setHeading({ level: 1 })
+             */
+            setHeading: (attributes: { level: Level}) => ReturnType
+            /**
+             * Toggle a heading node
+             * @param attributes The heading attributes
+             * @example editor.commands.toggleHeading({ level: 1 })
+             */
+            toggleHeading: (attributes: { level: Level }) => ReturnType
+        }
+    }
+}
+
+/**
+ * This extension allows you to create headings.
+ * @see https://www.tiptap.dev/api/nodes/heading
+ */
+export const Heading = Node.create<HeadingOptions>({
+    name: 'heading',
+
     addOptions() {
         return {
-            //@ts-ignore
-            ...this.parent?.(),
-            levels: [1, 2, 3, 4, 5, 6] as Level[],
+            levels: [1, 2, 3, 4, 5, 6],
+            HTMLAttributes: {},
             onClick: ({ editor }:{editor:Editor}) => {
                 return {
                     component: HeadingPopselect,
@@ -31,11 +62,91 @@ export const Heading = TiptapHeading.extend({
                         isActive: editor.isActive('extensionHeading'),
                         isReadonly: !editor.isEditable,
                         editor,
-                        levels: getHeading(),
+                        levels: headerData,
                         tipText: '设置标题',
                     }
                 }
             }
         }
+    },
+
+    content: 'inline*',
+
+    group: 'block',
+
+    defining: true,
+
+    addAttributes() {
+        return {
+            level: {
+                default: 1,
+                rendered: false,
+            },
+            id: {
+                default: `H_${uuidV4()}`,
+                rendered: false,
+            },
+        }
+    },
+
+    parseHTML() {
+        const items = this.options.levels.map((level: Level) => ({
+            tag: `h${level}`,
+            attrs: { level },
+        }))
+        return items
+    },
+
+    renderHTML({ node, HTMLAttributes }) {
+        const hasLevel = this.options.levels.includes(node.attrs.level)
+        const level = hasLevel ? node.attrs.level : this.options.levels[0]
+        this.options.HTMLAttributes.id = `H${level}_${uuidV4()}`
+        return [`h${level}`, mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0]
+    },
+
+    addCommands() {
+        return {
+            setHeading:
+                (attributes) =>
+                    ({ commands }) => {
+                        if (!this.options.levels.includes(attributes.level)) {
+                            return false
+                        }
+
+                        return commands.setNode(this.name, attributes)
+                    },
+            toggleHeading: (attributes) =>
+                ({ commands }) => {
+                    if (!this.options.levels.includes(attributes.level)) {
+                        return false
+                    }
+
+                    return commands.toggleNode(this.name, 'paragraph', attributes)
+                },
+        }
+    },
+
+    addKeyboardShortcuts() {
+        return this.options.levels.reduce(
+            (items, level) => ({
+                ...items,
+                ...{
+                    [`Mod-Alt-${level}`]: () => this.editor.commands.toggleHeading({ level }),
+                },
+            }),
+            {},
+        )
+    },
+
+    addInputRules() {
+        return this.options.levels.map(level => {
+            return textblockTypeInputRule({
+                find: new RegExp(`^(#{${Math.min(...this.options.levels)},${level}})\\s$`),
+                type: this.type,
+                getAttributes: {
+                    level
+                },
+            })
+        })
     },
 })

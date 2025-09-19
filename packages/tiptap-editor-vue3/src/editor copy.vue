@@ -1,28 +1,21 @@
 <template>
-  <div v-if="editor" :class="['vue3-tiptap-editor major-editor', editorWrapperClass]">
-    <Toolkit
-        v-if="isShowToolbar" 
-        :class="[editorToolkitClass]" 
-        :editor="editor" 
-        :customImageUpload="customImageUpload" 
-        :characterCount="characterCount" 
-        @onUploadImageCallBack="onUploadImageCallBack"/>
-     <div class="tiptap-editor__body">
-        <EditorContent :class="['tiptap-editor__content', editorContentClass]" :editor="editor"></EditorContent>
-        <ContentsNav :class="['tiptap-editor__navigation', editorContentsNavClass]" :editor="editor"></ContentsNav>
+    <!-- <button @click="selectText">选择文本</button> -->
+    <div :class="['vue3-tiptap-editor major-editor', editorWrapperClass]">
+        <Toolkit :class="[editorToolkitClass]" :editor="editor" v-if="isShowToolbar" :customImageUpload="customImageUpload" :characterCount="characterCount" @onUploadImageCallBack="onUploadImageCallBack"></Toolkit>
+        <div class="tiptap-editor__body">
+            <EditorContent :class="['tiptap-editor__content', editorContentClass]" :editor="editor" @contextmenu="onContextmenu"></EditorContent>
+            <ContentsNav :class="['tiptap-editor__navigation', editorContentsNavClass]" :editor="editor"></ContentsNav>
+        </div>
+        <BubbleMenus :editor="editor"></BubbleMenus>
+        <ContextMenus :editor="editor" ref="contextMenuRef"></ContextMenus>
     </div>
-    <BubbleMenus :editor="editor"></BubbleMenus>
-    <ContextMenus :editor="editor" ref="contextMenuRef"></ContextMenus>
-  </div>
 </template>
 
 <script setup lang="ts" name="EditorTiptapVue3">
-import Document from '@tiptap/extension-document'
-import Paragraph from '@tiptap/extension-paragraph'
-import Text from '@tiptap/extension-text'
-import { AnyExtension, Editor, EditorContent } from '@tiptap/vue-3'
+import { provide, watch } from "vue";
 import { CharacterCount, Placeholder } from '@tiptap/extensions'
 import StarterKit from "@tiptap/starter-kit";
+import { Editor, EditorContent, AnyExtension } from "@tiptap/vue-3";
 // 顶部工具
 import Toolkit from "./components/Toolkit.vue";
 // 菜单
@@ -101,16 +94,12 @@ const emits = defineEmits([
     "update:content"
 ]);
 
-const selectionStore = useSelectionStore()
-const toolsStore = useToolsStore()
-
 const extensionSet = props.extensions.length?props.extensions:extensionsArray;
 
-const editor = new Editor({
+const editor:Editor = new Editor({
+    content: DOMPurify.sanitize(contents.value),
+    editable: props.isEditable,
     extensions: [
-        Document, 
-        Paragraph, 
-        Text,
         ...extensionSet,
         StarterKit.configure({
             bold: false,
@@ -124,11 +113,7 @@ const editor = new Editor({
             blockquote: false,
             underline: false,
             undoRedo: false,
-            link: false,
-            document: false,
-            text: false,
-            paragraph: false,
-            heading: false
+            link: false
         }),
         CharacterCount.configure({
           limit: props.characterCount,
@@ -137,8 +122,6 @@ const editor = new Editor({
             placeholder: props.placeholder,
         })
     ],
-    content: DOMPurify.sanitize(contents.value),
-    editable: props.isEditable,
     onCreate({editor}) {
         const currentContent = editor.getHTML();
         const newContent = currentContent + '<p><br></p>';
@@ -157,10 +140,16 @@ const editor = new Editor({
     onSelectionUpdate ({ editor, transaction }) {
         detectHeadingType(editor as Editor)
     }
-})
+});
 
-console.log('edior:',editor)
-// const { contextMenuRef, onContextmenu } = useContextMenu(editor)
+const selectionStore = useSelectionStore()
+const toolsStore = useToolsStore()
+
+// const selectText = () => {
+//  const is = editor.commands.setTextSelection({ from: 2, to: 13 })
+//  editor.commands.focus();
+//  console.log(is, 6666)
+// }
 
 // 获取标题类型
 function detectHeadingType (editor:Editor) {
@@ -194,21 +183,36 @@ function detectHeadingType (editor:Editor) {
     }
 }
 
+//@ts-ignore
+useEventListener(editor)
+//@ts-ignore
+const {contextMenuRef, onContextmenu} = useContextMenu(editor)
+
+// 实时更新内容
+watch(contents,(n,o) => {
+    const isSame = editor.getHTML() === contents.value
+    if (isSame) return
+    editor.commands.setContent(n, {
+            emitUpdate: true
+        });
+}, { deep: true })
+
 const onUploadImageCallBack = (file: FileList|string) => {
     emits('onUploadImage', { file, editor })
 }
+
+provide("editor", editor)
+provide('props', props)
 
 // expose
 defineExpose({
     getHTML: () => DOMPurify.sanitize(editor.getHTML()),
     getJSON:() => editor.getJSON(),
     getTEXT: () => editor.getText(),
-    destroy: () => editor && editor.destroy()
+    destroy: () => editor && editor.destroy(),
+    editor: editor
 })
 
-onBeforeUnmount (() => {
-    editor.destroy()
-})
 </script>
 
 <style lang="css" src="./style/index.css"></style>

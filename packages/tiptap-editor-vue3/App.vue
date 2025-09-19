@@ -39,7 +39,7 @@
     const previewContent = ref('')
     const vue3TiptapEditorRef = ref<HTMLVue3TiptapEditorElement | null>(null)
     nextTick(() => {
-        console.log('vue3TiptapEditorRef:', vue3TiptapEditorRef.value)
+        // console.log('vue3TiptapEditorRef:', vue3TiptapEditorRef.value)
     })
     // <img src='https://placehold.co/800x400'/>
     const htmlContent = ref(`<h2><span data-type="emoji" data-name="3rd">🥉</span>vue3-tiptap-editor</h2><p>vue3-tiptap-editor是基于最新tiptap框架开发的vue3富文本组件，非法内容过滤以及防止XSS攻击、插入图片、插入表格等功能。</p><h2><br><span data-type="emoji" data-name="sports_medal">🏅</span>安装&amp;配置</h2><blockquote><p>pnpm add tiptap-editor-vue3</p><p>-or-</p><p>npm install tiptap-editor-vue3</p></blockquote><pre><code class="language-javascript">import { createApp } from "vue";
@@ -55,7 +55,7 @@ app.mount("#app")</code></pre><p></p>`)
 
     // 仅支持base64和URL两种模式
     const onUploadImage = ({ file, editor }:{ file: FileList|string, editor: Editor }) => {
-        console.log(file, 8888)
+        // console.log(file, 8888)
         const formData = new FormData()
         // 此处可以自定义上传图片逻辑，这里需要调用 editor.commands.insertCustomImage 来插入图片
         for (let i = 0; i < file.length; i++) {

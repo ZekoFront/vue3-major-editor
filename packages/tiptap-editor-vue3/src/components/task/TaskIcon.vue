@@ -17,7 +17,28 @@
 import { Editor } from '@tiptap/vue-3';
 import { NTooltip } from "naive-ui";
 
-const editor = inject('editor') as Editor;
+const { editor } = defineProps({
+    editor: {
+      type: Editor,
+      required: true,
+    },
+    isActive: {
+        type: Boolean,
+        default: false,
+    },
+    isReadonly: {
+        type: Boolean,
+        default: false,
+    },
+    colors: {
+        type: Array<string>,
+        default: []
+    },
+    tipText: {
+        type: String,
+        default: '暂无提示'
+    }
+})
 
 // 创建任务列表
 const handleTaskList = () => {

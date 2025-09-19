@@ -9,5 +9,5 @@ const app = createApp(App)
 const pinia = createPinia()
 app.use(EditorTiptapVue3)
 app.use(pinia)
-document.title = "Vue3图片预览器组件"
+document.title = "Vue3组件库"
 app.mount("#app")

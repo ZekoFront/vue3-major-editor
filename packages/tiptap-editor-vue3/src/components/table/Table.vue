@@ -34,11 +34,23 @@
 
 <script lang="ts" setup name="Table">
 import { Editor } from '@tiptap/vue-3';
-import { inject, reactive, ref } from 'vue';
 import { NTooltip, NPopover } from "naive-ui";
 import { useNaiveDiscrete } from '@/hooks/navie-ui';
 
-const editor = inject('editor') as Editor
+const { editor } = defineProps({
+    editor: {
+      type: Editor,
+      required: true,
+    },
+    isReadonly: {
+        type: Boolean,
+        default: false,
+    },
+    tipText: {
+        type: String,
+        default: '暂无提示'
+    }
+})
 const { message, dialog, modal } = useNaiveDiscrete();
 
 // 表格

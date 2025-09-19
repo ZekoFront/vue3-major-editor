@@ -24,7 +24,7 @@ import { Dismiss20Filled } from '@vicons/fluent'
 import { useToolsStore } from '@/store/tools'
 import { Editor } from '@tiptap/vue-3'
 
-const props = defineProps({
+const { editor } = defineProps({
     editor: {
         type: Editor,
         required: true,
@@ -33,52 +33,21 @@ const props = defineProps({
 
 const toolsStore = useToolsStore()
 
-props.editor.on('update', ({ editor }) => {
-   nextTick(() => {
-      const { state } = editor;
-      const { selection } = state;
-      const { $from } = selection;
-      const nodeData = editor.state.doc.nodeAt(selection.from);
-      let node = $from.node();
-      if (node.type.name === 'heading') {
-         updateDirectory()
-      }
-   })
-})
-
-const updateDirectory = () => {
+editor.on('update', () => {
+   console.log('update')
    const container = document.querySelector('.tiptap-editor__content')
    if (!container) return
+
    // 标题 DOM 容器
    const headerContainer = document.getElementById('directory-container') as HTMLElement
    const headers = Array.from(container.querySelectorAll('h1, h2, h3, h4, h5, h6'))
-
-   if (headers&&headers.length === 0) {
-      headerContainer.innerHTML = `<li>暂无数据</li>`
-   } else {
-      headerContainer.innerHTML = headers.map((item, index) => {
-         item.setAttribute('id', item.getAttribute('id')||"")
-         const type = parseInt(item.tagName.slice(1));
-         return `<li id="${item.getAttribute('id')||''}" class="directory-item__cell" type="header${type}">${removeBrTags(item.innerHTML)}</li>`
-      }).join('')
+   console.log(headers, 6666)
+   for (let i = 0; i < headers.length; i++) {
+      const element = headers[i];
+      element.setAttribute('id', `${element.tagName}_${i}`)
+      console.log(element, element.innerHTML)
    }
-
-   headerContainer.addEventListener('mousedown', (event:any) => {
-      if (event.target&&event.target.tagName !== 'LI') return
-      event.preventDefault()
-      const id = event.target.id
-      // 滚动到标题
-      const targetElement = document.querySelector(`#${id}`);
-      console.log(targetElement, 555)
-      if (targetElement) {
-         targetElement.scrollIntoView({
-               behavior: "smooth",
-               block: 'start',
-               inline: 'nearest'
-         });
-      }
-   })
-}
+})
 
 const closeContents = () => {
    toolsStore.updateIsShowContents()   
@@ -91,11 +60,35 @@ function removeBrTags(html:string) {
     return html.replace(brRegex, '');
 }
 
+
 onMounted(() => {
    nextTick(() => {
-      updateDirectory()
+      const container = document.querySelector('.tiptap-editor__content')
+      if (!container) return
+
+      // 标题 DOM 容器
+      const headerContainer = document.getElementById('directory-container') as HTMLElement
+      const headers = Array.from(container.querySelectorAll('h1, h2, h3, h4, h5, h6'))
+      console.log(headers, 6666)
+      for (let i = 0; i < headers.length; i++) {
+         const element = headers[i];
+         element.setAttribute('id', `${element.tagName}_${i}`)
+         console.log(element, element.innerHTML)
+      }
+
+      if (headers&&headers.length === 0) {
+         headerContainer.innerHTML = `<li>暂无数据</li>`
+      } else {
+         headerContainer.innerHTML = headers.map((item, index) => {
+            item.setAttribute('id', `${item.tagName}_${index}`)
+            const type = parseInt(item.tagName.slice(1));
+            return `<li id="${item.tagName}_${index}" class="directory-item__cell" type="header${type}">${removeBrTags(item.innerHTML)}</li>`
+         }).join('')
+      }
+
    })
 })
+
 </script>
 
 <style lang="scss">

@@ -50,11 +50,13 @@
 <script setup lang="ts" name="BackgroundColorPopover">
 import { Editor } from "@tiptap/vue-3";
 import { NTooltip, NPopover, NColorPicker } from "naive-ui";
-import { inject, ref, unref } from "vue";
 
-const editor = inject('editor') as Editor
 const npopoverCLRef = ref<InstanceType<typeof NPopover> | null>(null)
-const props = defineProps({
+const { editor } = defineProps({
+    editor: {
+      type: Editor,
+      required: true,
+    },
     isActive: {
         type: Boolean,
         default: false,
