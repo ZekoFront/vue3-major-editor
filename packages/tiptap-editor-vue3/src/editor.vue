@@ -1,6 +1,6 @@
 <template>
   <div v-if="editor" :class="['vue3-tiptap-editor major-editor', editorWrapperClass]">
-    <button @click="selectText">选择文本</button>
+    <!-- <button @click="selectText">选择文本</button> -->
     <Toolkit
         v-if="isShowToolbar" 
         :class="[editorToolkitClass]" 
