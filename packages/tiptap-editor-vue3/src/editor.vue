@@ -108,9 +108,6 @@ const emits = defineEmits([
     "update:content"
 ]);
 
-const selectionStore = useSelectionStore()
-const toolsStore = useToolsStore()
-
 const extensionSet = props.extensions.length?props.extensions:extensionsArray;
 // TaskList任务插件需要直接注入，如果扩展后任务插件，新增内容将会报错2025-9-19
 const editor = new Editor({
@@ -194,6 +191,9 @@ function detectHeadingType (editor:Editor) {
     const { $from } = selection;
     const nodeData = editor.state.doc.nodeAt(selection.from);
     let node = $from.node();
+
+    const selectionStore = useSelectionStore()
+    const toolsStore = useToolsStore()
 
     selectionStore.updateSelectTion({
         from: selection.from,
