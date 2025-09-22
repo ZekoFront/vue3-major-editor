@@ -3,7 +3,7 @@
     v-if="editor"
     :editor="editor"
     :should-show="shouldShowBubbleMenu">
-    <div class="editor-inner-bubble--menu" v-if="isText">
+    <div class="editor-inner-bubble--menu" v-if="editor.isActive('text')">
         <button @click="editor.chain().focus().toggleBold().run()" :class="{ 'is-active': editor.isActive('bold') }">
             <component is="bold-icon" class="menu-icon"></component>
         </button>
@@ -37,7 +37,7 @@
 import { Editor } from "@tiptap/core";
 import { BubbleMenu } from "@tiptap/vue-3/menus";
 import { NTooltip } from "naive-ui";
-import { useSelectionStore } from '@/store/selection'
+// import { useSelectionStore } from '@/store/selection'
 
 const { editor } = defineProps({
     editor: {
@@ -46,10 +46,10 @@ const { editor } = defineProps({
     }
 })
 
-const selectionStore = useSelectionStore()
+// const selectionStore = useSelectionStore()
 
 const isText = computed(() => {
-    return selectionStore.selection?.typeName==="text"
+    // return selectionStore.selection?.typeName==="text"
 })
 
 // 打开链接

@@ -41,7 +41,7 @@
 import { NIcon,NTooltip } from 'naive-ui'
 import { ContentView32Regular } from '@vicons/fluent'
 import { Editor } from '@tiptap/core';
-import { useToolsStore } from '@/store/tools'
+// import { useToolsStore } from '@/store/tools'
 // 段落
 import ParagraphUI from './paragraph/index.vue';
 import ErrorImage from "../icons/error-image.svg"; 
@@ -62,7 +62,7 @@ const props = defineProps({
     },
 })
 
-const toolsStore = useToolsStore()
+// const toolsStore = useToolsStore()
 
 interface CusIconType {
     componentProps: Object,
@@ -87,7 +87,7 @@ const onUploadImageCallBack = (file: FileList|string) => {
 }
 
 const closeContents = () => {
-   toolsStore.updateIsShowContents()   
+//    toolsStore.updateIsShowContents()   
 }
 
 </script>

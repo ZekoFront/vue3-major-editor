@@ -35,9 +35,9 @@ import { NPopselect, NTooltip, SelectOption } from "naive-ui";
 import { Level } from '@/extensions';
 import { VNodeChild } from "vue";
 import { DEFAULT_TITLE, FONT_SIZE_TITLE } from '@/utils'
-import { useToolsStore } from "@/store/tools";
+// import { useToolsStore } from "@/store/tools";
 
-const toolsStore = useToolsStore()
+// const toolsStore = useToolsStore()
 
 const props = defineProps({
     editor: {
@@ -69,14 +69,15 @@ const props = defineProps({
 const selectHvalue = ref(DEFAULT_TITLE);
 const selectedData = ref<SelectOption>({})
 
-const headingLevel = computed(() => toolsStore.headingLevel);
-watch(headingLevel, (newValue, oldValue) => {
-    if (newValue <= 6) {
-        selectedData.value.label = '标题'
-        selectedData.value.value = String(newValue)
-    } 
-    selectHvalue.value = newValue+''
-});
+// const headingLevel = computed(() => toolsStore.headingLevel);
+
+// watch(headingLevel, (newValue, oldValue) => {
+//     if (newValue <= 6) {
+//         selectedData.value.label = '标题'
+//         selectedData.value.value = String(newValue)
+//     } 
+//     selectHvalue.value = newValue+''
+// });
 
 const handleHeading = (level: Level) => {
     selectHvalue.value = level+''

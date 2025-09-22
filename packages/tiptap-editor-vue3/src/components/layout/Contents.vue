@@ -2,7 +2,7 @@
 <div 
    :class="[
       'vue3-tiptap-editor__navigation', 
-      { 'is-active': toolsStore.isShowContents }
+      { 'is-active': isToggle }
    ]">
    <div class="navigation-header">
       <span>文档目录</span>
@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import { NIcon } from 'naive-ui'
 import { Dismiss20Filled } from '@vicons/fluent'
-import { useToolsStore } from '@/store/tools'
+// import { useToolsStore } from '@/store/tools'
 import { Editor } from '@tiptap/vue-3'
 
 const props = defineProps({
@@ -30,7 +30,9 @@ const props = defineProps({
     }
 })
 
-const toolsStore = useToolsStore()
+const isToggle = ref<boolean>(true)
+
+// const toolsStore = useToolsStore()
 
 props.editor.on('update', ({ editor }) => {
    nextTick(() => {
@@ -94,7 +96,8 @@ const updateDirectory = () => {
 
 
 const closeContents = () => {
-   toolsStore.updateIsShowContents()   
+   // toolsStore.updateIsShowContents()
+   isToggle.value = !isToggle.value   
 }
 
 function removeBrTags(html:string) {

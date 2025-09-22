@@ -39,13 +39,13 @@ import { useContextMenu } from "@/hooks/useContextMenu";
 import ContextMenus from "./components/table/ContextMenu.vue";
 import ContentsNav from "./components/layout/Contents.vue";
 
-import { useSelectionStore } from '@/store/selection';
+// import { useSelectionStore } from '@/store/selection';
 // 自定义扩展
 import { extensionsArray } from './extensions';
 
 // 过滤编辑器类容，防止xss攻击, 生产环境
 import DOMPurify from 'dompurify';
-import { useToolsStore } from "./store/tools";
+// import { useToolsStore } from "./store/tools";
 
 const contents = defineModel<string>("content", {
     default: "",
@@ -191,27 +191,27 @@ function detectHeadingType (editor:Editor) {
     const { $from } = selection;
     const nodeData = editor.state.doc.nodeAt(selection.from);
     let node = $from.node();
+    console.log('detectHeadingType')
+    // const selectionStore = useSelectionStore()
+    // const toolsStore = useToolsStore()
 
-    const selectionStore = useSelectionStore()
-    const toolsStore = useToolsStore()
-
-    selectionStore.updateSelectTion({
-        from: selection.from,
-        to: selection.to,
-        typeName:nodeData?.type.name||""
-    })
+    // selectionStore.updateSelectTion({
+    //     from: selection.from,
+    //     to: selection.to,
+    //     typeName:nodeData?.type.name||""
+    // })
    
     // 检查当前节点是否为标题
     if (node &&['extensionHeading','heading'].includes(node.type.name)) {
-        toolsStore.updateHeadingLevel(node.attrs.level)
-        toolsStore.updateHeadingContent(node.textContent)
+        // toolsStore.updateHeadingLevel(node.attrs.level)
+        // toolsStore.updateHeadingContent(node.textContent)
     } else {
         let depth = $from.depth;
         while (depth > 0) {
             const parentNode = $from.node(depth);
             if (parentNode &&['extensionHeading','heading'].includes(parentNode.type.name)) {
-                toolsStore.updateHeadingLevel(parentNode.attrs.level)
-                toolsStore.updateHeadingContent(parentNode.textContent)
+                // toolsStore.updateHeadingLevel(parentNode.attrs.level)
+                // toolsStore.updateHeadingContent(parentNode.textContent)
                 break;
             }
             depth--;
