@@ -12,7 +12,7 @@
       <div class="custom-drag-handle" />
     </drag-handle>    
      <div class="tiptap-editor__body">
-        <EditorContent :class="['tiptap-editor__content', editorContentClass]" :editor="editor"></EditorContent>
+        <EditorContent :class="['tiptap-editor__content', editorContentClass]" :editor="editor" @contextmenu="onContextmenu"></EditorContent>
         <ContentsNav :class="['tiptap-editor__navigation', editorContentsNavClass]" :editor="editor"></ContentsNav>
     </div>
     <BubbleMenus :editor="editor"></BubbleMenus>
@@ -174,7 +174,7 @@ const editor = new Editor({
 })
 
 console.log('edior:',editor)
-// const { contextMenuRef, onContextmenu } = useContextMenu(editor)
+const { contextMenuRef, onContextmenu } = useContextMenu(editor)
 const selectText = () => {
 //  const is = editor.commands.setTextSelection({ from: 2, to: 13 })
 //  editor.commands.focus();
