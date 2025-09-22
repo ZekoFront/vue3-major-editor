@@ -27,7 +27,7 @@ export interface HeadingOptions {
 
 declare module '@tiptap/core' {
     interface Commands<ReturnType> {
-        heading: {
+        headings: {
             /**
              * Set a heading node
              * @param attributes The heading attributes

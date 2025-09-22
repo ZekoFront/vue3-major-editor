@@ -32,7 +32,7 @@
 import { DEFAULT_TITLE_COLOR, PRIMARY_COLOR, Void } from "@/utils";
 import { Editor } from "@tiptap/vue-3";
 import { NPopselect, NTooltip, SelectOption } from "naive-ui";
-import type { Level } from '@tiptap/extension-heading';
+import { Level } from '@/extensions';
 import { VNodeChild } from "vue";
 import { DEFAULT_TITLE, FONT_SIZE_TITLE } from '@/utils'
 import { useToolsStore } from "@/store/tools";

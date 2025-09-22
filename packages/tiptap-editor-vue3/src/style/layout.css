@@ -2,7 +2,7 @@
 .vue3-tiptap-editor {
     border: 1px solid #f2f2f2;
     /* box-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.1); */
-    font-size: 1rem;
+    /* font-size: 1rem; */
     color: #333;
     height: auto;
     width: 100%;

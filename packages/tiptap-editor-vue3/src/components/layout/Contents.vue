@@ -75,7 +75,23 @@ const updateDirectory = () => {
          });
       }
    })
+
+   // @ts-ignore
+   const li = headerContainer.childNodes
+   for (let i = 0; i < li.length; i++) {
+      // @ts-ignore
+      li[i].onclick = () => {
+         // @ts-ignore
+         li.forEach(item => {
+            // @ts-ignore
+            item.setAttribute('class', 'directory-item__cell')
+         })
+         // @ts-ignore
+         li[i].setAttribute('class', 'directory-item__cell active')
+      }
+   }
 }
+
 
 const closeContents = () => {
    toolsStore.updateIsShowContents()   
@@ -174,7 +190,7 @@ onMounted(() => {
             &:after {
                position: absolute;
                top: 0;
-               left: -10px;
+               left: -16px;
                content: "";
                width: 2px;
                height: 100%;
