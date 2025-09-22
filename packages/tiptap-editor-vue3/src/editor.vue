@@ -8,6 +8,9 @@
         :customImageUpload="customImageUpload" 
         :characterCount="characterCount" 
         @onUploadImageCallBack="onUploadImageCallBack"/>
+    <drag-handle :editor="editor">
+      <div class="custom-drag-handle" />
+    </drag-handle>    
      <div class="tiptap-editor__body">
         <EditorContent :class="['tiptap-editor__content', editorContentClass]" :editor="editor"></EditorContent>
         <ContentsNav :class="['tiptap-editor__navigation', editorContentsNavClass]" :editor="editor"></ContentsNav>
@@ -25,6 +28,8 @@ import { AnyExtension, Editor, EditorContent } from '@tiptap/vue-3'
 import { TaskItem, TaskList } from '@tiptap/extension-list'
 import { CharacterCount, Placeholder } from '@tiptap/extensions'
 import StarterKit from "@tiptap/starter-kit";
+import { DragHandle } from '@tiptap/extension-drag-handle-vue-3'
+import NodeRange from '@tiptap/extension-node-range'
 // 顶部工具
 import Toolkit from "./components/Toolkit.vue";
 // 菜单
@@ -115,6 +120,11 @@ const editor = new Editor({
         Text,
         TaskList,
         TaskItem,
+        NodeRange.configure({
+          // allow to select only on depth 0
+          // depth: 0,
+          key: null,
+        }),
         ...extensionSet,
         StarterKit.configure({
             bold: false,
