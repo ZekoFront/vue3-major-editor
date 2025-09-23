@@ -2,6 +2,8 @@
 
 vue3-tiptap-editor是基于最新tiptap框架开发的vue3富文本组件，非法内容过滤以及防止XSS攻击、插入图片、插入表格等功能。
 
+![](https://raw.githubusercontent.com/qiunanya/vue3-major-editor/main/asset/image/20250923.png)
+
 ### 功能清单
 - [x] 撤回/重做"
 - [x] 清空文档
@@ -22,7 +24,9 @@ vue3-tiptap-editor是基于最新tiptap框架开发的vue3富文本组件，非�
 - [x] 任务列表
 - [x] 插入图片
 - [x] 插入表格，表格列和行操作
-
+- [x] 表情
+- [x] 目录
+- [x] 行拖拽
 ....待开发更多功能....
 
 
