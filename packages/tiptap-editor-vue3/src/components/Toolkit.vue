@@ -14,11 +14,12 @@
         :is="item.component" 
         :key="index"
         :customImageUpload="customImageUpload"
+        :headingLevel="headingLevel"
         @onUploadImageCallBack="onUploadImageCallBack">
     </component>
     <NTooltip placement="top" trigger="hover">
         <template #trigger>
-           <button class="toolbar-icon--btn" data-editor-toolbar-btn="true"  @click="closeContents">
+           <button class="toolbar-icon--btn" data-editor-toolbar-btn="true"  @click="updateContent">
                 <NIcon size="21">
                     <ContentView32Regular></ContentView32Regular>
                 </NIcon>
@@ -41,12 +42,11 @@
 import { NIcon,NTooltip } from 'naive-ui'
 import { ContentView32Regular } from '@vicons/fluent'
 import { Editor } from '@tiptap/core';
-// import { useToolsStore } from '@/store/tools'
 // 段落
 import ParagraphUI from './paragraph/index.vue';
 import ErrorImage from "../icons/error-image.svg"; 
 
-const emits = defineEmits(['onUploadImageCallBack'])
+const emits = defineEmits(['onUploadImageCallBack','onIsShowContent'])
 const props = defineProps({
     characterCount: {
         type:Number,
@@ -60,9 +60,13 @@ const props = defineProps({
         type: Boolean,
         default: false
     },
+    headingLevel: {
+        type: Number,
+        default: () => {
+            return 7
+        }
+    }
 })
-
-// const toolsStore = useToolsStore()
 
 interface CusIconType {
     componentProps: Object,
@@ -86,8 +90,8 @@ const onUploadImageCallBack = (file: FileList|string) => {
     emits('onUploadImageCallBack', file)
 }
 
-const closeContents = () => {
-//    toolsStore.updateIsShowContents()   
+const updateContent = () => {
+    emits('onIsShowContent', true)
 }
 
 </script>

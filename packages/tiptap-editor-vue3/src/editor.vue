@@ -6,14 +6,16 @@
         :class="[editorToolkitClass]" 
         :editor="editor" 
         :customImageUpload="customImageUpload" 
-        :characterCount="characterCount" 
+        :characterCount="characterCount"
+        :headingLevel="headingLevel"
+        @onIsShowContent="onIsShowContent" 
         @onUploadImageCallBack="onUploadImageCallBack"/>
     <drag-handle :editor="editor">
       <div class="custom-drag-handle" />
     </drag-handle>    
      <div class="tiptap-editor__body">
         <EditorContent :class="['tiptap-editor__content', editorContentClass]" :editor="editor" @contextmenu="onContextmenu"></EditorContent>
-        <ContentsNav :class="['tiptap-editor__navigation', editorContentsNavClass]" :editor="editor"></ContentsNav>
+        <ContentsNav :class="['tiptap-editor__navigation', editorContentsNavClass]" :editor="editor" v-model:isShowContent="isShowContent"></ContentsNav>
     </div>
     <BubbleMenus :editor="editor"></BubbleMenus>
     <ContextMenus :editor="editor" ref="contextMenuRef"></ContextMenus>
@@ -34,7 +36,6 @@ import NodeRange from '@tiptap/extension-node-range'
 import Toolkit from "./components/Toolkit.vue";
 // 菜单
 import BubbleMenus from "@/components/bubble-menu/index.vue";
-import { useEventListener } from "@/hooks/useEventListener";
 import { useContextMenu } from "@/hooks/useContextMenu";
 import ContextMenus from "./components/table/ContextMenu.vue";
 import ContentsNav from "./components/layout/Contents.vue";
@@ -107,6 +108,9 @@ const emits = defineEmits([
     "onUploadImage",
     "update:content"
 ]);
+
+const isShowContent = ref<boolean>(true)
+const headingLevel = ref<number>(7)
 
 const extensionSet = props.extensions.length?props.extensions:extensionsArray;
 // TaskList任务插件需要直接注入，如果扩展后任务插件，新增内容将会报错2025-9-19
@@ -191,28 +195,18 @@ function detectHeadingType (editor:Editor) {
     const { $from } = selection;
     const nodeData = editor.state.doc.nodeAt(selection.from);
     let node = $from.node();
-    console.log('detectHeadingType')
-    // const selectionStore = useSelectionStore()
-    // const toolsStore = useToolsStore()
-
-    // selectionStore.updateSelectTion({
-    //     from: selection.from,
-    //     to: selection.to,
-    //     typeName:nodeData?.type.name||""
-    // })
-   
     // 检查当前节点是否为标题
-    if (node &&['extensionHeading','heading'].includes(node.type.name)) {
-        // toolsStore.updateHeadingLevel(node.attrs.level)
-        // toolsStore.updateHeadingContent(node.textContent)
+    if (node &&['heading'].includes(node.type.name)) {
+        headingLevel.value = Number(node.attrs.level)
     } else {
         let depth = $from.depth;
         while (depth > 0) {
             const parentNode = $from.node(depth);
-            if (parentNode &&['extensionHeading','heading'].includes(parentNode.type.name)) {
-                // toolsStore.updateHeadingLevel(parentNode.attrs.level)
-                // toolsStore.updateHeadingContent(parentNode.textContent)
+            if (parentNode &&['heading'].includes(parentNode.type.name)) {
+                headingLevel.value = Number(node.attrs.level)
                 break;
+            } else {
+                headingLevel.value = 7
             }
             depth--;
         }
@@ -221,6 +215,10 @@ function detectHeadingType (editor:Editor) {
 
 const onUploadImageCallBack = (file: FileList|string) => {
     emits('onUploadImage', { file, editor })
+}
+
+const onIsShowContent = (val:boolean) => {
+    isShowContent.value = !isShowContent.value
 }
 
 // expose

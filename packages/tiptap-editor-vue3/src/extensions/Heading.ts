@@ -60,7 +60,7 @@ export const Heading = Node.create<HeadingOptions>({
                 return {
                     component: HeadingPopselect,
                     componentProps: {
-                        isActive: editor.isActive('extensionHeading'),
+                        isActive: editor.isActive('heading'),
                         isReadonly: !editor.isEditable,
                         editor,
                         levels: headerData,

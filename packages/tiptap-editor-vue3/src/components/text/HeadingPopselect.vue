@@ -9,9 +9,9 @@
     <NTooltip placement="top" trigger="hover">
         <template #trigger>
             <button  class="toolbar-icon--btn" data-editor-toolbar-btn="true">
-                <aside v-if="selectedData.label" style="font-size: medium;">
-                    <span v-if="Number(selectedData.value)<7">标题 {{ selectedData.value }}</span>
-                    <span v-else>{{ selectedData.label }}</span>
+                <aside v-if="headingLevel" style="font-size: medium;">
+                    <span v-if="headingLevel<7">标题 {{ headingLevel }}</span>
+                    <span v-else>正文</span>
                 </aside>
                 <svg v-else viewBox="0 0 1024 1024" width="200" height="200">
                     <path
@@ -35,9 +35,6 @@ import { NPopselect, NTooltip, SelectOption } from "naive-ui";
 import { Level } from '@/extensions';
 import { VNodeChild } from "vue";
 import { DEFAULT_TITLE, FONT_SIZE_TITLE } from '@/utils'
-// import { useToolsStore } from "@/store/tools";
-
-// const toolsStore = useToolsStore()
 
 const props = defineProps({
     editor: {
@@ -63,21 +60,17 @@ const props = defineProps({
     command: {
         type:Function,
         default:Void
+    },
+    headingLevel: {
+        type: Number,
+        default: () => {
+            return 7
+        }
     }
 })
 
 const selectHvalue = ref(DEFAULT_TITLE);
 const selectedData = ref<SelectOption>({})
-
-// const headingLevel = computed(() => toolsStore.headingLevel);
-
-// watch(headingLevel, (newValue, oldValue) => {
-//     if (newValue <= 6) {
-//         selectedData.value.label = '标题'
-//         selectedData.value.value = String(newValue)
-//     } 
-//     selectHvalue.value = newValue+''
-// });
 
 const handleHeading = (level: Level) => {
     selectHvalue.value = level+''

@@ -2,7 +2,7 @@
 <div 
    :class="[
       'vue3-tiptap-editor__navigation', 
-      { 'is-active': isToggle }
+      { 'is-active': isShowContent }
    ]">
    <div class="navigation-header">
       <span>文档目录</span>
@@ -20,19 +20,19 @@
 <script setup lang="ts">
 import { NIcon } from 'naive-ui'
 import { Dismiss20Filled } from '@vicons/fluent'
-// import { useToolsStore } from '@/store/tools'
 import { Editor } from '@tiptap/vue-3'
 
 const props = defineProps({
-    editor: {
-        type: Editor,
-        required: true,
-    }
+   editor: {
+      type: Editor,
+      required: true,
+   }
 })
 
-const isToggle = ref<boolean>(true)
-
-// const toolsStore = useToolsStore()
+const isShowContent = defineModel<boolean>("isShowContent", {
+   default: true,
+   required: true,
+});
 
 props.editor.on('update', ({ editor }) => {
    nextTick(() => {
@@ -71,9 +71,9 @@ const updateDirectory = () => {
       const targetElement = document.querySelector(`#${id}`);
       if (targetElement) {
          targetElement.scrollIntoView({
-               behavior: "smooth",
-               block: 'start',
-               inline: 'nearest'
+            behavior: "smooth",
+            block: 'start',
+            inline: 'nearest'
          });
       }
    })
@@ -96,8 +96,7 @@ const updateDirectory = () => {
 
 
 const closeContents = () => {
-   // toolsStore.updateIsShowContents()
-   isToggle.value = !isToggle.value   
+   isShowContent.value = !isShowContent.value
 }
 
 function removeBrTags(html:string) {
@@ -140,8 +139,6 @@ onMounted(() => {
       }
    }
    .navigation-directory {
-      // padding-left: 10px;
-      // height: e("calc(100vh - 160px)");
       overflow-y: scroll;
       .directory-container {
          list-style-type: none;
