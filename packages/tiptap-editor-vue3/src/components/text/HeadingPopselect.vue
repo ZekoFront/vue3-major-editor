@@ -9,7 +9,10 @@
     <NTooltip placement="top" trigger="hover">
         <template #trigger>
             <button  class="toolbar-icon--btn" data-editor-toolbar-btn="true">
-                <span v-if="selectedData.label" style="font-size: medium;">标题 {{ selectedData.value }}</span>
+                <aside v-if="headingLevel" style="font-size: medium;">
+                    <span v-if="headingLevel<7">标题 {{ headingLevel }}</span>
+                    <span v-else>正文</span>
+                </aside>
                 <svg v-else viewBox="0 0 1024 1024" width="200" height="200">
                     <path
                         d="M768 512v384c0 35.4 28.6 64 64 64s64-28.6 64-64V128c0-35.4-28.6-64-64-64s-64 28.6-64 64v256H256V128c0-35.4-28.6-64-64-64S128 92.6 128 128v768c0 35.4 28.6 64 64 64s64-28.6 64-64V512h512z">
@@ -29,7 +32,7 @@
 import { DEFAULT_TITLE_COLOR, PRIMARY_COLOR, Void } from "@/utils";
 import { Editor } from "@tiptap/vue-3";
 import { NPopselect, NTooltip, SelectOption } from "naive-ui";
-import type { Level } from '@tiptap/extension-heading';
+import { Level } from '@/extensions';
 import { VNodeChild } from "vue";
 import { DEFAULT_TITLE, FONT_SIZE_TITLE } from '@/utils'
 
@@ -57,11 +60,18 @@ const props = defineProps({
     command: {
         type:Function,
         default:Void
+    },
+    headingLevel: {
+        type: Number,
+        default: () => {
+            return 7
+        }
     }
 })
 
 const selectHvalue = ref(DEFAULT_TITLE);
 const selectedData = ref<SelectOption>({})
+
 const handleHeading = (level: Level) => {
     selectHvalue.value = level+''
     selectedData.value = props.levels.find((el:SelectOption) => el.value === level) as SelectOption
@@ -71,8 +81,6 @@ const handleHeading = (level: Level) => {
         props.editor.commands.toggleHeading({ level: +level as Level })
     }
 }
-
-
 
 const renderLabel = (option: SelectOption, selected: boolean):VNodeChild => {
     return[

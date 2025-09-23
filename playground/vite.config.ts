@@ -31,7 +31,7 @@ export default defineConfig(({ mode, command}) => {
             sourcemap: command === 'build' ? false : 'inline',
             outDir: 'dist',
             assetsDir: 'assets',
-            chunkSizeWarningLimit: 2500,
+            chunkSizeWarningLimit: 3100,
             rollupOptions: {
                 output: {
                     chunkFileNames: 'static/js/[name]-[hash].js',

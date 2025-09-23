@@ -3,11 +3,12 @@ bin-debug/
 bin-release/
 [Oo]bj/
 [Bb]in/
-**/dist
+dist
 es
 lib
 umds
-**/node_modules
+node_modules
+node_modules1
 # Other files and folders
 .settings/
 

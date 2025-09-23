@@ -1,6 +1,6 @@
 <template>
 <div class="toolbar-icon__wrap">
-<NTooltip placement="bottom" trigger="hover">
+<NTooltip placement="top" trigger="hover">
 <template #trigger>
     <button class="toolbar-icon--btn" data-editor-toolbar-btn="true" @click="handleUploadImg()">
         <svg viewBox="0 0 1024 1024" width="200" height="200">
@@ -15,16 +15,21 @@
 <span>添加图片</span>
 </NTooltip>
 
-<UploadImageModal ref="UploadImageRef" @onUploadImageCallBack="onUploadImageCallBack"></UploadImageModal>
+<UploadImageModal 
+    ref="UploadImageRef"
+    :editor="editor" 
+    :customImageUpload="customImageUpload" 
+    :urlPattern="urlPattern"
+    @onUploadImageCallBack="onUploadImageCallBack">
+</UploadImageModal>
 </div>
 </template>
 
 <script setup lang="ts" name="ImageIcon">
-import { Editor } from "@tiptap/vue-3";
+import { Editor } from '@tiptap/core';
 import { NTooltip } from "naive-ui";
 import UploadImageModal from './UploadImageModal.vue';
 
-const editor = inject('editor') as Editor
 const emits = defineEmits(['onUploadImageCallBack'])
 const props = defineProps({
     isActive: {
@@ -42,7 +47,19 @@ const props = defineProps({
     tipText: {
         type: String,
         default: '暂无提示'
-    }
+    },
+    editor: {
+      type: Editor,
+      required: true,
+    },
+    urlPattern: {
+        type: RegExp,
+        required: true,
+    },
+    customImageUpload: {
+        type: Boolean,
+        default: false
+    },
 })
 
 // 上传图片
@@ -51,11 +68,11 @@ interface UploadImageType {
 }
 const UploadImageRef = ref<UploadImageType | null>(null)
 const handleUploadImg = () => {
-    if (!editor.isEditable) return
+    if (!props.editor.isEditable) return
     UploadImageRef.value && UploadImageRef.value.initialize()
 }
 
-const onUploadImageCallBack = (file: FileList) => {
+const onUploadImageCallBack = (file: FileList|string) => {
     emits('onUploadImageCallBack', file)
 }
 </script>

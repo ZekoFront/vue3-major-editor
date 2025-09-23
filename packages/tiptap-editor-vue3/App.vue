@@ -12,12 +12,11 @@
             <button style="margin-right:10px;" @click="getText">获取 Text</button>
             <button style="margin-right:10px;" @click="previews">预览</button>
         </section>
-
         <TiptapEditorVue3
-            ref="vue3TiptapEditorRef" 
+            ref="vue3TiptapEditorRef"
             v-model:content="htmlContent" 
-            :isEnable="true"
-            customFileUpload
+            :isEditable="true"
+            :customImageUpload="false"
             :extensions="[]"
             @onUpdate="onUpdate"
             @onUploadImage="onUploadImage">
@@ -31,19 +30,32 @@
 </template>
 
 <script setup lang="ts">
-    import { onBeforeUnmount, ref } from "vue";
-    import { Editor, HTMLVue3TiptapEditorElement, AnyExtension, ExtensionBold, ExtensionImage, ExtensionHistory } from "./src";
+    import { nextTick, onBeforeUnmount, ref } from "vue";
+    import { Editor, HTMLVue3TiptapEditorElement, AnyExtension, Bold, Italic } from "./src";
     import { NDrawerContent, NDrawer } from "naive-ui";
 
-    const extensions = ref<AnyExtension[]>([ExtensionBold, ExtensionImage, ExtensionHistory])
+    const extensions = ref<AnyExtension[]>([Bold, Italic])
     const isVisible = ref(false)
     const previewContent = ref('')
     const vue3TiptapEditorRef = ref<HTMLVue3TiptapEditorElement | null>(null)
-    const htmlContent = ref("<p>欢迎使用vue3-tiptap-editor编辑器 🎉</p>欢迎订阅交流,<img src='https://placehold.co/800x400'/>")
+    nextTick(() => {
+        // console.log('vue3TiptapEditorRef:', vue3TiptapEditorRef.value)
+    })
+    // <img src='https://placehold.co/800x400'/>
+    const htmlContent = ref(`<h2 id="H2-5f9571ca-c94a-4c04-ba98-80f41ed698f6"><span data-type="emoji" data-name="3rd">🥉</span>vue3-tiptap-editor</h2><p>vue3-tiptap-editor是基于最新tiptap框架开发的vue3富文本组件，非法内容过滤以及防止XSS攻击、插入图片、插入表格等功能。</p><h2 id="H2-b46bb0d0-ed0f-4e51-b011-0c8f8603ddd6"><br><span data-type="emoji" data-name="sports_medal">🏅</span>安装&amp;配置11</h2><blockquote><p>pnpm add tiptap-editor-vue3</p><p>-or-</p><p>npm install tiptap-editor-vue3</p></blockquote><pre><code class="language-javascript">import { createApp } from "vue";
+import App from "./App.vue";
+// 引入组件
+import TiptapEditorVue3 from "tiptap-editor-vue3";
+import "tiptap-editor-vue3/dist/css/style.css";
+
+const app = createApp(App)
+app.use(TiptapEditorVue3)
+app.mount("#app")</code></pre><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><h2 id="H2-44c3d9f5-5754-40a2-b2cd-839b47e5c425">防核辐射的反对66</h2><p><br></p>`)
     // const htmlContent = ref(`<img src=x onerror=alert(1)//>`)
 
     // 仅支持base64和URL两种模式
-    const onUploadImage = ({ file, editor }:{ file: FileList, editor: Editor }) => {
+    const onUploadImage = ({ file, editor }:{ file: FileList|string, editor: Editor }) => {
+        // console.log(file, 8888)
         const formData = new FormData()
         // 此处可以自定义上传图片逻辑，这里需要调用 editor.commands.insertCustomImage 来插入图片
         for (let i = 0; i < file.length; i++) {
@@ -56,13 +68,13 @@
                     image.src = base64
                     image.onload = () => {
                         // 图片加载完成后再插入，记得传入图片宽高
-                        editor.commands.insertCustomImage({ 
-                            src: base64, 
-                            alt: '占位图片', 
-                            width: image.width, 
-                            height: image.height,
-                            title: file[i].name 
-                        });
+                        // editor.commands.insertCustomImage({ 
+                        //     src: base64, 
+                        //     alt: '占位图片', 
+                        //     width: image.width, 
+                        //     height: image.height,
+                        //     title: file[i].name 
+                        // });
                     }
                     
                     // 监听错误事件
@@ -71,7 +83,7 @@
                     }
                 }
 
-                reader.readAsDataURL(file[i])
+                // reader.readAsDataURL(file[i])
             }
         }
     }
@@ -99,7 +111,7 @@
 
     const onUpdate = (val:Editor) => {
         // console.log("update:",val.getHTML())
-        console.log("update")
+        // console.log("update")
     }
 
     onBeforeUnmount(() => {
@@ -113,6 +125,9 @@
 }
 .app_wrapper {
     padding:15px;
+    margin: 0;
+    height: 100vh;
+    box-sizing: border-box;
     .h2 {
         margin: 5px 0;
         color: #646cff;
@@ -121,5 +136,8 @@
         display: flex;
         align-items: center;
     }
+}
+.vue3-tiptap-editor {
+    height: calc(100vh - 99px) !important;
 }
 </style>

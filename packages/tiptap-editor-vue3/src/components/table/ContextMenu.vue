@@ -19,9 +19,12 @@ import { Editor, Extension } from "@tiptap/vue-3";
 import { ITableContextMenuItem } from '@/typings/index'
 import { DropdownMixedOption, DropdownOption } from "naive-ui/es/dropdown/src/interface";
 
-const editor = inject('editor') as Editor
 const { message } = useNaiveDiscrete();
 const props = defineProps({
+    editor: {
+      type: Editor,
+      required: true,
+    },
     isVisible: {
         type: Boolean,
         default: false,
@@ -66,12 +69,12 @@ function open({ left, top, e }:{left:number;top:number, e:MouseEvent}) {
 
 const menuList = computed(() => {
     let arr:ITableContextMenuItem[] = []
-    const { extensions } = editor.extensionManager
+    const { extensions } = props.editor.extensionManager
     const table = extensions.find(el => el.name === 'table') as Extension
     if (table) {
         const { onClick } = table.options;
         if (typeof onClick === 'function') {
-            const opt = onClick({ editor });
+            const opt = onClick({ editor:props.editor });
             arr = opt.componentProps.options
         } else arr = []
     }

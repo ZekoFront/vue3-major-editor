@@ -1,6 +1,6 @@
 <template>
 <div class="toolbar-icon__wrap">
-<NTooltip placement="bottom" trigger="hover">
+<NTooltip placement="top" trigger="hover">
 <template #trigger>
     <button
         :class="[

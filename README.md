@@ -74,8 +74,8 @@ app.mount("#app")
         <TiptapEditorVue3
             ref="vue3TiptapEditorRef" 
             v-model:content="htmlContent" 
-            :customFileUpload="customFileUpload"
-            :isEnable="true"
+            :customImageUpload="customImageUpload"
+            :isEditable="true"
             :extensions="extensions"
             :isShowToolbar="true"
             @onUploadImage="onUploadImage">
@@ -92,16 +92,16 @@ app.mount("#app")
 <script setup lang="ts">
     import { ref } from "vue";
     import { NDrawerContent, NDrawer } from "naive-ui";
-    import { AnyExtension, Editor, ExtensionBold, ExtensionItalic } from "tiptap-editor-vue3"
+    import { AnyExtension, Editor, Bold, Italic } from "tiptap-editor-vue3"
     import { useRouter } from 'vue-router'
 
     const router = useRouter();
     // true:不自动转化数据，需要外部处理后添加到编辑器, false: 图片内部处理，默认转化为base64
-    const customFileUpload = ref(true)
+    const customImageUpload = ref(false)
     const isVisible = ref(false)
     const previewContent = ref('')
     // 自定义工具栏，不需要可以不用传递参数即可显示全部工具栏
-    const extensions = ref<AnyExtension[]>([ExtensionBold, ExtensionItalic])
+    const extensions = ref<AnyExtension[]>([Bold, Italic])
     // 按需引入Button组件
     // import { Button } from '@majoreditor/ui'
 
@@ -137,7 +137,7 @@ app.mount("#app")
                     image.src = base64
                     image.onload = () => {
                         // 图片加载完成后再插入，记得传入图片宽高
-                        editor.commands.insertCustomImage({ 
+                        editor.commands.setImage({ 
                             src: base64, 
                             alt: '占位图片', 
                             width: image.width, 
@@ -193,27 +193,28 @@ app.mount("#app")
 
 
 ### 工具栏清单
-- ExtensionHistory 撤回/重做
-- ExtensionBold  加粗
-- ExtensionItalic 倾斜
-- ExtensionStrike 删除线
-- ExtensionUnderline 下划线
-- ExtensionHighlight 高亮
-- ExtensionColor 颜色
-- ExtensionBackgroundColor 背景颜色
-- ExtensionHeading 标题
-- ExtensionTextAlign 对齐方式
-- ExtensionLineHeight 行高
-- ExtensionCode 代码背景
-- ExtensionCodeBlockLowlight 代码块
-- ExtensionSubscript 上标
-- ExtensionSuperscript 下标
-- ExtensionOrderedList 有序列表
-- ExtensionBulletList 无序列表
-- ExtensionHorizontalRule 水平线
-- ExtensionBlockquote 引用
-- ExtensionTable 表格
-- ExtensionLink 链接
-- ExtensionImage 图片
-- ExtensionTaskItem 任务列表
-- ExtensionClear 清空文档内容
+- History 撤回/重做
+- Bold  加粗
+- Italic 倾斜
+- Strike 删除线
+- Underline 下划线
+- Highlight 高亮
+- Color 颜色
+- BackgroundColor 背景颜色
+- Heading 标题
+- TextAlign 对齐方式
+- LineHeight 行高
+- Code 代码背景
+- CodeBlockLowlight 代码块
+- Subscript 上标
+- Superscript 下标
+- OrderedList 有序列表
+- BulletList 无序列表
+- HorizontalRule 水平线
+- Blockquote 引用
+- Table 表格
+- Link 链接
+- Image 图片
+- TaskItem 任务列表
+- Clear 清空文档内容
+- Emojis 表情

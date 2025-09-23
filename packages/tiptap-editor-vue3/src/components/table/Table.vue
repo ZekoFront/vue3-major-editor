@@ -1,5 +1,5 @@
 <template>
-<NPopover ref="tablePopoverRef" content-class="toolbar-table-picker__popover" style="max-height: 340px;max-width: 335px;" trigger="click" placement="bottom" scrollable :on-update:show="doTable">
+<NPopover ref="tablePopoverRef" content-class="toolbar-table-picker__popover" style="max-height: 340px;max-width: 335px;" trigger="click" placement="top" scrollable :on-update:show="doTable">
 <template #trigger>
     <NTooltip placement="top" trigger="hover">
         <template #trigger>
@@ -34,11 +34,23 @@
 
 <script lang="ts" setup name="Table">
 import { Editor } from '@tiptap/vue-3';
-import { inject, reactive, ref } from 'vue';
 import { NTooltip, NPopover } from "naive-ui";
 import { useNaiveDiscrete } from '@/hooks/navie-ui';
 
-const editor = inject('editor') as Editor
+const { editor } = defineProps({
+    editor: {
+      type: Editor,
+      required: true,
+    },
+    isReadonly: {
+        type: Boolean,
+        default: false,
+    },
+    tipText: {
+        type: String,
+        default: '暂无提示'
+    }
+})
 const { message, dialog, modal } = useNaiveDiscrete();
 
 // 表格

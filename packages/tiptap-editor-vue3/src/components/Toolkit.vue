@@ -13,29 +13,58 @@
         v-bind="item.componentProps" 
         :is="item.component" 
         :key="index"
+        :customImageUpload="customImageUpload"
+        :headingLevel="headingLevel"
         @onUploadImageCallBack="onUploadImageCallBack">
     </component>
+    <NTooltip placement="top" trigger="hover">
+        <template #trigger>
+           <button class="toolbar-icon--btn" data-editor-toolbar-btn="true"  @click="updateContent">
+                <NIcon size="21">
+                    <ContentView32Regular></ContentView32Regular>
+                </NIcon>
+            </button>
+        </template>
+        <span >目录</span>
+    </NTooltip>
+    
     <button class="toolbar-icon--btn" data-editor-toolbar-btn="true">
         <span style="color: var(--theme-color);font-weight: bold;">{{ editor.storage.characterCount.characters()}}</span>
         <span>&nbsp;/&nbsp;{{ characterCount }}</span>
     </button>
+    
     <!-- 自定义行高会段落冲突，暂时注释 -->
     <!-- <ParagraphUI></ParagraphUI> -->
 </div>
 </template>
 
 <script lang="ts" setup name="Toolkit">
-import { Editor } from '@tiptap/vue-3'
+import { NIcon,NTooltip } from 'naive-ui'
+import { ContentView32Regular } from '@vicons/fluent'
+import { Editor } from '@tiptap/core';
 // 段落
 import ParagraphUI from './paragraph/index.vue';
 import ErrorImage from "../icons/error-image.svg"; 
 
-const editor = inject('editor') as Editor
-const emits = defineEmits(['onUploadImageCallBack'])
+const emits = defineEmits(['onUploadImageCallBack','onIsShowContent'])
 const props = defineProps({
     characterCount: {
         type:Number,
         default: 10000
+    },
+    editor: {
+      type: Editor,
+      required: true,
+    },
+    customImageUpload: {
+        type: Boolean,
+        default: false
+    },
+    headingLevel: {
+        type: Number,
+        default: () => {
+            return 7
+        }
     }
 })
 
@@ -45,11 +74,11 @@ interface CusIconType {
 }
 
 const cusComponentIcon = computed(() => {
-    const extensions = editor.extensionManager.extensions
+    const extensions = props.editor.extensionManager.extensions
     const tiptapExtensions = extensions.reduce<CusIconType[]>((pre, cur) => {
         const { onClick } = cur.options;
         if (typeof onClick !== 'function') return pre;
-        const extensionData = onClick({ editor: editor });
+        const extensionData = onClick({ editor: props.editor, extension: cur });
         return Array.isArray(extensionData)
         ? [...pre, ...extensionData]
         : [...pre, extensionData];
@@ -57,8 +86,12 @@ const cusComponentIcon = computed(() => {
     return tiptapExtensions
 })
 
-const onUploadImageCallBack = (file: FileList) => {
+const onUploadImageCallBack = (file: FileList|string) => {
     emits('onUploadImageCallBack', file)
+}
+
+const updateContent = () => {
+    emits('onIsShowContent', true)
 }
 
 </script>

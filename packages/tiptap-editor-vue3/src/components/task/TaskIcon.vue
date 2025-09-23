@@ -1,5 +1,5 @@
 <template>
-<NTooltip placement="bottom" trigger="hover">
+<NTooltip placement="top" trigger="hover">
     <template #trigger>
         <button class="toolbar-icon--btn" data-editor-toolbar-btn="true" @click="handleTaskList()">
             <svg viewBox="0 0 1024 1024" width="200" height="200">
@@ -17,7 +17,28 @@
 import { Editor } from '@tiptap/vue-3';
 import { NTooltip } from "naive-ui";
 
-const editor = inject('editor') as Editor;
+const { editor } = defineProps({
+    editor: {
+      type: Editor,
+      required: true,
+    },
+    isActive: {
+        type: Boolean,
+        default: false,
+    },
+    isReadonly: {
+        type: Boolean,
+        default: false,
+    },
+    colors: {
+        type: Array<string>,
+        default: []
+    },
+    tipText: {
+        type: String,
+        default: '暂无提示'
+    }
+})
 
 // 创建任务列表
 const handleTaskList = () => {
