@@ -47,8 +47,5 @@
         "Web Rich Text"
     ],
     "author": "ZekoFront",
-    "license": "MIT",
-    "dependencies": {
-        "@tiptap/extension-heading": "3.3.0"
-    }
+    "license": "MIT"
 }
