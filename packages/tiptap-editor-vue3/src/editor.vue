@@ -15,7 +15,7 @@
     </drag-handle>    
      <div class="tiptap-editor__body">
         <EditorContent :class="['tiptap-editor__content', editorContentClass]" :editor="editor" @contextmenu="onContextmenu"></EditorContent>
-        <ContentsNav :class="['tiptap-editor__navigation', editorContentsNavClass]" :editor="editor" v-model:isShowContent="isShowContent"></ContentsNav>
+        <ContentsNav v-if="isEnabledContent" :class="['tiptap-editor__navigation', editorContentsNavClass]" :editor="editor" v-model:isShowContent="isShowContent"></ContentsNav>
     </div>
     <BubbleMenus :editor="editor"></BubbleMenus>
     <ContextMenus :editor="editor" ref="contextMenuRef"></ContextMenus>
@@ -64,6 +64,10 @@ const props = defineProps({
         default: true
     },
     isShowToolbar: {
+        type: Boolean,
+        default: true
+    },
+    isEnabledContent: {
         type: Boolean,
         default: true
     },

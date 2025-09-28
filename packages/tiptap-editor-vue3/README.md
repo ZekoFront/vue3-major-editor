@@ -183,7 +183,8 @@ app.mount("#app")
 
 | 参数             | 类型    | 描述                                                    |
 | ---------------- | ------- | ------------------------------------------------------- |
-| isEditable         | boolean | 启用编辑器                                              |
+| isEditable       | boolean | 启用编辑器                                              |
+| isEnabledContent | boolean | 是否启用文档目录                                         |
 | isShowToolbar    | boolean | 启用工具栏                                              |
 | characterCount   | number  | 字数提示                                                |
 | customFileUpload | boolean | 自定义上传，开启后通过onUploadImage事件监听上传文件内容 |
