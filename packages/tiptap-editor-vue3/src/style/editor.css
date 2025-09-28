@@ -1,7 +1,7 @@
 /* Basic editor styles */
 @layer tiptap {
     .ProseMirror>* {
-        margin-left: 1.5rem;
+        margin-left: 16px;
     }
 
     .tiptap:focus {

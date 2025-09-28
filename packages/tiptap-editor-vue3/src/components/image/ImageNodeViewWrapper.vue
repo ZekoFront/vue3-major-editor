@@ -1,5 +1,5 @@
 <template>
-<node-view-wrapper as="span" :class="imageViewClass">
+<node-view-wrapper as="span" :class="imageViewClass" :style="styles">
     <div ref="dragModifiedImageRef" :class="[
         'tiptap-image-view__body drag-modified-image-size',
         { 'tiptap-image-view__body--actived': isSelected }
@@ -30,6 +30,7 @@ import { NodeViewProps } from "@tiptap/core";
 // 图片菜单
 import ImageBubbleMenu from "@/components/bubble-menu/ImageBubbleMenu.vue";
 import { DEFAULT_IMAGE_HEIGHT, DEFAULT_IMAGE_WIDTH, resolveImg } from "@/utils";
+import type { CSSProperties } from 'vue';
 
 defineOptions({
     name: 'ImageNodeViewWrapper'
@@ -39,13 +40,12 @@ const props = defineProps({ ...nodeViewProps });
 
 // const emits = defineEmits(["updateAttributes"]);
 
-const directionList = ref(['top-left','top','top-right','right','bottom-right','bottom','bottom-left','left'])
+// const directionList = ref(['top-left','top','top-right','right','bottom-right','bottom','bottom-left','left'])
+const directionList = ref(['top-left','top-right','bottom-right','bottom-left'])
 
 const imageElement = ref<HTMLImageElement>();
 const dragModifiedImageRef = ref<HTMLDivElement>()
 const isUploading = ref(false);
-const originalWidth = ref(0);
-const originalHeight = ref(0);
 const title = ref(props.node.attrs.title || "");
 // tiptap3.0选中状态自定义
 const isSelected = ref(false)
@@ -67,19 +67,28 @@ const selectedImage = () => {
 }
 
 // 八个点位拖拽修改图片尺寸
+let startX = 0,
+    startY = 0,
+    startWidth = 0,
+    startHeight = 0,
+    startLeft = 0,
+    startTop = 0,
+    direction:string = '';
+const isDragging = ref(false)
+const styles = ref<CSSProperties>({
+    width: imageWidth.value+'px',
+    height: imageHeight.value+'px'
+})
+
 const onHandleBtnDrag = (event:MouseEvent) => {
+    isDragging.value = true
     event.preventDefault()
     event.stopPropagation()
     const currentHandle = event.target as HTMLElement;
-    const direction = currentHandle.className.split(" ")[1];
-
-    const startX = event.clientX;
-    const startY = event.clientY;
-    let startWidth = 0,
-        startHeight = 0,
-        startLeft = 0,
-        startTop = 0;
-
+    direction = currentHandle.className.split(" ")[1];
+    startX = event.clientX;
+    startY = event.clientY;
+    
     if (dragModifiedImageRef.value) {
         const rect = dragModifiedImageRef.value.getBoundingClientRect()
         startWidth = rect.width;
@@ -88,51 +97,64 @@ const onHandleBtnDrag = (event:MouseEvent) => {
         startTop = rect.top;
     }
     
-    document.addEventListener("mousemove", resize);
+    document.addEventListener("mousemove", resizeImage);
     document.addEventListener("mouseup", stopResize);
-    function resize(event:MouseEvent) {
-        const dx = event.clientX - startX;
-        const dy = event.clientY - startY;
-        let width = startWidth,
-        height = startHeight,
-        left = startLeft,
-        top = startTop;
+}
+
+function resizeImage(event:MouseEvent) {
+    if (!isDragging.value) return
+
+    const dx = event.clientX - startX;
+    const dy = event.clientY - startY;
+    let width = startWidth,
+    height = startHeight,
+    left = startLeft,
+    top = startTop;
+    if (direction.includes("left")) {
+        width = startWidth - dx;
+        left = startLeft + dx;
+    }
+    if (direction.includes("right")) {
+        width = startWidth + dx;
+        left = startLeft + dx;
+    }
+    if (direction.includes("top")) {
+        height = startHeight - dy;
+        top = startTop + dy;
+    }
+    if (direction.includes("bottom")) {
+        height = startHeight + dy;
+        top = startTop + dy;
+    }
+    if (width <= 0 || height <= 0) return;
+
+    if (dragModifiedImageRef.value) {
+        const newWidth = Math.max(100, width);
+        const newHeight = Math.max(100, height)
+        dragModifiedImageRef.value.style.width = newWidth+'px';
+        dragModifiedImageRef.value.style.height = newHeight+'px';
+        styles.value.width = newWidth+'px'
+        styles.value.height = newHeight+'px'
+
         if (direction.includes("left")) {
-            width = startWidth - dx;
-            left = startLeft + dx / 2;
+            // dragModifiedImageRef.value.style.left = left-startX+'px';
+        } else if (direction.includes("top")) {
+            // dragModifiedImageRef.value.style.top = top-startY+'px';
         }
-        if (direction.includes("right")) {
-            width = startWidth + dx;
-            left = startLeft + dx / 2;
-        }
-        if (direction.includes("top")) {
-            height = startHeight - dy;
-            top = startTop + dy / 2;
-        }
-        if (direction.includes("bottom")) {
-            height = startHeight + dy;
-            top = startTop + dy / 2;
-        }
-        if (width <= 0 || height <= 0) return;
 
-        if (dragModifiedImageRef.value) {
-            const iw = Math.max(100, width);
-            const ih = Math.max(100, height)
-            dragModifiedImageRef.value.style.width = iw+'px';
-            dragModifiedImageRef.value.style.height = ih+'px';
+        // 调用当前节点updateAttributes
+        props.updateAttributes({
+            width: newWidth,
+            height: newHeight,
+        });
+    }
+}
 
-            // 调用当前节点updateAttributes
-            props.updateAttributes({
-                width: iw,
-                height: ih,
-            });
-        }
-    }
-    function stopResize() {
-        selectedImage();
-        document.removeEventListener("mousemove", resize);
-        document.removeEventListener("mouseup", stopResize);
-    }
+function stopResize() {
+    selectedImage();
+    isDragging.value = false
+    document.removeEventListener("mousemove", resizeImage);
+    document.removeEventListener("mouseup", stopResize);
 }
 
 // 图片上传处理
@@ -190,8 +212,9 @@ onMounted(() => {
     float: none;
     user-select: none;
     vertical-align: baseline;
+    position: relative;
     &--inline {
-        margin-left: 12px;
+        margin-left: 0px;
         margin-right: 12px;
     }
     &--block {
@@ -210,7 +233,9 @@ onMounted(() => {
 }
 
 .tiptap-image-view__body {
-    position: relative;
+    position: absolute;
+    left: 0px;
+    top: 0px;
     display: inline-block;
 }
 

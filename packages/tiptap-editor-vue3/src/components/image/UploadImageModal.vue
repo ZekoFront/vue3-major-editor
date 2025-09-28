@@ -39,7 +39,7 @@
 <template #action>
 <div>
 <n-button style="margin-right: 10px;" @click="onNegativeClick">取消</n-button>
-<n-button type="primary" @click="onPositiveClick">立即上传图片{{ customImageUpload }}</n-button>   
+<n-button type="primary" @click="onPositiveClick">立即上传图片</n-button>
 </div>
 </template>
 </n-modal>
