@@ -46,7 +46,6 @@ import { extensionsArray } from './extensions';
 
 // 过滤编辑器类容，防止xss攻击, 生产环境
 import DOMPurify from 'dompurify';
-// import { useToolsStore } from "./store/tools";
 
 const contents = defineModel<string>("content", {
     default: "",
@@ -180,18 +179,20 @@ const editor = new Editor({
 
 console.log('edior:',editor)
 const { contextMenuRef, onContextmenu } = useContextMenu(editor)
+
 const selectText = () => {
-//  const is = editor.commands.setTextSelection({ from: 2, to: 13 })
-//  editor.commands.focus();
-// editor.commands.insertContent('<h1>Example Text</h1>')
- editor
-.chain()
-.focus()
-.insertContent(
-    '<ul data-type="taskList"><li data-type="taskItem" data-checked="false"><p>New Task</p></li></ul>'
-)
-.run();
+    //  const is = editor.commands.setTextSelection({ from: 2, to: 13 })
+    //  editor.commands.focus();
+    // editor.commands.insertContent('<h1>Example Text</h1>')
+    editor
+    .chain()
+    .focus()
+    .insertContent(
+        '<ul data-type="taskList"><li data-type="taskItem" data-checked="false"><p>New Task</p></li></ul>'
+    )
+    .run();
 }
+
 // 获取标题类型
 function detectHeadingType (editor:Editor) {
     const { state } = editor;

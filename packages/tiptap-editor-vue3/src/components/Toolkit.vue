@@ -27,6 +27,14 @@
         </template>
         <span >目录</span>
     </NTooltip>
+    <NTooltip placement="top" trigger="hover">
+        <template #trigger>
+            <button class="toolbar-icon--btn" data-editor-toolbar-btn="true"  @click="exportDocx">
+                <component :is="'docx-icon'"></component>
+            </button>
+        </template>
+        <span >导出docx</span>
+    </NTooltip>
     
     <button class="toolbar-icon--btn" data-editor-toolbar-btn="true">
         <span style="color: var(--theme-color);font-weight: bold;">{{ editor.storage.characterCount.characters()}}</span>
@@ -39,9 +47,11 @@
 </template>
 
 <script lang="ts" setup name="Toolkit">
-import { NIcon,NTooltip } from 'naive-ui'
+import { NIcon,NTooltip} from 'naive-ui'
 import { ContentView32Regular } from '@vicons/fluent'
 import { Editor } from '@tiptap/core';
+import { asBlob } from "html-docx-js-typescript";
+import { saveAs } from "file-saver";
 // 段落
 import ParagraphUI from './paragraph/index.vue';
 import ErrorImage from "../icons/error-image.svg"; 
@@ -85,6 +95,14 @@ const cusComponentIcon = computed(() => {
     },[]);
     return tiptapExtensions
 })
+
+const exportDocx = () => {
+    asBlob(props.editor.getHTML()).then((data) => {
+        saveAs(data as Blob, `DOCX_${Date.now()}.docx`);
+    }).catch(err => {
+        console.log(err)
+    });
+}
 
 const onUploadImageCallBack = (file: FileList|string) => {
     emits('onUploadImageCallBack', file)
