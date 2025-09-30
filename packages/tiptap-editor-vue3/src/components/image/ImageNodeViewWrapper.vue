@@ -1,50 +1,38 @@
 <template>
-<node-view-wrapper as="span" :class="imageViewClass" :style="styles">
-    <div ref="dragModifiedImageRef" :class="[
-        'tiptap-image-view__body drag-modified-image-size',
-        { 'tiptap-image-view__body--actived': isSelected }
-    ]">
+<node-view-wrapper as="span" :class="imageViewClass">
+    <div class="tiptap-image-view__body">
         <img 
             :src="imageURL" 
             :alt="node.attrs.alt" 
             :width="imageWidth" 
             :height="imageHeight" 
-            ref="imageElement"
             class="tiptap-image-element" 
             :title="title"
             @click="selectedImage"
         />
         <div v-if="isUploading" class="upload-status">upload...</div>
-        <template v-if="isSelected">
+        <div class="image-view-resizer" v-if="selected||isDragging">
             <div :class="['resize-handle-btn', item]" @mousedown="onHandleBtnDrag" v-for="(item, index) in directionList" :key="index"></div> 
-        </template>
+        </div>
 
-        <ImageBubbleMenu :updateAttrs="updateAttributes" :editor="editor" :node="node" :is-show="isSelected"></ImageBubbleMenu>
+        <ImageBubbleMenu :updateAttrs="updateAttributes" :editor="editor" :node="node" :is-show="selected"></ImageBubbleMenu>
     </div>
 </node-view-wrapper>
 </template>
 
 <script setup lang="ts" name="ImageNodeViewWrapper">
+import { clamp, useResizeObserver } from '@vueuse/core'
 import { nodeViewProps, NodeViewWrapper } from "@tiptap/vue-3";
 import { NodeViewProps } from "@tiptap/core";
 // 图片菜单
 import ImageBubbleMenu from "@/components/bubble-menu/ImageBubbleMenu.vue";
-import { DEFAULT_IMAGE_HEIGHT, DEFAULT_IMAGE_WIDTH, resolveImg } from "@/utils";
+import { DEFAULT_IMAGE_HEIGHT, MAX_SIZE, MIN_SIZE, resolveImg } from "@/utils";
 import type { CSSProperties } from 'vue';
-
-defineOptions({
-    name: 'ImageNodeViewWrapper'
-})
 
 const props = defineProps({ ...nodeViewProps });
 
-// const emits = defineEmits(["updateAttributes"]);
+const directionList = ref(['tl','tr','br','bl'])
 
-// const directionList = ref(['top-left','top','top-right','right','bottom-right','bottom','bottom-left','left'])
-const directionList = ref(['top-left','top-right','bottom-right','bottom-left'])
-
-const imageElement = ref<HTMLImageElement>();
-const dragModifiedImageRef = ref<HTMLDivElement>()
 const isUploading = ref(false);
 const title = ref(props.node.attrs.title || "");
 // tiptap3.0选中状态自定义
@@ -67,18 +55,30 @@ const selectedImage = () => {
 }
 
 // 八个点位拖拽修改图片尺寸
-let startX = 0,
-    startY = 0,
-    startWidth = 0,
-    startHeight = 0,
-    startLeft = 0,
-    startTop = 0,
-    direction:string = '';
 const isDragging = ref(false)
-const styles = ref<CSSProperties>({
-    width: imageWidth.value+'px',
-    height: imageHeight.value+'px'
+const resizerParams = ref<{
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    dir: string
+}>({
+    x: 0,
+    y: 0,
+    w: 0,
+    h: 0,
+    dir: '',
 })
+const originalSize = ref<CSSProperties>({
+    width: 0,
+    height: 0
+})
+const maxSize = ref<CSSProperties>({
+    width: MAX_SIZE,
+    height: MAX_SIZE
+})
+const resizeObserver = ref<ResizeObserver>()
+let direction:string = '';
 
 const onHandleBtnDrag = (event:MouseEvent) => {
     isDragging.value = true
@@ -86,76 +86,79 @@ const onHandleBtnDrag = (event:MouseEvent) => {
     event.stopPropagation()
     const currentHandle = event.target as HTMLElement;
     direction = currentHandle.className.split(" ")[1];
-    startX = event.clientX;
-    startY = event.clientY;
-    
-    if (dragModifiedImageRef.value) {
-        const rect = dragModifiedImageRef.value.getBoundingClientRect()
-        startWidth = rect.width;
-        startHeight = rect.height;
-        startLeft = rect.left;
-        startTop = rect.top;
+
+    resizerParams.value.x = event.clientX;
+    resizerParams.value.y = event.clientY;
+
+    const originalWidth = Number(originalSize.value.width);
+    const originalHeight = Number(originalSize.value.height);
+    const aspectRatio = originalWidth / originalHeight;
+
+    let { width, height } = props.node!.attrs;
+    const maxWidth = Number(maxSize.value.width);
+
+    if (width && !height) {
+        width = width > maxWidth ? maxWidth : width;
+        height = Math.round(width / aspectRatio);
+    } else if (height && !width) {
+        width = Math.round(height * aspectRatio);
+        width = width > maxWidth ? maxWidth : width;
+    } else if (!width && !height) {
+        width = originalWidth > maxWidth ? maxWidth : originalWidth;
+        height = Math.round(width / aspectRatio);
+    } else {
+        width = width > maxWidth ? maxWidth : width;
     }
-    
-    document.addEventListener("mousemove", resizeImage);
-    document.addEventListener("mouseup", stopResize);
+
+    resizerParams.value.w = width;
+    resizerParams.value.h = height;
+    resizerParams.value.dir = direction;
+
+    onEvents()
 }
 
 function resizeImage(event:MouseEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+
     if (!isDragging.value) return
 
-    const dx = event.clientX - startX;
-    const dy = event.clientY - startY;
-    let width = startWidth,
-    height = startHeight,
-    left = startLeft,
-    top = startTop;
-    if (direction.includes("left")) {
-        width = startWidth - dx;
-        left = startLeft + dx;
-    }
-    if (direction.includes("right")) {
-        width = startWidth + dx;
-        left = startLeft + dx;
-    }
-    if (direction.includes("top")) {
-        height = startHeight - dy;
-        top = startTop + dy;
-    }
-    if (direction.includes("bottom")) {
-        height = startHeight + dy;
-        top = startTop + dy;
-    }
-    if (width <= 0 || height <= 0) return;
+    const { x, y, w, h, dir } = resizerParams.value;
 
-    if (dragModifiedImageRef.value) {
-        const newWidth = Math.max(100, width);
-        const newHeight = Math.max(100, height)
-        dragModifiedImageRef.value.style.width = newWidth+'px';
-        dragModifiedImageRef.value.style.height = newHeight+'px';
-        styles.value.width = newWidth+'px'
-        styles.value.height = newHeight+'px'
+    const dx = (event.clientX - x) * (/l/.test(dir) ? -1 : 1);
+    const dy = (event.clientY - y) * (/t/.test(dir) ? -1 : 1);
 
-        if (direction.includes("left")) {
-            // dragModifiedImageRef.value.style.left = left-startX+'px';
-        } else if (direction.includes("top")) {
-            // dragModifiedImageRef.value.style.top = top-startY+'px';
-        }
-
-        // 调用当前节点updateAttributes
-        props.updateAttributes({
-            width: newWidth,
-            height: newHeight,
-        });
-    }
+    props.updateAttributes?.({
+        width: clamp(w + dx, MIN_SIZE, Number(maxSize.value.width)),
+        height: Math.max(h + dy, MIN_SIZE),
+    });
 }
 
-function stopResize() {
+const onMouseUp = (e:MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isDragging.value) return
+    
     selectedImage();
     isDragging.value = false
-    document.removeEventListener("mousemove", resizeImage);
-    document.removeEventListener("mouseup", stopResize);
+    resizerParams.value = {
+        x: 0,
+        y: 0,
+        w: 0,
+        h: 0,
+        dir: '',
+    };
+    offEevents()
 }
+
+const onEvents = () => {
+    document.addEventListener("mousemove", resizeImage, true);
+    document.addEventListener("mouseup", onMouseUp, true);
+}
+const offEevents = () => {
+    document.removeEventListener("mousemove", resizeImage, true);
+    document.removeEventListener("mouseup", onMouseUp, true);
+} 
 
 // 图片上传处理
 const handleUpload = async (file: File) => {
@@ -177,44 +180,53 @@ const handleUpload = async (file: File) => {
         isUploading.value = false;
     }
 };
-const MIN_SIZE = 20;
+
+const getMaxSize = (entry:ResizeObserverEntry) => {
+    const { width, height } = entry.contentRect
+    maxSize.value.width = parseInt(String(width), 10);
+}
+
+
 const init = async () => {
-    // const result = await resolveImg(imageURL.value);
+    const result = await resolveImg(imageURL.value);
 
-    // if (!result.complete) {
-    //   result.width = MIN_SIZE;
-    //   result.height = MIN_SIZE;
-    // }
-    // originalWidth.value = result.width
-    // originalHeight.value = result.height
-
-    nextTick(() => {
-        if (dragModifiedImageRef.value) {
-            dragModifiedImageRef.value.style.width = DEFAULT_IMAGE_WIDTH+'px';
-            dragModifiedImageRef.value.style.height = DEFAULT_IMAGE_HEIGHT+'px';
-        }
-    })
+    if (!result.complete) {
+      result.width = MIN_SIZE;
+      result.height = MIN_SIZE;
+    }
+    originalSize.value.width = result.width
+    originalSize.value.height = result.height
 }
 
 init()
 
 // 初始化时处理图片属性
 onMounted(() => {
+    useResizeObserver(props.editor!.view.dom, (entries) => {
+        const entry = entries[0]
+        getMaxSize(entry)
+    })
+
     if (props.node.attrs.file) {
         handleUpload(props.node.attrs.file);
     }
 });
+
+onBeforeUnmount(() => {
+    resizeObserver.value?.disconnect()
+})
+
 </script>
 <style lang="scss">
 .tiptap-image-view {
-    margin: 1rem 0;
+    margin: 12px 0;
     display: inline-block;
     float: none;
     user-select: none;
     vertical-align: baseline;
-    position: relative;
+    // position: relative;
     &--inline {
-        margin-left: 0px;
+        margin-left: 12px;
         margin-right: 12px;
     }
     &--block {
@@ -233,10 +245,29 @@ onMounted(() => {
 }
 
 .tiptap-image-view__body {
-    position: absolute;
-    left: 0px;
-    top: 0px;
+    clear: both;
     display: inline-block;
+    position: relative;
+    max-width: 100%;
+    outline-color: transparent;
+    outline-style: solid;
+    outline-width: 2px;
+    .tiptap-image-element {
+        display: block;
+        float: none;
+        cursor: pointer;
+        margin: 0;
+        max-width: 100%;
+    }
+    .image-view-resizer {
+        border: 1px solid var(--theme-color);
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        z-index: 1;
+    }
 }
 
 .resize-handle {
@@ -267,75 +298,41 @@ onMounted(() => {
     border-radius: 4px;
 }
 
-.drag-modified-image-size {
-    border: 2px solid transparent;
-    &.tiptap-image-view__body--actived {
-        border: 2px solid var(--theme-color);
-    }
-}
-
 /* 八个调整大小的控制点样式 */
 .resize-handle-btn { 
     position: absolute;
     background: var(--theme-color);
-    width: 8px;
-    height: 8px;
+    width: 12px;
+    height: 12px;
     z-index: 5;
     font-size: 0;
-    border-radius: 50%;
+    // border-radius: 50%;
     border: 1px solid #fff;
     box-shadow: 0 0 2px rgba(0,0,0,0.3);
     transition: transform 0.2s ease;
+    &.tl {
+        top: -5px;
+        left: -5px;
+        cursor: nw-resize;
+    }
+    &.tr {
+        top: -5px;
+        right: -5px;
+        cursor: ne-resize;
+    }
+    &.br {
+        bottom: -5px;
+        right: -5px;
+        cursor: se-resize;
+    }
+    &.bl {
+        bottom: -5px;
+        left: -5px;
+        cursor: sw-resize;
+    }
 } 
 .resize-handle-btn:hover {
     transform: scale(1.2);
     background: var(--theme-color);
-}
-.top-left {
-    top: -5px;
-    left: -5px;
-    cursor: nw-resize;
-}
-
-.top {
-    top: -5px;
-    left: calc(50% - 5px);
-    cursor: ns-resize;
-}
-
-.top-right {
-    top: -5px;
-    right: -5px;
-    cursor: ne-resize;
-}
-
-.right {
-    top: calc(50% - 5px);
-    right: -5px;
-    cursor: ew-resize;
-}
-
-.bottom-right {
-    bottom: -5px;
-    right: -5px;
-    cursor: se-resize;
-}
-
-.bottom {
-    bottom: -5px;
-    left: calc(50% - 5px);
-    cursor: ns-resize;
-}
-
-.bottom-left {
-    bottom: -5px;
-    left: -5px;
-    cursor: sw-resize;
-}
-
-.left {
-    top: calc(50% - 5px);
-    left: -5px;
-    cursor: ew-resize;
 }
 </style>

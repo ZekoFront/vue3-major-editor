@@ -51,11 +51,6 @@ import { Delete20Regular } from "@vicons/fluent"
 import { DEFAULT_IMAGE_HEIGHT, DEFAULT_IMAGE_WIDTH, readFileDataUrl } from "@/utils";
 import { Editor } from "@tiptap/core";
 
-interface TranserType {
-    file:FileList, 
-    formData:FormData
-}
-
 const props = defineProps({
     editor: {
         type: Editor,
@@ -80,10 +75,6 @@ const tipText = ref('图片地址格式错误，请重新输入正确图片地�
 const tabPane = ref('link')
 const currentImages = ref<string[]>([])
 const fileList = ref<FileList>({ length: 0, item: (index) => null })
-const imagesTemp:Ref<TranserType> = ref({
-    file: new DataTransfer().files,
-    formData: new FormData()
-})
 
 const emits = defineEmits(['onUploadImageCallBack'])
 
@@ -146,7 +137,6 @@ const onChangeFile = (evt: Event) => {
     for (let i = 0; i < files.length; i++) {
         const ImageUrl = URL.createObjectURL(files[i])
         currentImages.value.push(ImageUrl)
-        // innerUploadImage(files[i])
     }
 }
 
@@ -198,7 +188,7 @@ defineExpose({
     position: absolute;
     top: 2px;
     right: 3px;
-    color: red;
+    color: var(--theme-color);
     cursor: pointer;
 }
 </style>
