@@ -1,4 +1,3 @@
-import { TaskList } from '@tiptap/extension-list';
 import {Clear} from './Clear'
 import {History} from './History'
 import {BackgroundColor} from './BackgroundColor'
@@ -11,7 +10,6 @@ import {Strike} from './Strike'
 import {Underline} from './Underline'
 import {Code} from './Code'
 // ExtCodeBlockLowlight替换了ExtCodeBlock
-import {CodeBlock} from './CodeBlock'
 import {Subscript} from './Subscript'
 import {Superscript} from './Superscript'
 import {OrderedList} from './OrderedList'
@@ -50,7 +48,6 @@ export const extensionsArray  = [
     Table,
     Link,
     Image,
-    // TaskList,
     TaskItem,
     Emojis,
     Clear

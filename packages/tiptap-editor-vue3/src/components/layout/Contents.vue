@@ -21,6 +21,7 @@
 import { NIcon } from 'naive-ui'
 import { Dismiss20Filled } from '@vicons/fluent'
 import { Editor } from '@tiptap/vue-3'
+import { ensureHeadingIds } from '@/utils'
 
 const props = defineProps({
    editor: {
@@ -36,11 +37,16 @@ const isShowContent = defineModel<boolean>("isShowContent", {
 
 props.editor.on('update', ({ editor }) => {
    nextTick(() => {
-      const { state } = editor;
-      const { selection } = state;
-      const { $from } = selection;
-      let node = $from.node();
-      if (node.type.name === 'heading') {
+      // const { state } = editor;
+      // const { selection } = state;
+      // const { $from } = selection;
+      // let node = $from.node();
+      // if (node.type.name === 'heading') {
+      //    updateDirectory()
+      // }
+      // 粘贴内容比如wps文档标题，会丢失id，所以这里手动添加id
+      const hasModified = ensureHeadingIds(editor)
+      if (!hasModified) {
          updateDirectory()
       }
    })
@@ -55,20 +61,25 @@ const updateDirectory = () => {
 
    if (headers&&headers.length === 0) {
       headerContainer.innerHTML = `<li>暂无数据</li>`
-   } else {
-      headerContainer.innerHTML = headers.map((item, index) => {
-         item.setAttribute('id', item.getAttribute('id')||"")
-         const type = parseInt(item.tagName.slice(1));
-         return `<li id="${item.getAttribute('id')||''}" class="directory-item__cell" type="header${type}">${removeBrTags(item.innerHTML)}</li>`
-      }).join('')
+      return
    }
 
-   headerContainer.addEventListener('mousedown', (event:any) => {
-      if (event.target&&event.target.tagName !== 'LI') return
+   headerContainer.innerHTML = headers.map((item, index) => {
+      const elementID = item.getAttribute('id') || ""
+      item.setAttribute('id', elementID)
+      const type = parseInt(item.tagName.slice(1));
+      return `<li id="${elementID}" class="directory-item__cell" type="header${type}">${removeBrTags(item.innerHTML)}</li>`
+   }).join('')
+
+   headerContainer.onmousedown = (event:any) => {
       event.preventDefault()
-      const id = event.target.id
+      const target = event.target as HTMLElement;
+      // 向上查找最近的 li 元素，确保在容器内
+      const targetLi = target.closest('li');
+      if (!targetLi || !headerContainer.contains(targetLi)) return;
+      const hId = targetLi.id
       // 滚动到标题
-      const targetElement = document.querySelector(`#${id}`);
+      const targetElement = document.querySelector(`#${hId}`);
       if (targetElement) {
          targetElement.scrollIntoView({
             behavior: "smooth",
@@ -76,7 +87,7 @@ const updateDirectory = () => {
             inline: 'nearest'
          });
       }
-   })
+   }
 
    // @ts-ignore
    const li = headerContainer.childNodes
@@ -100,10 +111,10 @@ const closeContents = () => {
 }
 
 function removeBrTags(html:string) {
-    // 匹配各种形式的br标签：<br>、<br/>、<br />等
-    const brRegex = /<br\s*\/?>/gi;
-    // 用空字符串替换所有匹配到的br标签
-    return html.replace(brRegex, '');
+   // 匹配各种形式的br标签：<br>、<br/>、<br />等
+   const brRegex = /<br\s*\/?>/gi;
+   // 用空字符串替换所有匹配到的br标签
+   return html.replace(brRegex, '');
 }
 
 onMounted(() => {

@@ -18,6 +18,7 @@
             :isEditable="true"
             :customImageUpload="false"
             :extensions="[]"
+            @onCreated="onCreated"
             @onUpdate="onUpdate"
             @onUploadImage="onUploadImage">
         </TiptapEditorVue3>
@@ -38,6 +39,7 @@
     const isVisible = ref(false)
     const previewContent = ref('')
     const vue3TiptapEditorRef = ref<HTMLVue3TiptapEditorElement | null>(null)
+    let editors: Editor;   
     nextTick(() => {
         // console.log('vue3TiptapEditorRef:', vue3TiptapEditorRef.value)
     })
@@ -89,24 +91,28 @@ app.mount("#app")</code></pre><p></p><p></p><p></p><p></p><p></p><p></p><p></p><
     }
 
     function getHtml() {
-        if (vue3TiptapEditorRef.value) {
-            console.log(vue3TiptapEditorRef.value.getHTML(), 'HTML');
+        if (editors) {
+            console.log('HTML:',editors.getHTML());
         }
     }
     function getJson() {
-        if (vue3TiptapEditorRef.value) {
-            console.log(vue3TiptapEditorRef.value.getJSON(), 'JSON');
+        if (editors) {
+            console.log('JSON:',editors.getJSON());
         }
     }
     function getText() {
-        if (vue3TiptapEditorRef.value) {
-            console.log(vue3TiptapEditorRef.value.getTEXT(), 'TEXT');
+        if (editors) {
+            console.log('TEXT:',editors.getText());
         }
     }
     function previews() {
-        if (!vue3TiptapEditorRef.value) return
-        previewContent.value = vue3TiptapEditorRef.value.getHTML()
+        if (!editors) return
+        previewContent.value = editors.getHTML()
         isVisible.value = !isVisible.value
+    }
+
+    const onCreated = (editor:Editor) => {
+        editors = editor as Editor
     }
 
     const onUpdate = (val:Editor) => {
@@ -115,6 +121,7 @@ app.mount("#app")</code></pre><p></p><p></p><p></p><p></p><p></p><p></p><p></p><
     }
 
     onBeforeUnmount(() => {
+        editors.destroy()
         vue3TiptapEditorRef.value&&vue3TiptapEditorRef.value.destroy()
     })
 </script>

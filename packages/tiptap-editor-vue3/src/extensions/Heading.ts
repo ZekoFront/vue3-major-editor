@@ -79,13 +79,23 @@ export const Heading = Node.create<HeadingOptions>({
 
     addAttributes() {
         return {
+            // 继承原有的属性（如 level）
+            ...this.parent?.(),
             level: {
                 default: 1,
                 rendered: false,
             },
             id: {
-                default: '',
-                rendered: false,
+                default: null,
+                parseHTML: element => element.getAttribute('id'),
+                renderHTML: attributes => {
+                    if (!attributes.id) {
+                        return {}
+                    }
+                    return {
+                        id: attributes.id,
+                    }
+                },
             },
         }
     },

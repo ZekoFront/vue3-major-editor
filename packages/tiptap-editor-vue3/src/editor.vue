@@ -125,8 +125,6 @@ const editor = new Editor({
         TaskList,
         TaskItem,
         NodeRange.configure({
-          // allow to select only on depth 0
-          // depth: 0,
           key: null,
         }),
         ...extensionSet,
@@ -163,6 +161,7 @@ const editor = new Editor({
         editor.commands.setContent(newContent, {
             emitUpdate: true
         });
+        emits('onCreated', editor)
     },
     onUpdate ({editor}) {
         emits('onUpdate', editor)

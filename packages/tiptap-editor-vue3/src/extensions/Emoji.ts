@@ -18,7 +18,7 @@ const Emojis = Emoji.extend({
                         shortcutKeys: 'Ctrl+B',
                         editor: editor,
                         command: () => {
-                            editor.commands.toggleBold()
+                            // editor.commands.toggleBold()
                         }
                     }
                 }
