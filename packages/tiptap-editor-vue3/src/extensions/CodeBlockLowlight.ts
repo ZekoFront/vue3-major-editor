@@ -20,6 +20,14 @@ lowlights.register('ts', ts)
 const CodeBlockLowlight = TiptapCodeBlockLowlight.extend({
     addOptions() {
         return {
+            HTMLAttributes: {},
+            lowlight: lowlights,
+            languageClassPrefix: 'language-',
+            exitOnTripleEnter: true,
+            exitOnArrowDown: true,
+            defaultLanguage: null,
+            enableTabIndentation: true,
+            tabSize: 4,
             ...this.parent?.(),
             bubble: true,
             onClick: ({ editor }:{editor:Editor}) => {

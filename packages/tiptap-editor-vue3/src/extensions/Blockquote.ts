@@ -5,9 +5,10 @@ import ButtonIcon from '../components/ButtonIcon.vue'
 const Blockquote = TiptapBlockquote.extend({
     addOptions() {
         return {
+            HTMLAttributes: {},
             ...this.parent?.(),
             bubble: true,
-            onClick: ({ editor }:{editor:Editor}) => {
+            onClick: ({ editor } : { editor: Editor }) => {
                 return {
                     component: ButtonIcon,
                     componentProps: {

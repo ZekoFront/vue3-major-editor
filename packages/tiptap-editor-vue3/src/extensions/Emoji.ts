@@ -5,6 +5,17 @@ import EmojiIcon from '@/components/emoji/EmojiIcon.vue'
 const Emojis = Emoji.extend({
     addOptions() {
         return {
+            HTMLAttributes: {},
+            emojis: [],
+            enableEmoticons: true,
+            forceFallbackImages: false,
+            enableSuggestion: true,
+            suggestion: {
+                char: ':',
+                minChars: 2,
+                allowedPrefixes: [''],
+                allowedSuffixes: [''],
+            },
             ...this.parent?.(),
             bubble: true,
             onClick: ({ editor }:{editor:Editor}) => {

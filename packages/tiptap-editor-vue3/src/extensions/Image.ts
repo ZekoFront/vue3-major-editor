@@ -73,6 +73,9 @@ export const Image = TiptapImage.extend({
     },
     addOptions () {
         return {
+            HTMLAttributes: {},
+            allowBase64: true,
+            resize: false,
             ...this.parent?.(),
             inline: true,
             onClick: ({ editor }:{ editor: Editor }) => {

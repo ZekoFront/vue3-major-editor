@@ -13,9 +13,9 @@
         v-bind="item.componentProps" 
         :is="item.component" 
         :key="index"
-        :customImageUpload="customImageUpload"
         :headingLevel="headingLevel"
-        @onUploadImageCallBack="onUploadImageCallBack">
+        :defaultConfig="defaultConfig"
+        >
     </component>
     <NTooltip placement="top" trigger="hover">
         <template #trigger>
@@ -56,7 +56,7 @@ import { saveAs } from "file-saver";
 import ParagraphUI from './paragraph/index.vue';
 import ErrorImage from "../icons/error-image.svg"; 
 
-const emits = defineEmits(['onUploadImageCallBack','onIsShowContent'])
+const emits = defineEmits(['onIsShowContent'])
 const props = defineProps({
     characterCount: {
         type:Number,
@@ -66,16 +66,21 @@ const props = defineProps({
       type: Editor,
       required: true,
     },
-    customImageUpload: {
-        type: Boolean,
-        default: false
-    },
     headingLevel: {
         type: Number,
         default: () => {
             return 7
         }
-    }
+    },
+    defaultConfig: {
+        type: Object,
+        default: () => ({
+            uploadImage: {
+                customUpload: (file: File) => {},
+                imageLink: (link: string) => {},
+            }
+        })
+    },
 })
 
 interface CusIconType {
@@ -102,10 +107,6 @@ const exportDocx = () => {
     }).catch(err => {
         console.log(err)
     });
-}
-
-const onUploadImageCallBack = (file: FileList|string) => {
-    emits('onUploadImageCallBack', file)
 }
 
 const updateContent = () => {

@@ -10,20 +10,21 @@
             <button style="margin: 0 10px;" @click="getHtml">获取 HTML</button>
             <button style="margin-right:10px;" @click="getJson">获取 Json</button>
             <button style="margin-right:10px;" @click="getText">获取 Text</button>
+            <button style="margin-right:10px;" @click="clearText">清空文档</button>
             <button style="margin-right:10px;" @click="previews">预览</button>
         </section>
         <TiptapEditorVue3
             ref="vue3TiptapEditorRef"
             v-model:content="htmlContent" 
             :isEditable="true"
-            :customImageUpload="false"
             :extensions="[]"
+            :defaultConfig="defaultConfig"
             @onCreated="onCreated"
             @onUpdate="onUpdate"
-            @onUploadImage="onUploadImage">
+        >
         </TiptapEditorVue3>
     </div>
-    <n-drawer v-model:show="isVisible" :width="502" placement="right">
+    <n-drawer v-model:show="isVisible" :width="800" placement="right">
         <n-drawer-content title="预览" closable>
             <div v-html="previewContent"></div>
         </n-drawer-content>
@@ -39,7 +40,40 @@
     const isVisible = ref(false)
     const previewContent = ref('')
     const vue3TiptapEditorRef = ref<HTMLVue3TiptapEditorElement | null>(null)
-    let editors: Editor;   
+    let editors: Editor;
+    const defaultConfig = {
+        uploadImage: {
+            imageLink: (link: string) => {
+                console.log(link, editors, 'imageLink')
+                editors.commands.setImage({ src: link })
+            },
+            customUpload: (file: FileList) => {
+                console.log(file, editors, 'customUpload')
+                for (let i = 0; i < file.length; i++) {
+                    if (file[i]) {
+                        setImageOne(file[i])
+                    }
+                }
+            }
+        }
+    }
+
+    const setImageOne = (file: File) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const base64 = event.target?.result as string;
+            editors.commands.setImage({ src: base64 })
+        }
+        reader.readAsDataURL(file)
+    }
+
+    // 清空文档
+    const clearText = () => {
+        if (editors) {
+            editors.commands.clearContent()
+        }
+    }
+
     nextTick(() => {
         // console.log('vue3TiptapEditorRef:', vue3TiptapEditorRef.value)
     })
@@ -53,42 +87,6 @@ import "tiptap-editor-vue3/dist/css/style.css";
 const app = createApp(App)
 app.use(TiptapEditorVue3)
 app.mount("#app")</code></pre><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><h2 id="H2-44c3d9f5-5754-40a2-b2cd-839b47e5c425">防核辐射的反对66</h2><p><br></p>`)
-    // const htmlContent = ref(`<img src=x onerror=alert(1)//>`)
-
-    // 仅支持base64和URL两种模式
-    const onUploadImage = ({ file, editor }:{ file: FileList|string, editor: Editor }) => {
-        // console.log(file, 8888)
-        const formData = new FormData()
-        // 此处可以自定义上传图片逻辑，这里需要调用 editor.commands.insertCustomImage 来插入图片
-        for (let i = 0; i < file.length; i++) {
-            if (file[i]) {
-                formData.append('file', file[i])
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    const base64 = event.target?.result as string;
-                    const image = new Image()
-                    image.src = base64
-                    image.onload = () => {
-                        // 图片加载完成后再插入，记得传入图片宽高
-                        // editor.commands.insertCustomImage({ 
-                        //     src: base64, 
-                        //     alt: '占位图片', 
-                        //     width: image.width, 
-                        //     height: image.height,
-                        //     title: file[i].name 
-                        // });
-                    }
-                    
-                    // 监听错误事件
-                    image.onerror = () => {
-                        console.error('图片加载失败');
-                    }
-                }
-
-                // reader.readAsDataURL(file[i])
-            }
-        }
-    }
 
     function getHtml() {
         if (editors) {

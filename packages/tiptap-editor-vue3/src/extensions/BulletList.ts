@@ -5,6 +5,10 @@ import ButtonIcon from '../components/ButtonIcon.vue'
 const BulletList = TiptapBulletList.extend({
     addOptions() {
         return {
+            HTMLAttributes: {},
+            itemTypeName: 'listItem',
+            keepMarks: false,
+            keepAttributes: false,
             ...this.parent?.(),
             onClick: ({ editor }:{editor:Editor}) => {
                 return {

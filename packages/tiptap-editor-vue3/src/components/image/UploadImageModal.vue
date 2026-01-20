@@ -60,11 +60,11 @@ const props = defineProps({
         type:RegExp,
         required: true,
     },
-    // true：自定义上传图片，false默认上传图片
-    customImageUpload: {
-        type: Boolean,
-        default: false
-    },
+    uploadImage: {
+        type: Object,
+        customUpload: (file: File) => {},
+        imageLink: (link: string) => {},
+    }
 })
 const { message, dialog, modal } = useNaiveDiscrete();
 
@@ -76,7 +76,13 @@ const tabPane = ref('link')
 const currentImages = ref<string[]>([])
 const fileList = ref<FileList>({ length: 0, item: (index) => null })
 
-const emits = defineEmits(['onUploadImageCallBack'])
+const isCustomUpload = computed(() => {
+    return props.uploadImage && props.uploadImage.customUpload instanceof Function
+})
+
+const isImageLink = computed(() => {
+    return props.uploadImage && props.uploadImage.imageLink instanceof Function
+})
 
 const onUpdatedTab = (val: string) => {
     tabPane.value = val
@@ -99,8 +105,8 @@ const onPositiveClick = () => {
             return
         }
 
-        if (props.customImageUpload) {
-            emits('onUploadImageCallBack', imageLink.value)
+        if (isImageLink.value && props.uploadImage) {
+            props.uploadImage.imageLink(imageLink.value)
         } else {
             props.editor.commands.setImage({
                 src: imageLink.value,
@@ -116,13 +122,13 @@ const onPositiveClick = () => {
 
         for (let i = 0; i < fileList.value.length; i++) {
             formData.append('file', fileList.value[i])
-            if (!props.customImageUpload) {
+            if (!isCustomUpload.value) {
                 innerUploadImage(fileList.value[i])
             }
         }
         
-        if (props.customImageUpload) {
-            emits('onUploadImageCallBack', fileList.value)
+        if (props.uploadImage && isCustomUpload.value) {
+            props.uploadImage.customUpload(fileList.value)
         }
     }
 

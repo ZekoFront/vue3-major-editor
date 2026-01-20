@@ -5,6 +5,7 @@ import ButtonIcon from '../components/ButtonIcon.vue'
 const Bold = TiptapBold.extend({
     addOptions() {
         return {
+            HTMLAttributes: {},
             ...this.parent?.(),
             bubble: true,
             onClick: ({ editor }:{editor:Editor}) => {

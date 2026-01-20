@@ -5,6 +5,7 @@ import ButtonIcon from '../components/ButtonIcon.vue'
 const Italic = TiptapItalic.extend({
     addOptions() {
         return {
+            HTMLAttributes: {},
             ...this.parent?.(),
             bubble: true,
             onClick: ({ editor }:{editor:Editor}) => {

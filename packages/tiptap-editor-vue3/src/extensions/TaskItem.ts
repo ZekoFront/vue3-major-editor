@@ -7,7 +7,10 @@ const TaskItem = TiptapTaskItem.extend({
     name: 'customTask',
     addOptions() {
         return {
-            // ...this.parent?.(),
+            HTMLAttributes: {},
+            nested: true,
+            taskListTypeName: 'taskList',
+            ...this.parent?.(),
             onClick: ({ editor }:{editor:Editor}) => {
                 return {
                     component: TaskIcon,

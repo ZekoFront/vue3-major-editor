@@ -10,7 +10,21 @@ const Link = TiptapLink.extend({
     priority: 100,
     addOptions() {
         return {
-            //@ts-ignore
+            HTMLAttributes: {},
+            autolink: true,
+            protocols: [],
+            defaultProtocol: "https",
+            openOnClick: true,
+            enableClickSelection: false,
+            linkOnPaste: true,
+            // 决定是否应在内容中自动添加有效的链接
+            shouldAutoLink: (url) => !!url,
+            // 简单的默认验证：只要 url 是字符串且不为空即可
+            validate: (url) => !!url,
+            // 接口要求这是一个函数。我们利用 ctx.defaultValidate 来保持默认行为
+            isAllowedUri: (url, ctx) => {
+                return ctx.defaultValidate(url)
+            },
             ...this.parent?.(),
             onClick: ({ editor }: { editor: Editor }) => {
                 return {

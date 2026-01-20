@@ -5,6 +5,8 @@ import ButtonIcon from '../components/ButtonIcon.vue'
 const Highlight = TiptapHighlight.extend({
     addOptions() {
         return {
+            HTMLAttributes: {},
+            multicolor: true,
             ...this.parent?.(),
             onClick: ({ editor }:{editor:Editor}) => {
                 return {

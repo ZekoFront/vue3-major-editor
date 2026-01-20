@@ -5,6 +5,8 @@ import ButtonIcon from '../components/ButtonIcon.vue'
 const HorizontalRule = TipTapHorizontalRule.extend({
     addOptions() {
         return {
+            HTMLAttributes: {},
+            nextNodeType: 'paragraph',
             ...this.parent?.(),
             onClick: ({ editor }:{editor:Editor}) => {
                 return {

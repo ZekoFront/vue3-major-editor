@@ -10,6 +10,14 @@ function renderCustomHeader() {
 const Table = TiptapTable.extend({
     addOptions() {
         return {
+            HTMLAttributes: {},
+            resizable: true,
+            renderWrapper: true,
+            handleWidth: 5,
+            cellMinWidth: 25,
+            lastColumnResizable: true,
+            allowTableNodeSelection: false,
+            View: null,
             ...this.parent?.(),
             onClick: ({ editor }: { editor: Editor }) => {
                 const menuOptions:ITableContextMenuItem[] = [

@@ -18,9 +18,8 @@
 <UploadImageModal 
     ref="UploadImageRef"
     :editor="editor" 
-    :customImageUpload="customImageUpload" 
-    :urlPattern="urlPattern"
-    @onUploadImageCallBack="onUploadImageCallBack">
+    :uploadImage="defaultConfig.uploadImage" 
+    :urlPattern="urlPattern">
 </UploadImageModal>
 </div>
 </template>
@@ -30,7 +29,6 @@ import { Editor } from '@tiptap/core';
 import { NTooltip } from "naive-ui";
 import UploadImageModal from './UploadImageModal.vue';
 
-const emits = defineEmits(['onUploadImageCallBack'])
 const props = defineProps({
     isActive: {
         type: Boolean,
@@ -56,9 +54,14 @@ const props = defineProps({
         type: RegExp,
         required: true,
     },
-    customImageUpload: {
-        type: Boolean,
-        default: false
+    defaultConfig: {
+        type: Object,
+        default: () => ({
+            uploadImage: {
+                customUpload: (file: File) => {},
+                imageLink: (link: string) => {},
+            }
+        })
     },
 })
 
@@ -70,9 +73,5 @@ const UploadImageRef = ref<UploadImageType | null>(null)
 const handleUploadImg = () => {
     if (!props.editor.isEditable) return
     UploadImageRef.value && UploadImageRef.value.initialize()
-}
-
-const onUploadImageCallBack = (file: FileList|string) => {
-    emits('onUploadImageCallBack', file)
 }
 </script>

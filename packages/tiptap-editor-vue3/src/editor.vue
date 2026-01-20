@@ -1,25 +1,24 @@
 <template>
-  <div v-if="editor" :class="['vue3-tiptap-editor major-editor', editorWrapperClass]">
-    <!-- <button @click="selectText">选择文本</button> -->
-    <Toolkit
-        v-if="isShowToolbar" 
-        :class="[editorToolkitClass]" 
-        :editor="editor" 
-        :customImageUpload="customImageUpload" 
-        :characterCount="characterCount"
-        :headingLevel="headingLevel"
-        @onIsShowContent="onIsShowContent" 
-        @onUploadImageCallBack="onUploadImageCallBack"/>
-    <drag-handle :editor="editor">
-      <div class="custom-drag-handle" />
-    </drag-handle>    
-     <div class="tiptap-editor__body">
-        <EditorContent :class="['tiptap-editor__content', editorContentClass]" :editor="editor" @contextmenu="onContextmenu"></EditorContent>
-        <ContentsNav v-if="isEnabledContent" :class="['tiptap-editor__navigation', editorContentsNavClass]" :editor="editor" v-model:isShowContent="isShowContent"></ContentsNav>
+    <div v-if="editor" :class="['vue3-tiptap-editor major-editor', editorWrapperClass]">
+        <!-- <button @click="selectText">选择文本</button> -->
+        <Toolkit
+            v-if="isShowToolbar" 
+            :class="[editorToolkitClass]" 
+            :editor="editor" 
+            :characterCount="characterCount"
+            :headingLevel="headingLevel"
+            :defaultConfig="defaultConfig"
+            @onIsShowContent="onIsShowContent"/>
+        <drag-handle :editor="editor">
+            <div class="custom-drag-handle"></div>
+        </drag-handle>    
+        <div class="tiptap-editor__body">
+            <EditorContent :class="['tiptap-editor__content', editorContentClass]" :editor="editor" @contextmenu="onContextmenu"></EditorContent>
+            <ContentsNav v-if="isEnabledContent" :class="['tiptap-editor__navigation', editorContentsNavClass]" :editor="editor" v-model:isShowContent="isShowContent"></ContentsNav>
+        </div>
+        <BubbleMenus :editor="editor"></BubbleMenus>
+        <ContextMenus :editor="editor" ref="contextMenuRef"></ContextMenus>
     </div>
-    <BubbleMenus :editor="editor"></BubbleMenus>
-    <ContextMenus :editor="editor" ref="contextMenuRef"></ContextMenus>
-  </div>
 </template>
 
 <script setup lang="ts" name="EditorTiptapVue3">
@@ -54,6 +53,15 @@ const contents = defineModel<string>("content", {
 
 // props
 const props = defineProps({
+    defaultConfig: {
+        type: Object,
+        default: () => ({
+            uploadImage: {
+                customUpload: (file: File) => {},
+                imageLink: (link: string) => {},
+            }
+        })
+    },
     extensions: {
         type: Array<AnyExtension>,
         default: []
@@ -69,10 +77,6 @@ const props = defineProps({
     isEnabledContent: {
         type: Boolean,
         default: true
-    },
-    customImageUpload: {
-        type: Boolean,
-        default: false
     },
     characterCount: {
         type: Number|| String,
@@ -215,10 +219,6 @@ function detectHeadingType (editor:Editor) {
             depth--;
         }
     }
-}
-
-const onUploadImageCallBack = (file: FileList|string) => {
-    emits('onUploadImage', { file, editor })
 }
 
 const onIsShowContent = (val:boolean) => {

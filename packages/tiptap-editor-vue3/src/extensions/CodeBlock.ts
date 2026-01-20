@@ -5,6 +5,14 @@ import ButtonIcon from '../components/ButtonIcon.vue'
 const CodeBlock = TiptapCodeBlock.extend({
     addOptions() {
         return {
+            HTMLAttributes: {},
+            languageClassPrefix: 'language-',
+            // 是否允许按向下键跳出代码块
+            exitOnArrowDown: true,
+            exitOnTripleEnter: true,
+            defaultLanguage: null,
+            enableTabIndentation: true,
+            tabSize: 4,
             ...this.parent?.(),
             onClick: ({ editor }:{editor:Editor}) => {
                 return {

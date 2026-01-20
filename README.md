@@ -68,17 +68,18 @@ app.mount("#app")
             <button style="margin-right:10px;" @click="getJson">获取Json</button>
             <button style="margin-right:10px;" @click="getText">获取Text</button>
             <button style="margin-right:10px;" @click="previews">预览</button>
+            <button style="margin-right:10px;" @click="clearText">清空文档</button>
             <button style="margin-right:10px;" @click="router.go(-1)">返回</button>
         </section>
         <!-- v-model:content="htmlContent" -->
         <TiptapEditorVue3
-            ref="vue3TiptapEditorRef" 
+            ref="vue3TiptapEditorRef"
             v-model:content="htmlContent" 
-            :customImageUpload="customImageUpload"
             :isEditable="true"
-            :extensions="extensions"
-            :isShowToolbar="true"
-            @onUploadImage="onUploadImage">
+            :extensions="[]"
+            :defaultConfig="defaultConfig"
+            @onCreated="onCreated"
+            @onUpdate="onUpdate">
         </TiptapEditorVue3>
 
         <n-drawer v-model:show="isVisible" :width="502" placement="right">
@@ -102,80 +103,73 @@ app.mount("#app")
     const previewContent = ref('')
     // 自定义工具栏，不需要可以不用传递参数即可显示全部工具栏
     const extensions = ref<AnyExtension[]>([Bold, Italic])
-    // 按需引入Button组件
-    // import { Button } from '@majoreditor/ui'
-
-    interface Vue3TiptapEditorOptions {
-        getHTML: () => string
-        getJSON: () => object
-        getTEXT: () => string
-    }
-
     const vue3TiptapEditorRef = ref<Vue3TiptapEditorOptions | null>(null)
     const htmlContent = ref(`
         <p>欢迎使用vue3-tiptap-editor编辑器 🎉</p>欢迎订阅交流,
         <a href="https://en.wikipedia.org/wiki/World_Wide_Web">world wide web</a>
         <a href="https://www.baidu.con">66666</a>`)
 
-    interface FileOpions {
-        file: FileList
-        editor: Editor
-    }
-
-    // 仅支持base64和URL两种模式
-    const onUploadImage = ({ file, editor }:FileOpions) => {
-        console.log(editor, 3333)
-        const formData = new FormData()
-        // 此处可以自定义上传图片逻辑，这里需要调用 editor.commands.insertCustomImage 来插入图片
-        for (let i = 0; i < file.length; i++) {
-            if (file[i]) {
-                formData.append('file', file[i])
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    const base64 = event.target?.result as string;
-                    const image = new Image()
-                    image.src = base64
-                    image.onload = () => {
-                        // 图片加载完成后再插入，记得传入图片宽高
-                        editor.commands.setImage({ 
-                            src: base64, 
-                            alt: '占位图片', 
-                            width: image.width, 
-                            height: image.height,
-                            title: file[i].name 
-                        });
-                    }
-                    
-                    // 监听错误事件
-                    image.onerror = () => {
-                        console.error('图片加载失败');
+    let editors: Editor;
+    const defaultConfig = {
+        uploadImage: {
+            uploadImage: {
+                // 图片连接
+                imageLink: (link: string) => {
+                    console.log(link, editors, 'imageLink')
+                    editors.commands.setImage({ src: link })
+                },
+                // 自定义上传图片
+                customUpload: (file: FileList) => {
+                    console.log(file, editors, 'customUpload')
+                    for (let i = 0; i < file.length; i++) {
+                        if (file[i]) {
+                            setImageOne(file[i])
+                        }
                     }
                 }
-
-                reader.readAsDataURL(file[i])
             }
         }
     }
 
+    const setImageOne = (file: File) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const base64 = event.target?.result as string;
+            editors.commands.setImage({ src: base64 })
+        }
+        reader.readAsDataURL(file)
+    }
+    const onCreated = (editor: Editor) => {
+        editors = editor
+    }
+    const onUpdate = (editor: Editor) => {
+        console.log(editor, 'update')
+    }
+
     function getHtml() {
-        if (vue3TiptapEditorRef.value) {
-            console.log(vue3TiptapEditorRef.value.getHTML(), 'HTML');
+        if (editors) {
+            console.log('HTML:',editors.getHTML());
         }
     }
     function getJson() {
-        if (vue3TiptapEditorRef.value) {
-            console.log(vue3TiptapEditorRef.value.getJSON(), 'JSON');
+        if (editors) {
+            console.log('JSON:',editors.getJSON());
         }
     }
     function getText() {
-        if (vue3TiptapEditorRef.value) {
-            console.log(vue3TiptapEditorRef.value.getTEXT(), 'TEXT');
+        if (editors) {
+            console.log('TEXT:',editors.getText());
         }
     }
     function previews() {
-        if (!vue3TiptapEditorRef.value) return
-        previewContent.value = vue3TiptapEditorRef.value.getHTML()
+        if (!editors) return
+        previewContent.value = editors.getHTML()
         isVisible.value = !isVisible.value
+    }
+    const clearText = () => {
+        if (editors) {
+            editors.commands.clearContent()
+        }
     }
 </script>
 ```
@@ -187,7 +181,6 @@ app.mount("#app")
 | isEnable         | boolean | 启用编辑器                                              |
 | isShowToolbar    | boolean | 启用工具栏                                              |
 | characterCount   | number  | 字数提示                                                |
-| customFileUpload | boolean | 自定义上传，开启后通过onUploadImage事件监听上传文件内容 |
 | extensions      | AnyExtension[] | 自定义工具栏，比如加粗，倾斜等到                    |
 | placeholder      | string  | 输入提示文本                                            |
 

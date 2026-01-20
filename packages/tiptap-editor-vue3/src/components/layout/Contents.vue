@@ -35,7 +35,7 @@ const isShowContent = defineModel<boolean>("isShowContent", {
    required: true,
 });
 
-props.editor.on('update', ({ editor }) => {
+props.editor.on('update', ({ editor, transaction }) => {
    nextTick(() => {
       // const { state } = editor;
       // const { selection } = state;
@@ -45,10 +45,14 @@ props.editor.on('update', ({ editor }) => {
       //    updateDirectory()
       // }
       // 粘贴内容比如wps文档标题，会丢失id，所以这里手动添加id
-      const hasModified = ensureHeadingIds(editor)
-      if (!hasModified) {
-         updateDirectory()
+      if (!transaction.docChanged) return;
+      const hasModifiedState = ensureHeadingIds(editor);
+
+      if (hasModifiedState) {
+         return;
       }
+
+      updateDirectory();
    })
 })
 
@@ -66,7 +70,8 @@ const updateDirectory = () => {
 
    headerContainer.innerHTML = headers.map((item, index) => {
       const elementID = item.getAttribute('id') || ""
-      item.setAttribute('id', elementID)
+      // 不能直接修改dom节点属性，否则一直触发更新事件
+      // item.setAttribute('id', elementID)
       const type = parseInt(item.tagName.slice(1));
       return `<li id="${elementID}" class="directory-item__cell" type="header${type}">${removeBrTags(item.innerHTML)}</li>`
    }).join('')

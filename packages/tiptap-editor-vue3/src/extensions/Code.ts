@@ -5,6 +5,7 @@ import ButtonIcon from '../components/ButtonIcon.vue'
 const Code = TiptapCode.extend({
     addOptions() {
         return {
+            HTMLAttributes: {},
             ...this.parent?.(),
             onClick: ({ editor }:{editor:Editor}) => {
                 return {
