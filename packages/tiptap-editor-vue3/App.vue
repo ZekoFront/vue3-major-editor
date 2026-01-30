@@ -11,6 +11,7 @@
             <button style="margin-right:10px;" @click="getJson">获取 Json</button>
             <button style="margin-right:10px;" @click="getText">获取 Text</button>
             <button style="margin-right:10px;" @click="clearText">清空文档</button>
+            <button style="margin-right:10px;" @click="setCustomString">自定义字符串</button>
             <button style="margin-right:10px;" @click="previews">预览</button>
         </section>
         <TiptapEditorVue3
@@ -116,6 +117,12 @@ app.mount("#app")</code></pre><p></p><p></p><p></p><p></p><p></p><p></p><p></p><
     const onUpdate = (val:Editor) => {
         // console.log("update:",val.getHTML())
         // console.log("update")
+    }
+
+    const setCustomString = () => {
+        if (editors) {
+            editors.commands.insertContent('${setCustomString}')
+        }
     }
 
     onBeforeUnmount(() => {

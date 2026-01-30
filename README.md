@@ -68,6 +68,7 @@ app.mount("#app")
             <button style="margin-right:10px;" @click="getJson">获取Json</button>
             <button style="margin-right:10px;" @click="getText">获取Text</button>
             <button style="margin-right:10px;" @click="previews">预览</button>
+            <button style="margin-right:10px;" @click="setCustomString">自定义字符串</button>
             <button style="margin-right:10px;" @click="clearText">清空文档</button>
             <button style="margin-right:10px;" @click="router.go(-1)">返回</button>
         </section>
@@ -169,6 +170,11 @@ app.mount("#app")
     const clearText = () => {
         if (editors) {
             editors.commands.clearContent()
+        }
+    }
+    const setCustomString = () => {
+        if (editors) {
+            editors.commands.insertContent('${setCustomString}')
         }
     }
 </script>
