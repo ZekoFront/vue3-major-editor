@@ -110,6 +110,7 @@ app.mount("#app")
         <a href="https://en.wikipedia.org/wiki/World_Wide_Web">world wide web</a>
         <a href="https://www.baidu.con">66666</a>`)
 
+    // 编辑器实例，更多功能参考tiptap官方文档https://tiptap.dev/docs
     let editors: Editor;
     const defaultConfig = {
         uploadImage: {
