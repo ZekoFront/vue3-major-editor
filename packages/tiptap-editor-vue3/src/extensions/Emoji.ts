@@ -7,9 +7,9 @@ const Emojis = Emoji.extend({
         return {
             HTMLAttributes: {},
             emojis: [],
-            enableEmoticons: true,
+            enableEmoticons: false,
             forceFallbackImages: false,
-            enableSuggestion: true,
+            enableSuggestion: false,
             suggestion: {
                 char: ':',
                 minChars: 2,

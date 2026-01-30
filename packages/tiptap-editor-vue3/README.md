@@ -73,6 +73,7 @@ app.mount("#app")
             <button style="margin-right:10px;" @click="getText">获取Text</button>
             <button style="margin-right:10px;" @click="previews">预览</button>
             <button style="margin-right:10px;" @click="clearText">清空文档</button>
+            <button style="margin-right:10px;" @click="setCustomString">自定义字符串</button>
             <button style="margin-right:10px;" @click="router.go(-1)">返回</button>
         </section>
         <!-- v-model:content="htmlContent" -->
@@ -113,6 +114,7 @@ app.mount("#app")
         <a href="https://en.wikipedia.org/wiki/World_Wide_Web">world wide web</a>
         <a href="https://www.baidu.con">66666</a>`)
 
+    // 编辑器实例，更多功能参考tiptap官方文档https://tiptap.dev/docs
     let editors: Editor;
     const defaultConfig = {
         uploadImage: {
@@ -171,6 +173,11 @@ app.mount("#app")
     const clearText = () => {
         if (editors) {
             editors.commands.clearContent()
+        }
+    }
+    const setCustomString = () => {
+        if (editors) {
+            editors.commands.insertContent('${setCustomString}')
         }
     }
 </script>

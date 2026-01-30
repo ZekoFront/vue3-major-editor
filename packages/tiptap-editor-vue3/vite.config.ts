@@ -60,9 +60,8 @@ export default defineConfig({
         lib: {
             entry: "src/index.ts",
             name: "TiptapEditorVue3",
-            fileName: 'tiptap-editor-vue3',
-            // formats:['es'],
-            
+            // 输出文件名 (xm-common-ui.js, xm-common-ui.umd.js)
+            fileName: (format) => `tiptap-editor-vue3.${format}.js`
         }
     },
 });

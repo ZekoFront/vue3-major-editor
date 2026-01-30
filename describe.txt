@@ -11,6 +11,9 @@ shamefully-hoist = true
 更新包
 pnpm --recursive update
 
+重新安装依赖
+pnpm install
+
 pnpm安装指定版本
 pnpm add sax@3.0.0
 
@@ -42,3 +45,6 @@ git branch -D 分支名
 
 5、删除远程分支
 git push origin --delete 分支名
+
+6、撤回本地提交
+git reset --hard HEAD~1
