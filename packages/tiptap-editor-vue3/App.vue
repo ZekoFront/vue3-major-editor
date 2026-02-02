@@ -14,6 +14,7 @@
             <button style="margin-right:10px;" @click="setCustomString">自定义字符串</button>
             <button style="margin-right:10px;" @click="previews">预览</button>
         </section>
+        <!--  :defaultConfig="defaultConfig" -->
         <TiptapEditorVue3
             ref="vue3TiptapEditorRef"
             v-model:content="htmlContent" 
@@ -42,6 +43,7 @@
     const previewContent = ref('')
     const vue3TiptapEditorRef = ref<HTMLVue3TiptapEditorElement | null>(null)
     let editors: Editor;
+    // 自定义图片上传，严格遵循下面配置规则，否则不生效
     const defaultConfig = {
         uploadImage: {
             imageLink: (link: string) => {
@@ -52,10 +54,7 @@
                 console.log(file, editors, 'customUpload')
                 for (let i = 0; i < file.length; i++) {
                     if (file[i]) {
-                        // setImageOne(file[i])
-                        const base64 = await readFileDataUrl(file[i])
-                        editors.commands.setImage({ src: base64 })
-                        // console.log(base64, 55555)
+                        setImageOne(file[i])
                     }
                 }
             }

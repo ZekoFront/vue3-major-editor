@@ -55,12 +55,7 @@ const contents = defineModel<string>("content", {
 const props = defineProps({
     defaultConfig: {
         type: Object,
-        default: () => ({
-            uploadImage: {
-                customUpload: (file: File) => {},
-                imageLink: (link: string) => {},
-            }
-        })
+        default: null
     },
     extensions: {
         type: Array<AnyExtension>,

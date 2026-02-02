@@ -1,7 +1,6 @@
 import '@tiptap/extension-text-style'
-// import ButtonIcon from '../components/ButtonIcon.vue'
 import BackgroundColorPopover from '@/components/color/BackgroundColorPopover.vue'
-import { Extension, ChainedCommands } from '@tiptap/core'
+import { Extension } from '@tiptap/core'
 import { Editor } from '@tiptap/vue-3'
 import { COLOR_DEFAULT } from '@/utils';
 

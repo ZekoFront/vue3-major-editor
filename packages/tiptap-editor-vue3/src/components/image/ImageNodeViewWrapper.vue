@@ -4,8 +4,11 @@
         <img 
             :src="String(imageURL)" 
             :alt="node.attrs.alt" 
-            :width="Number(imageWidth)" 
-            :height="Number(imageHeight)" 
+            :style="{
+                // 如果有属性宽度则使用，否则使用 auto (即源大小)
+                width: node.attrs.width ? node.attrs.width + 'px' : 'auto',
+                height: node.attrs.height ? node.attrs.height + 'px' : 'auto',
+            }"
             class="tiptap-image-element" 
             :title="String(title)"
             @click="selectedImage"
@@ -59,10 +62,6 @@ const display = computed(() => props.node.attrs.display)
 const imageViewClass = computed(() => {
     return ['tiptap-image-view', `tiptap-image-view--${display.value}`]
 })
-
-// watch(() => props.selected, (newValue) => {
-//     console.log('selected', newValue)
-// })
 
 const selectedImage = () => {
     props.editor.commands.setNodeSelection(Number(props.getPos()));
@@ -209,8 +208,13 @@ const init = async () => {
       result.width = MIN_SIZE;
       result.height = MIN_SIZE;
     }
+    // 设置图片原始尺寸，用于拖拽修改图片尺寸
     originalSize.value.width = result.width
     originalSize.value.height = result.height
+    props.updateAttributes?.({
+        width: result.width,
+        height: result.height,
+    });
 }
 
 init()

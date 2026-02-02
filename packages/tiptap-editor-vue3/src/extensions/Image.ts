@@ -1,6 +1,6 @@
 // 自定义图片插件
 // 创建一个新节点image
-import { Editor, mergeAttributes } from '@tiptap/core';
+import { Editor } from '@tiptap/core';
 import { VueNodeViewRenderer } from '@tiptap/vue-3'
 import ImageNodeViewWrapper from '@/components/image/ImageNodeViewWrapper.vue'
 import { Image as TiptapImage } from '@tiptap/extension-image'
@@ -19,7 +19,8 @@ export const Image = TiptapImage.extend({
             ...this.parent?.(),
             // 这样配置后，更新属性，才会触发编辑器update事件
             width: { 
-                default: DEFAULT_IMAGE_WIDTH,
+                // default: DEFAULT_IMAGE_WIDTH,
+                default: null, // 默认值为 null，表示不强制设定宽度
                 parseHTML: (element) =>  {
                     const width = element.style.width||element.getAttribute('width')||null
                     return width===null?null:parseInt(width, 10)
@@ -29,7 +30,8 @@ export const Image = TiptapImage.extend({
                 },
             },
             height: { 
-                default: DEFAULT_IMAGE_HEIGHT,
+                // default: DEFAULT_IMAGE_HEIGHT,
+                default: null, // 默认值为 null，表示不强制设定宽度
                 parseHTML: (element) => {
                     const height = element.style.height || element.getAttribute('height') || null;
                     return height == null ? null : parseInt(height, 10);

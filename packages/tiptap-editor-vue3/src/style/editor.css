@@ -4,6 +4,11 @@
         margin-left: 16px;
     }
 
+    .ProseMirror img {
+        max-width: 100%; /* 限制图片最大宽度不超过编辑器容器 */
+        height: auto;    /* 保持长宽比 */
+    }
+
     .tiptap:focus {
         outline: none;
     }

@@ -18,7 +18,7 @@
 <UploadImageModal 
     ref="UploadImageRef"
     :editor="editor" 
-    :uploadImage="defaultConfig.uploadImage" 
+    :defaultConfig="defaultConfig" 
     :urlPattern="urlPattern">
 </UploadImageModal>
 </div>
@@ -56,12 +56,7 @@ const props = defineProps({
     },
     defaultConfig: {
         type: Object,
-        default: () => ({
-            uploadImage: {
-                customUpload: (file: File) => {},
-                imageLink: (link: string) => {},
-            }
-        })
+        default: () => null
     },
 })
 

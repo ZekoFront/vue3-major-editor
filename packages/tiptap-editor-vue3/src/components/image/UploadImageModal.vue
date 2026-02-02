@@ -48,7 +48,7 @@
 import { NTabs, NTabPane, NModal, NInput, NIcon,NButton } from "naive-ui";
 import { useNaiveDiscrete } from "@/hooks/navie-ui";
 import { Delete20Regular } from "@vicons/fluent"
-import { DEFAULT_IMAGE_HEIGHT, DEFAULT_IMAGE_WIDTH, readFileDataUrl } from "@/utils";
+import { readFileDataUrl } from "@/utils";
 import { Editor } from "@tiptap/core";
 
 const props = defineProps({
@@ -60,10 +60,9 @@ const props = defineProps({
         type:RegExp,
         required: true,
     },
-    uploadImage: {
+    defaultConfig: {
         type: Object,
-        customUpload: (file: File) => {},
-        imageLink: (link: string) => {},
+        default: () => null
     }
 })
 const { message, dialog, modal } = useNaiveDiscrete();
@@ -75,14 +74,6 @@ const tipText = ref('图片地址格式错误，请重新输入正确图片地�
 const tabPane = ref('upload')
 const currentImages = ref<string[]>([])
 const fileList = ref<FileList>({ length: 0, item: (index) => null })
-
-const isCustomUpload = computed(() => {
-    return props.uploadImage && props.uploadImage.customUpload instanceof Function
-})
-
-const isImageLink = computed(() => {
-    return props.uploadImage && props.uploadImage.imageLink instanceof Function
-})
 
 const onUpdatedTab = (val: string) => {
     tabPane.value = val
@@ -105,15 +96,13 @@ const onPositiveClick = () => {
             return
         }
 
-        if (isImageLink.value && props.uploadImage) {
-            props.uploadImage.imageLink(imageLink.value)
+        if (props.defaultConfig) {
+            props.defaultConfig.imageLink(imageLink.value)
         } else {
             props.editor.commands.setImage({
                 src: imageLink.value,
                 alt: '',
-                title: '',
-                height: DEFAULT_IMAGE_HEIGHT,
-                width: DEFAULT_IMAGE_WIDTH
+                title: ''
             })
         }
     } else {
@@ -122,13 +111,16 @@ const onPositiveClick = () => {
 
         for (let i = 0; i < fileList.value.length; i++) {
             formData.append('file', fileList.value[i])
-            if (!isCustomUpload.value) {
+            if (!props.defaultConfig) {
                 innerUploadImage(fileList.value[i])
             }
         }
-        
-        if (props.uploadImage && isCustomUpload.value) {
-            props.uploadImage.customUpload(fileList.value)
+        if (props.defaultConfig) {
+            if (props.defaultConfig.uploadImage.customUpload instanceof Function) {
+                props.defaultConfig.uploadImage.customUpload(fileList.value)
+            } else {
+                throw new Error('customUpload must be a function')
+            }
         }
     }
     currentImages.value.length = 0
@@ -154,9 +146,7 @@ const innerUploadImage = async (file:File) => {
     props.editor.commands.setImage({
         src: image,
         alt: '占位图片',
-        title: file.name,
-        height: DEFAULT_IMAGE_HEIGHT,
-        width: DEFAULT_IMAGE_WIDTH
+        title: file.name
     })
 }
 
@@ -165,6 +155,7 @@ const initialize = () => {
     fileList.value = { length: 0, item: (index) => null }
     imageLink.value = ""
     isVisible.value = true;
+    tabPane.value = 'upload'
 };
 
 defineExpose({

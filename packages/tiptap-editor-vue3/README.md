@@ -2,7 +2,16 @@
 
 vue3-tiptap-editor是基于最新tiptap框架开发的vue3富文本组件，非法内容过滤以及防止XSS攻击、插入图片、插入表格等功能。
 
-![](https://raw.githubusercontent.com/qiunanya/vue3-major-editor/main/asset/image/20250923.png)
+![](https://raw.githubusercontent.com/ZekoFront/vue3-major-editor/main/asset/image/20250923.png)
+
+### 更新日志
+- 2026.02.02 新增图片裁剪功能，原图片大小裁剪，不压缩
+- 2026.02.02 修复多图片tiptap图片菜单问题，使用popover替换
+
+### 说明
+- 遇到问题可以到[GitHub issues](https://github.com/ZekoFront/vue3-major-editor/issues)反馈
+- 更多定制化开发或者扩展功能，联系作者：qq群(994723302)@管理员
+
 
 ### 功能清单
 - 撤回/重做"
