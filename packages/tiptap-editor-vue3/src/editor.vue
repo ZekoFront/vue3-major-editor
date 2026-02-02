@@ -180,7 +180,6 @@ const editor = new Editor({
     }
 })
 
-console.log('edior:',editor)
 const { contextMenuRef, onContextmenu } = useContextMenu(editor)
 
 const selectText = () => {
