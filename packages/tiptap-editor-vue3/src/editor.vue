@@ -90,8 +90,8 @@ const props = defineProps({
       default: undefined,
     },
     editorContentClass: {
-        type: [String, Array, Object],
-        default: undefined,
+        type: [String],
+        default: "custom-tiptap-content",
     },
     editorContentsNavClass: {
         type: [String, Array, Object],
@@ -117,6 +117,12 @@ const headingLevel = ref<number>(7)
 const extensionSet = props.extensions.length?props.extensions:extensionsArray;
 // TaskList任务插件需要直接注入，如果扩展后任务插件，新增内容将会报错2025-9-19
 const editor = new Editor({
+    editorProps: {
+        attributes: {
+            spellcheck: 'false',
+            class: props.editorContentClass
+        }
+    },
     extensions: [
         Document, 
         Paragraph, 
