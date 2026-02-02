@@ -2,12 +2,12 @@
 <node-view-wrapper as="span" :class="imageViewClass">
     <div class="tiptap-image-view__body">
         <img 
-            :src="imageURL" 
+            :src="String(imageURL)" 
             :alt="node.attrs.alt" 
-            :width="imageWidth" 
-            :height="imageHeight" 
+            :width="Number(imageWidth)" 
+            :height="Number(imageHeight)" 
             class="tiptap-image-element" 
-            :title="title"
+            :title="String(title)"
             @click="selectedImage"
         />
         <div v-if="isUploading" class="upload-status">upload...</div>
@@ -15,7 +15,17 @@
             <div :class="['resize-handle-btn', item]" @mousedown="onHandleBtnDrag" v-for="(item, index) in directionList" :key="index"></div> 
         </div>
 
-        <ImageBubbleMenu :updateAttrs="updateAttributes" :editor="editor" :node="node" :is-show="selected"></ImageBubbleMenu>
+        <!--
+            当图片出现滚动时，BubbleMenu菜单定位错位，
+            出现多张图片时，BubbleMenu只会显示最后一张图片操作按钮，
+            用n-popover替换BubbleMenu 
+        -->
+        <n-popover trigger="manual" :show="selected" placement="bottom">
+            <template #trigger>
+                <div></div>
+            </template>
+            <ImageBubbleMenu :updateAttrs="updateAttributes" :editor="editor" :node="node"></ImageBubbleMenu>
+        </n-popover>
     </div>
 </node-view-wrapper>
 </template>
@@ -26,8 +36,9 @@ import { nodeViewProps, NodeViewWrapper } from "@tiptap/vue-3";
 import { NodeViewProps } from "@tiptap/core";
 // 图片菜单
 import ImageBubbleMenu from "@/components/bubble-menu/ImageBubbleMenu.vue";
-import { DEFAULT_IMAGE_HEIGHT, MAX_SIZE, MIN_SIZE, resolveImg } from "@/utils";
+import { MAX_SIZE, MIN_SIZE, resolveImageURL } from "@/utils";
 import type { CSSProperties } from 'vue';
+import { NPopover } from 'naive-ui'
 
 const props = defineProps({ ...nodeViewProps });
 
@@ -48,6 +59,10 @@ const display = computed(() => props.node.attrs.display)
 const imageViewClass = computed(() => {
     return ['tiptap-image-view', `tiptap-image-view--${display.value}`]
 })
+
+// watch(() => props.selected, (newValue) => {
+//     console.log('selected', newValue)
+// })
 
 const selectedImage = () => {
     props.editor.commands.setNodeSelection(Number(props.getPos()));
@@ -188,7 +203,7 @@ const getMaxSize = (entry:ResizeObserverEntry) => {
 
 
 const init = async () => {
-    const result = await resolveImg(imageURL.value);
+    const result = await resolveImageURL(imageURL.value);
 
     if (!result.complete) {
       result.width = MIN_SIZE;
@@ -258,6 +273,8 @@ onBeforeUnmount(() => {
         cursor: pointer;
         margin: 0;
         max-width: 100%;
+        min-height: 20px;
+        min-width: 20px;
     }
     .image-view-resizer {
         border: 1px solid var(--theme-color);

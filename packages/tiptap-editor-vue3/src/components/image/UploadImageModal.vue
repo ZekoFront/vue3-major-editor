@@ -15,17 +15,11 @@
 </template>
 <div>
     <n-tabs type="line" animated :default-value="tabPane" :on-update:value="onUpdatedTab">
-        <n-tab-pane name="link" tab="图片连接">
-            <div style="padding: 12px 0px;">
-                <n-input v-model:value="imageLink" placeholder="请输入图片连接"/>
-            </div>
-            <p v-if="!isErrorTip" style="color: var(--red);">{{ tipText }}</p>
-        </n-tab-pane>
         <n-tab-pane name="upload" tab="上传图片">
             <div class="list-image-group">
                 <div class="list-image-item" v-for="(item, index) in currentImages">
                     <img :src="item" :alt="item">
-                    <NIcon class="delete-icon" size="21">
+                    <NIcon class="delete-icon" size="21" color="#ed4014" title="删除图片">
                         <Delete20Regular @click="removeImage(item, index)"></Delete20Regular>
                     </NIcon>
                 </div>
@@ -33,6 +27,12 @@
             <div style="padding: 20px 0px;">
                 <input type="file" accept="image/*" @change="onChangeFile" multiple/>
             </div>
+        </n-tab-pane>
+        <n-tab-pane name="link" tab="图片连接">
+            <div style="padding: 12px 0px;">
+                <n-input v-model:value="imageLink" placeholder="请输入图片连接"/>
+            </div>
+            <p v-if="!isErrorTip" style="color: var(--red);">{{ tipText }}</p>
         </n-tab-pane>
     </n-tabs>
 </div>
@@ -72,7 +72,7 @@ const imageLink = ref('')
 const isVisible = ref(false);
 const isErrorTip = ref(true)
 const tipText = ref('图片地址格式错误，请重新输入正确图片地址')
-const tabPane = ref('link')
+const tabPane = ref('upload')
 const currentImages = ref<string[]>([])
 const fileList = ref<FileList>({ length: 0, item: (index) => null })
 
@@ -131,7 +131,7 @@ const onPositiveClick = () => {
             props.uploadImage.customUpload(fileList.value)
         }
     }
-
+    currentImages.value.length = 0
     isVisible.value = false;
 }
 
@@ -139,9 +139,8 @@ const onChangeFile = (evt: Event) => {
     const input = evt.target as HTMLInputElement;
     const files = input.files as FileList;
     fileList.value = files
-    currentImages.value = []
     for (let i = 0; i < files.length; i++) {
-        const ImageUrl = URL.createObjectURL(files[i])
+        const ImageUrl = URL.createObjectURL(new Blob([files[i]]))
         currentImages.value.push(ImageUrl)
     }
 }

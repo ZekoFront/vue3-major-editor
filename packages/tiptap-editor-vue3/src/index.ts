@@ -10,6 +10,7 @@ export default function install(app:App) {
 }
 
 export * from './extensions'
+export * from './utils/image'
 
 export { 
     TiptapEditorVue3

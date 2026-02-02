@@ -34,7 +34,7 @@
 
 <script setup lang="ts">
     import { nextTick, onBeforeUnmount, ref } from "vue";
-    import { Editor, HTMLVue3TiptapEditorElement, AnyExtension, Bold, Italic } from "./src";
+    import { Editor, HTMLVue3TiptapEditorElement, AnyExtension, Bold, Italic, readFileDataUrl } from "./src";
     import { NDrawerContent, NDrawer } from "naive-ui";
 
     const extensions = ref<AnyExtension[]>([Bold, Italic])
@@ -48,11 +48,14 @@
                 console.log(link, editors, 'imageLink')
                 editors.commands.setImage({ src: link })
             },
-            customUpload: (file: FileList) => {
+            customUpload: async (file: FileList) => {
                 console.log(file, editors, 'customUpload')
                 for (let i = 0; i < file.length; i++) {
                     if (file[i]) {
-                        setImageOne(file[i])
+                        // setImageOne(file[i])
+                        const base64 = await readFileDataUrl(file[i])
+                        editors.commands.setImage({ src: base64 })
+                        // console.log(base64, 55555)
                     }
                 }
             }

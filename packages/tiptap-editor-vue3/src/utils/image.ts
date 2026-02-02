@@ -23,7 +23,7 @@ interface ImageCache {
 
 const IMAGE_CACHE: ImageCache = {};
 
-export function resolveImg(src: string): Promise<ImageResult> {
+export function resolveImageURL(src: string): Promise<ImageResult> {
   return new Promise((resolve, reject) => {
     const result: ImageResult = {
       complete: false,
