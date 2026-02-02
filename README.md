@@ -112,6 +112,7 @@ app.mount("#app")
 
     // 编辑器实例，更多功能参考tiptap官方文档https://tiptap.dev/docs
     let editors: Editor;
+    // 自定义图片上传，严格遵循下面配置规则，否则不生效
     const defaultConfig = {
         uploadImage: {
             uploadImage: {
