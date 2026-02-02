@@ -1,41 +1,42 @@
 <template>
-<NPopover ref="tablePopoverRef" content-class="toolbar-table-picker__popover" style="max-height: 340px;max-width: 335px;" trigger="click" placement="top" scrollable :on-update:show="doTable">
-<template #trigger>
-    <NTooltip placement="top" trigger="hover">
-        <template #trigger>
-            <button class="toolbar-icon--btn" data-editor-toolbar-btn="true">
-                <svg viewBox="0 0 1024 1024">
-                    <path
-                        d="M938.666667 42.666667H85.333333C38.4 42.666667 0 81.066667 0 128v768c0 46.933333 38.4 85.333333 85.333333 85.333333h853.333334c46.933333 0 85.333333-38.4 85.333333-85.333333V128c0-46.933333-38.4-85.333333-85.333333-85.333333zM298.666667 896H85.333333v-213.333333h213.333334v213.333333z m0-298.666667H85.333333V384h213.333334v213.333333z m341.333333 298.666667H384v-213.333333h256v213.333333z m0-298.666667H384V384h256v213.333333z m298.666667 298.666667h-213.333334v-213.333333h213.333334v213.333333z m0-298.666667h-213.333334V384h213.333334v213.333333z m0-298.666666H85.333333V128h853.333334v170.666667z">
-                    </path>
-                </svg>
-            </button>
-        </template>
-        <span>表格</span>
-    </NTooltip>
-</template>
-<div class="table-drawing">
-    <p style="margin: 5px 0; display: flex; align-items: center;">
-        <strong>{{tbOptions.row}}</strong>行x<strong>{{tbOptions.column}}</strong>列, 
-        表头: <input type="checkbox" v-model="tbOptions.isWithHeaderRow">
-        <a href="#" class="confirm__btn" @click.stop="handleTable">确定</a>
-    </p>
-    <div ref="tableFilterWrapRef" class="table-drawing__area" 
-        @mousedown.stop="onMousedown"
-        @mousemove.stop="onMousemove"
-        @mouseleave.stop="onMouseleave"
-        @mouseup.stop="onMouseup">
-        <span class="table-drawing-td__item" v-for="(item, index) in 100" :key="index"></span>
-        <div ref="maskRef" class="table-mask__wrap"></div>
+<n-popover trigger="click" content-class="toolbar-table-picker__popover" style="max-height: 340px;max-width: 335px;">
+    <template #trigger>
+        <n-tooltip placement="top" trigger="hover">
+            <template #trigger>
+                <button class="toolbar-icon--btn" data-editor-toolbar-btn="true">
+                    <svg viewBox="0 0 1024 1024">
+                        <path
+                            d="M938.666667 42.666667H85.333333C38.4 42.666667 0 81.066667 0 128v768c0 46.933333 38.4 85.333333 85.333333 85.333333h853.333334c46.933333 0 85.333333-38.4 85.333333-85.333333V128c0-46.933333-38.4-85.333333-85.333333-85.333333zM298.666667 896H85.333333v-213.333333h213.333334v213.333333z m0-298.666667H85.333333V384h213.333334v213.333333z m341.333333 298.666667H384v-213.333333h256v213.333333z m0-298.666667H384V384h256v213.333333z m298.666667 298.666667h-213.333334v-213.333333h213.333334v213.333333z m0-298.666667h-213.333334V384h213.333334v213.333333z m0-298.666666H85.333333V128h853.333334v170.666667z">
+                        </path>
+                    </svg>
+                </button>
+            </template>
+            <span>表格</span>
+        </n-tooltip>
+    </template>
+    <div class="table-drawing">
+        <p style="margin: 5px 0; display: flex; align-items: center;">
+            <strong>{{tbOptions.row}}</strong>行x<strong>{{tbOptions.column}}</strong>列, 
+            表头: <input type="checkbox" v-model="tbOptions.isWithHeaderRow">
+            <a href="#" class="confirm__btn" @click.stop="handleTable">确定</a>
+        </p>
+        <div ref="tableFilterWrapRef" class="table-drawing__area" 
+            @mousedown.stop="onMousedown"
+            @mousemove.stop="onMousemove"
+            @mouseleave.stop="onMouseleave"
+            @mouseup.stop="onMouseup">
+            <span class="table-drawing-td__item" v-for="(item, index) in 100" :key="index"></span>
+            <div ref="maskRef" class="table-mask__wrap"></div>
+        </div>
     </div>
-</div>
-</NPopover>
+</n-popover>
 </template>
 
-<script lang="ts" setup name="Table">
+<script lang="ts" setup>
 import { Editor } from '@tiptap/vue-3';
 import { NTooltip, NPopover } from "naive-ui";
 import { useNaiveDiscrete } from '@/hooks/navie-ui';
+defineOptions({ name: 'TableIcon', inheritAttrs: false })
 
 const { editor } = defineProps({
     editor: {
@@ -51,7 +52,7 @@ const { editor } = defineProps({
         default: '暂无提示'
     }
 })
-const { message, dialog, modal } = useNaiveDiscrete();
+const { message } = useNaiveDiscrete();
 
 // 表格
 const tbOptions = reactive({
@@ -61,7 +62,7 @@ const tbOptions = reactive({
 })
 const tableFilterWrapRef = ref<HTMLElement | null>(null)
 const maskRef = ref<HTMLElement | null>(null)
-const tablePopoverRef = ref<InstanceType<typeof NPopover> | null>(null)
+const tablePopoverRef = useTemplateRef<InstanceType<typeof NPopover> | null>("tablePopoverRef")
 
 let startTop = 0, endTop = 0, startLeft = 0, endLeft = 0, selectedCells = [];
 const isMouseDown = ref(false)

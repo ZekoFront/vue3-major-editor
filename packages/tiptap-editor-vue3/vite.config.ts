@@ -14,7 +14,9 @@ const assetFileNames = (chunkInfo:PreRenderedAsset) => {
 export default defineConfig({
     plugins: [
         vue(),
-        svgLoader(),
+        svgLoader({
+            defaultImport: 'component',
+        }),
         dts({
             include: ["src"],
             insertTypesEntry: true,

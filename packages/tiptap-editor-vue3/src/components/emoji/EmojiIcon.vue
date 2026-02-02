@@ -1,31 +1,33 @@
 <template>
-<NPopover content-class="toolbar-emoji-picker__popover" ref="npopoverCLRef" style="width: 300px;background: transparent;" :on-update:show="onUpdatePopoverShow" trigger="click" placement="bottom" scrollable>
+<n-popover content-class="toolbar-emoji-picker__popover" style="width: 300px;background: transparent;" trigger="click" placement="bottom">
 <template #trigger>
-    <NTooltip placement="top" trigger="hover">
+    <n-tooltip placement="top" trigger="hover">
         <template #trigger>
             <button class="toolbar-icon--btn" data-editor-toolbar-btn="true">
-               <component :is="icons"></component>
+                <EmojiIcon />
             </button>
         </template>
         <span>{{ tipText }}</span>
-    </NTooltip>
+    </n-tooltip>
 </template>
 <div class="emoji-picker__wrap">
     <EmojiPicker :native="true" display-recent @select="onSelectEmoji"/>
 </div>
-</NPopover>
+</n-popover>
 </template>
-<script setup lang="ts" name="EmojiIcon">
+<script setup lang="ts">
 import { Editor } from "@tiptap/vue-3";
 import { NTooltip, NPopover } from "naive-ui";
 import EmojiPicker, { EmojiExt } from 'vue3-emoji-picker'
 import 'vue3-emoji-picker/css'
+import { EmojiIcon } from "@/icons"
 
-const npopoverCLRef = ref<InstanceType<typeof NPopover> | null>(null)
+defineOptions({ name: 'EmojiIcon', inheritAttrs: false })
+
 const props = defineProps({
     editor: {
       type: Editor,
-      required: true,
+      required: false,
     },
     tipText: {
         type: String,
@@ -38,12 +40,9 @@ const props = defineProps({
 })
 
 function onSelectEmoji(emoji:EmojiExt) {
-    props.editor.commands.insertContent(emoji.i)
+    props.editor?.commands.insertContent(emoji.i)
 }
 
-const onUpdatePopoverShow = (value: boolean):void => {
-    // console.log('value:', value)
-}
 </script>
 
 <style lang="scss">

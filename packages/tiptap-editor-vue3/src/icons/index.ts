@@ -9,4 +9,6 @@ export default function install(app: any) {
     }
 }
 
+export { default as EmojiIcon } from './emoji-icon.svg'
+
  

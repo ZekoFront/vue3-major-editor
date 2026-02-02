@@ -1,7 +1,7 @@
 import {  h  } from "vue";
 import { Editor } from "@tiptap/core";
 import { Table as TiptapTable,TableCell,TableHeader, TableRow } from "@tiptap/extension-table";
-import TableUI from "@/components/table/Table.vue";
+import TableIcon from "@/components/table/TableIcon.vue";
 import { ITableContextMenuItem } from '@/typings/index'
 
 function renderCustomHeader() {
@@ -134,7 +134,7 @@ const Table = TiptapTable.extend({
                     }
                 ]
                 return {
-                    component: TableUI,
+                    component: TableIcon,
                     componentProps: {
                         options: menuOptions,
                         editor,

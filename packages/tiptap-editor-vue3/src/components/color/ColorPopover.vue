@@ -1,7 +1,7 @@
 <template>
-<NPopover content-class="toolbar-color-picker__popover" ref="npopoverCLRef" style=" max-height: 270px;max-width: 300px;" trigger="click" placement="bottom" scrollable>
+<n-popover trigger="click" placement="bottom" content-class="toolbar-color-picker__popover" style="max-height: 270px;max-width: 300px;">
 <template #trigger>
-    <NTooltip placement="top" trigger="hover">
+    <n-tooltip placement="top" trigger="hover">
         <template #trigger>
             <button class="toolbar-icon--btn" data-editor-toolbar-btn="true">
                 <svg viewBox="0 0 1024 1024" width="200" height="200">
@@ -15,7 +15,7 @@
             </button>
         </template>
         <span>{{ tipText }}</span>
-    </NTooltip>
+    </n-tooltip>
 </template>
 <div class="color-picker__wrap">
     <p class="color-picker-name flex-wrap">
@@ -45,11 +45,12 @@
         'rgba(208, 48, 80, 1)',
         ]" :show-alpha="true" />
 </div>
-</NPopover>
+</n-popover>
 </template>
-<script setup lang="ts" name="BackgroundColorPopover">
+<script setup lang="ts">
 import { Editor } from "@tiptap/vue-3";
 import { NTooltip, NPopover, NColorPicker } from "naive-ui";
+defineOptions({ name: 'ColorPopover', inheritAttrs: false })
 
 const npopoverCLRef = ref<InstanceType<typeof NPopover> | null>(null)
 const { editor } = defineProps({
