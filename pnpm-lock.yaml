@@ -216,7 +216,11 @@ importers:
 
   packages/image-viewer-vue3: {}
 
-  packages/tiptap-editor-vue3: {}
+  packages/tiptap-editor-vue3:
+    dependencies:
+      vue:
+        specifier: ^3.2.0
+        version: 3.5.27(typescript@5.9.3)
 
   playground:
     dependencies:

@@ -10,5 +10,8 @@ export default function install(app: any) {
 }
 
 export { default as EmojiIcon } from './emoji-icon.svg'
+export { default as BackgroundColorIcon } from './background-color-icon.svg'
+export { default as AddImageIcon } from './add-image-icon.svg'
+export { default as TableIcon } from './table-icon.svg'
 
  

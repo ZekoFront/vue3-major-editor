@@ -5,6 +5,7 @@ vue3-tiptap-editor是基于最新tiptap框架开发的vue3富文本组件，非�
 ![](https://raw.githubusercontent.com/ZekoFront/vue3-major-editor/main/asset/image/20250923.png)
 
 ### 更新日志
+- 2026.02.04 支持批量拖拽和粘贴图片到编辑器，优化图片上传逻辑
 - 2026.02.04 优化打包逻辑，样式优化，避免被宿主项目覆盖
 - 2026.02.02 新增图片裁剪功能，原图片大小裁剪，不压缩
 - 2026.02.02 修复多图片tiptap图片菜单问题，使用popover替换
@@ -218,14 +219,18 @@ app.mount("#app")
 
 ### 组件传递参数
 
-| 参数             | 类型    | 描述                                                    |
-| ---------------- | ------- | ------------------------------------------------------- |
-| isEditable       | boolean | 启用编辑器                                              |
-| isEnabledContent | boolean | 是否启用文档目录                                         |
-| isShowToolbar    | boolean | 启用工具栏                                              |
-| characterCount   | number  | 字数提示                                                |
-| extensions      | AnyExtension[] | 自定义工具栏，比如加粗，倾斜等到                    |
-| placeholder      | string  | 输入提示文本                                            |
+| 参数             | 类型    | 描述                                   |       默认值     |
+| ---------------- | ------- | --------------------------------------|-----------------|
+| isEditable       | Boolean | 启用编辑器                             |        true   |
+| isEnabledContent | Boolean | 是否启用文档目录                        |        true  |
+| isShowToolbar    | Boolean | 启用工具栏                              |       true    |
+| characterCount   | Number  | 字数提示                                |       10000   |
+| extensions      | AnyExtension[] | 自定义工具栏，比如加粗，倾斜等到  |         []   |
+| placeholder      | String  | 输入提示文本                            |       请输入内容...   |
+| editorWrapperClass|String, Array, Object | 编辑器自定义class名       |       ""   |
+| editorToolkitClass| String, Array, Object | 工具栏自定义class名      |       ""   |
+| editorContentClass| String | 编辑器内容自定义class名                 |        ""   |
+| editorContentsNavClass| String, Array, Object | 编辑器内容导航自定义c|        ""   |
 
 
 ### 工具栏清单

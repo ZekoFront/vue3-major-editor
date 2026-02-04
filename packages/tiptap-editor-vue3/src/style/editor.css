@@ -318,10 +318,12 @@
     padding: 0.5rem;
 }
 
-.editor-inner-bubble--menu > button {
+.editor-inner-bubble--menu > .menu-button {
     background-color: unset;
     border: none;
     font-weight: bold;
+    border-radius: 0.2rem;
+    padding: 0.2rem 0.5rem;
     &:hover {
         background-color: var(--gray-3);
         .menu-icon {

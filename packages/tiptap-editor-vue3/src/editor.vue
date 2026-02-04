@@ -45,6 +45,8 @@ import { extensionsArray } from './extensions';
 
 // 过滤编辑器类容，防止xss攻击, 生产环境
 import DOMPurify from 'dompurify';
+import { Slice } from '@tiptap/pm/model'
+import { EditorView } from '@tiptap/pm/view'
 
 const contents = defineModel<string>("content", {
     default: "",
@@ -121,7 +123,11 @@ const editor = new Editor({
         attributes: {
             spellcheck: 'false',
             class: props.editorContentClass
-        }
+        },
+        // 自定义处理粘贴图片功能
+        handlePaste: (view, event, slice) => onHandlePaste(view, event, slice),
+        // 自定义处理拖放图片功能
+        handleDrop: (view, event, slice, moved) => onHandleDrop(view, event, slice, moved),
     },
     extensions: [
         Document, 
@@ -178,6 +184,9 @@ const editor = new Editor({
     },
     onSelectionUpdate ({ editor, transaction }) {
         detectHeadingType(editor as Editor)
+    },
+    onPaste(event: ClipboardEvent, slice: Slice) {
+        // The editor is being pasted into.
     }
 })
 
@@ -194,6 +203,100 @@ const selectText = () => {
         '<ul data-type="taskList"><li data-type="taskItem" data-checked="false"><p>New Task</p></li></ul>'
     )
     .run();
+}
+
+const onHandlePaste = (view: EditorView, event: ClipboardEvent, slice: Slice) => {
+    const files = Array.from(event.clipboardData?.files || [])
+    const images = files.filter(file => file.type.startsWith('image/'))
+
+    if (images.length === 0) return false
+
+    event.preventDefault()
+
+    const customUpload = props.defaultConfig?.uploadImage?.customUpload
+    if (typeof customUpload === 'function') {
+        customUpload(files)
+    } else {
+        const promises = images.map(file => {
+            return new Promise<string>((resolve) => {
+                const reader = new FileReader()
+                reader.onload = (e) => resolve(e.target?.result as string)
+                reader.readAsDataURL(file)
+            })
+        })
+
+        Promise.all(promises).then(srcs => {
+            let tr = view.state.tr
+            let pos = tr.selection.from 
+
+            srcs.forEach(src => {
+                const node = view.state.schema.nodes.image.create({ src })
+                tr = tr.insert(pos, node)
+                pos += node.nodeSize 
+            })
+            
+            view.dispatch(tr)
+        })
+    }
+    
+    return false
+}
+
+const onHandleDrop = (view: EditorView, event: DragEvent, slice: Slice, moved: boolean) => {
+    const hasFiles = event.dataTransfer?.files?.length
+    if (moved || !hasFiles) {
+        return false
+    }
+    const images = Array.from(event.dataTransfer.files).filter(file => /image/i.test(file.type))
+    if (images.length === 0) {
+        return false
+    }
+
+    event.preventDefault()
+
+    const coordinates = view.posAtCoords({ left: event.clientX, top: event.clientY })
+    
+    if (!coordinates) return false
+
+    const customUpload = props.defaultConfig?.uploadImage?.customUpload
+    if (typeof customUpload === 'function') {
+        customUpload(event.dataTransfer?.files)
+    } else {
+        const promises = images.map(file => {
+            return new Promise<string>((resolve) => {
+                const reader = new FileReader()
+                reader.onload = (e) => resolve(e.target?.result as string)
+                reader.readAsDataURL(file)
+            })
+        })
+
+        Promise.all(promises).then(srcs => {
+            insertImagesAtPos(view, srcs, coordinates.pos)
+        })
+    }
+
+    return false
+}
+
+function insertImagesAtPos(view: any, imageUrls: string[], pos: number) {
+    if (!imageUrls || imageUrls.length === 0) return
+
+    let tr = view.state.tr
+    
+    // 记录当前插入位置，随着图片插入不断后移
+    let currentPos = pos
+
+    imageUrls.forEach(src => {
+        const node = view.state.schema.nodes.image.create({ src })
+        tr = tr.insert(currentPos, node)
+        // 更新下一次插入的位置（当前位置 + 新节点的尺寸）
+        currentPos += node.nodeSize
+    })
+
+    // 可选：插入后将光标移动到最后一张图片后面，方便用户继续输入
+    // tr = tr.setSelection(TextSelection.create(tr.doc, currentPos))
+
+    view.dispatch(tr)
 }
 
 // 获取标题类型
