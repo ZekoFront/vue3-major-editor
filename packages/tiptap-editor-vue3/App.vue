@@ -20,6 +20,7 @@
             v-model:content="htmlContent" 
             :isEditable="true"
             :extensions="[]"
+            :editorWrapperClass="'vue3-tiptap-editor-wrapper'"
             :defaultConfig="defaultConfig"
             @onCreated="onCreated"
             @onUpdate="onUpdate"
@@ -151,7 +152,8 @@ app.mount("#app")</code></pre><p></p><p></p><p></p><p></p><p></p><p></p><p></p><
         align-items: center;
     }
 }
-.vue3-tiptap-editor {
+// 调整文本编辑器高度，important表示优先级最高
+.vue3-tiptap-editor-wrapper {
     height: calc(100vh - 99px) !important;
 }
 </style>

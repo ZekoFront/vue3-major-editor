@@ -1,11 +1,11 @@
 {
     "name": "tiptap-editor-vue3",
     "scope": "TiptapEditorVue3",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "description": "A vue3 high quality rich text editor",
     "type": "module",
-    "main": "./dist/tiptap-editor-vue3.es.js",
-    "module": "./dist/tiptap-editor-vue3.umd.js",
+    "main": "./dist/tiptap-editor-vue3.umd.js",
+    "module": "./dist/tiptap-editor-vue3.es.js",
     "types": "./dist/index.d.ts",
     "style": "./dist/css/style.css",
     "scripts": {
@@ -32,6 +32,9 @@
             "require": "./dist/tiptap-editor-vue3.umd.js"
         },
         "./dist/css/style.css": "./dist/css/style.css"
+    },
+    "peerDependencies": {
+        "vue": "^3.2.0"
     },
     "files": [
         "dist/*",

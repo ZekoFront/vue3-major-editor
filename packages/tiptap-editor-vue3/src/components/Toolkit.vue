@@ -19,7 +19,7 @@
     </component>
     <NTooltip placement="top" trigger="hover">
         <template #trigger>
-           <button class="toolbar-icon--btn" data-editor-toolbar-btn="true"  @click="updateContent">
+           <button class="toolbar-icon--btn"  @click="updateContent">
                 <NIcon size="21">
                     <ContentView32Regular></ContentView32Regular>
                 </NIcon>
@@ -29,14 +29,14 @@
     </NTooltip>
     <NTooltip placement="top" trigger="hover">
         <template #trigger>
-            <button class="toolbar-icon--btn" data-editor-toolbar-btn="true"  @click="exportDocx">
+            <button class="toolbar-icon--btn" @click="exportDocx">
                 <component :is="'docx-icon'"></component>
             </button>
         </template>
         <span >导出docx</span>
     </NTooltip>
     
-    <button class="toolbar-icon--btn" data-editor-toolbar-btn="true">
+    <button class="toolbar-icon--btn">
         <span style="color: var(--theme-color);font-weight: bold;">{{ editor.storage.characterCount.characters()}}</span>
         <span>&nbsp;/&nbsp;{{ characterCount }}</span>
     </button>

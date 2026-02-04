@@ -4,8 +4,9 @@
     /* box-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.1); */
     /* font-size: 1rem; */
     color: #333;
-    height: auto;
+    height: 100%;
     width: 100%;
+    min-height: 350px;
     overflow: auto;
 }
 
@@ -66,20 +67,17 @@ svg:active {
     overflow-y: auto;
     padding: 0 0.4rem;
 }
-@layer button {
-    button[data-editor-toolbar-btn="true"] {
-        display: flex;
-        align-items: center;
-        padding: 0.5em 0.5em;
-        outline: none;
-        border: none;
-        border-radius: 0.2em;
-        cursor: pointer;
-        height: 3em;
-    }
-    button[data-editor-toolbar-btn="true"]:hover {
-        background-color: #dddcdc;
-    }
+/* 样式包裹，避免宿主项目样式覆盖 */
+.vue3-tiptap-editor > .vue3-tiptap-editor__toolbar > .toolbar-icon--btn {
+    display: flex;
+    align-items: center;
+    padding: 0.5em 0.5em;
+    outline: none;
+    border: none;
+    border-radius: 0.2em;
+    cursor: pointer;
+    height: 3em;
+    border: none;
 }
 /* @layer svg {
     .toolbar-icon--btn > svg {

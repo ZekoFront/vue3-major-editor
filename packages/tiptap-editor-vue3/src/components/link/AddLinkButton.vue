@@ -1,5 +1,4 @@
 <template>
-<div class="toolbar-icon__wrap">
 <NTooltip placement="top" trigger="hover">
 <template #trigger>
     <button
@@ -9,7 +8,6 @@
             }
         ]"
         class="toolbar-icon--btn"
-        data-editor-toolbar-btn="true"
         @click="handleLink"
     >
         <svg viewBox="0 0 1024 1024" width="200" height="200">
@@ -47,7 +45,6 @@
     </n-switch>
     <p style="color: #d03050">仅支持http://、https://或ftp://开头的链接地址</p>
 </n-modal>
-</div>
 </template>
 
 <script setup lang="ts" name="AddLinkButton">
@@ -55,6 +52,11 @@ import { inject, ref } from "vue";
 import { useNaiveDiscrete } from "@/hooks/navie-ui";
 import { NModal, NInput, NTooltip, NSwitch } from "naive-ui";
 import { Editor } from "@tiptap/vue-3";
+
+defineOptions({
+    name: 'AddLinkButton',
+    inheritAttrs: false,
+})
 
 const props = defineProps({
     editor: {

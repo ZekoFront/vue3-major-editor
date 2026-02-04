@@ -8,7 +8,7 @@
     >
     <NTooltip placement="top" trigger="hover">
         <template #trigger>
-            <button  class="toolbar-icon--btn" data-editor-toolbar-btn="true">
+            <button  class="toolbar-icon--btn">
                 <aside v-if="headingLevel" style="font-size: medium;">
                     <span v-if="headingLevel<7">标题 {{ headingLevel }}</span>
                     <span v-else>正文</span>

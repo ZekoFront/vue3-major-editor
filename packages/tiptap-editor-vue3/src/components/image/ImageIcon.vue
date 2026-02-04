@@ -1,8 +1,7 @@
 <template>
-<div class="toolbar-icon__wrap">
 <NTooltip placement="top" trigger="hover">
 <template #trigger>
-    <button class="toolbar-icon--btn" data-editor-toolbar-btn="true" @click="handleUploadImg()">
+    <button class="toolbar-icon--btn" @click="handleUploadImg()">
         <svg viewBox="0 0 1024 1024" width="200" height="200">
             <path
                 d="M896 626.592a16 16 0 0 0-7.68-13.664l-172.448-105.088a16 16 0 0 0-20.704 3.52l-76 92.608-1.024 1.152a16 16 0 0 1-22.624 0.032l-252.832-252.064a16.032 16.032 0 0 0-22.08-0.512l-187.36 170.656a15.936 15.936 0 0 0-5.248 11.84V800h768v-173.408z">
@@ -21,13 +20,17 @@
     :defaultConfig="defaultConfig" 
     :urlPattern="urlPattern">
 </UploadImageModal>
-</div>
 </template>
 
 <script setup lang="ts" name="ImageIcon">
 import { Editor } from '@tiptap/core';
 import { NTooltip } from "naive-ui";
 import UploadImageModal from './UploadImageModal.vue';
+
+defineOptions({
+    name: 'ImageIcon',
+    inheritAttrs: false,
+})
 
 const props = defineProps({
     isActive: {

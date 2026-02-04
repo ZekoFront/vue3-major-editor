@@ -1,7 +1,7 @@
 <template>
 <NTooltip placement="top" trigger="hover" v-if='icons'>
     <template #trigger>
-        <button :class="iconClass" data-editor-toolbar-btn="true" @click="handle">
+        <button :class="iconClass" @click="handle">
             <component :is="icons"></component>
         </button>
     </template>

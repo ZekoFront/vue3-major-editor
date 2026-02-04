@@ -5,6 +5,7 @@ vue3-tiptap-editor是基于最新tiptap框架开发的vue3富文本组件，非�
 ![](https://raw.githubusercontent.com/ZekoFront/vue3-major-editor/main/asset/image/20250923.png)
 
 ### 更新日志
+- 2026.02.04 优化打包逻辑，样式优化，避免被宿主项目覆盖
 - 2026.02.02 新增图片裁剪功能，原图片大小裁剪，不压缩
 - 2026.02.02 修复多图片tiptap图片菜单问题，使用popover替换
 
@@ -55,7 +56,7 @@ import App from "./App.vue";
 import router from "./router";
 // 引入组件
 import TiptapEditorVue3 from "tiptap-editor-vue3";
-import "tiptap-editor-vue3/dist/es/css/style.css";
+import "tiptap-editor-vue3/dist/css/style.css";
 
 const app = createApp(App)
 app.use(TiptapEditorVue3)
@@ -91,6 +92,7 @@ app.mount("#app")
             v-model:content="htmlContent" 
             :isEditable="true"
             :extensions="[]"
+            :editorWrapperClass="'vue3-tiptap-editor-wrapper'"
             :defaultConfig="defaultConfig"
             @onCreated="onCreated"
             @onUpdate="onUpdate">
@@ -111,8 +113,6 @@ app.mount("#app")
     import { useRouter } from 'vue-router'
 
     const router = useRouter();
-    // true:不自动转化数据，需要外部处理后添加到编辑器, false: 图片内部处理，默认转化为base64
-    const customImageUpload = ref(false)
     const isVisible = ref(false)
     const previewContent = ref('')
     // 自定义工具栏，不需要可以不用传递参数即可显示全部工具栏
@@ -125,6 +125,7 @@ app.mount("#app")
 
     // 编辑器实例，更多功能参考tiptap官方文档https://tiptap.dev/docs
     let editors: Editor;
+    // 自定义图片上传，严格遵循下面配置规则，否则不生效
     const defaultConfig = {
         uploadImage: {
             // 图片连接
@@ -190,6 +191,29 @@ app.mount("#app")
         }
     }
 </script>
+<style lang="scss">
+.n-dialog.n-modal {
+    width: 600px;
+}
+.app_wrapper {
+    padding:15px;
+    margin: 0;
+    height: 100vh;
+    box-sizing: border-box;
+    .h2 {
+        margin: 5px 0;
+        color: #646cff;
+    }
+    .cus-header {
+        display: flex;
+        align-items: center;
+    }
+}
+// 调整文本编辑器高度，important表示优先级最高
+.vue3-tiptap-editor-wrapper {
+    height: calc(100vh - 99px) !important;
+}
+</style>
 ```
 
 ### 组件传递参数

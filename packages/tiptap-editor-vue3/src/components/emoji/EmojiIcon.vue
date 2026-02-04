@@ -3,7 +3,7 @@
 <template #trigger>
     <n-tooltip placement="top" trigger="hover">
         <template #trigger>
-            <button class="toolbar-icon--btn" data-editor-toolbar-btn="true">
+            <button class="toolbar-icon--btn">
                 <EmojiIcon />
             </button>
         </template>
